@@ -1,0 +1,132 @@
+import { getUserProfile } from "@/hooks/useOrders";
+import { UserProfile } from "@/types/user";
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  // Await the entire searchParams object
+  searchParams = await searchParams;
+  // Extract userId and orderId from either params or searchParams
+  const userId = (await searchParams.userId) as string;
+  const orderId = (await searchParams.orderId) as string;
+
+  const profile: UserProfile = await getUserProfile(orderId, userId);
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        {/* Header Section */}
+        <div className="flex items-center mb-6 pb-4 border-b">
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold">{profile.nickName}</h1>
+            <div className="flex items-center gap-3 mt-2">
+              <span
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  profile.isOnline
+                    ? "bg-green-100 text-green-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {profile.isOnline ? "Online" : "Offline"}
+              </span>
+              <span className="text-sm text-gray-500">User ID: {userId}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+          <StatsCard title="Total Orders" value={profile.totalFinishCount} />
+          <StatsCard title="Buy Orders" value={profile.totalFinishBuyCount} />
+          <StatsCard title="Sell Orders" value={profile.totalFinishSellCount} />
+          <StatsCard title="Completion Rate" value={profile.recentRate} />
+          <StatsCard title="Positive Rating" value={profile.goodAppraiseRate} />
+          <StatsCard
+            title="Account Age"
+            value={`${profile.accountCreateDays} days`}
+          />
+        </div>
+
+        {/* Detailed Information */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InfoSection title="User Information">
+            <InfoRow label="KYC Level" value={profile.kycLevel} />
+            <InfoRow label="Email" value={profile.email} />
+            <InfoRow label="Mobile" value={profile.mobile} />
+            <InfoRow label="Real Name" value={profile.realName} />
+            <InfoRow label="Country" value={profile.kycCountryCode} />
+            <InfoRow label="VIP Level" value={profile?.vipLevel?.toString()} />
+          </InfoSection>
+
+          <InfoSection title="Trading Statistics">
+            <InfoRow
+              label="Recent Trade Amount"
+              value={profile.recentTradeAmount}
+            />
+            <InfoRow
+              label="Total Trade Amount"
+              value={profile.totalTradeAmount}
+            />
+            <InfoRow
+              label="Avg. Release Time"
+              value={`${profile.averageReleaseTime} min`}
+            />
+            <InfoRow
+              label="Avg. Transfer Time"
+              value={`${profile.averageTransferTime} min`}
+            />
+            <InfoRow
+              label="Positive Reviews"
+              value={profile?.goodAppraiseCount?.toString()}
+            />
+            <InfoRow
+              label="Negative Reviews"
+              value={profile?.badAppraiseCount?.toString()}
+            />
+          </InfoSection>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StatsCard({
+  title,
+  value,
+}: {
+  title: string;
+  value: string | number;
+}) {
+  return (
+    <div className="bg-gray-50 p-4 rounded-lg">
+      <div className="text-sm text-gray-500">{title}</div>
+      <div className="text-xl font-semibold mt-1">{value}</div>
+    </div>
+  );
+}
+
+function InfoSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="bg-gray-50 p-4 rounded-lg">
+      <h3 className="font-semibold mb-4">{title}</h3>
+      <div className="space-y-2">{children}</div>
+    </div>
+  );
+}
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between">
+      <span className="text-gray-500">{label}</span>
+      <span className="font-medium">{value}</span>
+    </div>
+  );
+}
