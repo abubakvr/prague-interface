@@ -1,5 +1,6 @@
 import { getUserProfile } from "@/hooks/useOrders";
 import { UserProfile } from "@/types/user";
+import Link from "next/link";
 
 export default async function Page({
   searchParams,
@@ -15,7 +16,26 @@ export default async function Page({
   const profile: UserProfile = await getUserProfile(orderId, userId);
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className=" max-w-4xl mx-auto">
+      <div className="flex space-x-2 items-center mb-3">
+        <Link href="/orders" className="px-4 py-2 bg-slate-200 rounded-lg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={4}
+            stroke="currentColor"
+            className="w-6 h-6 text-black hover:cursor-pointer"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
+          </svg>
+        </Link>
+        <h1 className="text-xl font-semibold">User Profile</h1>
+      </div>
       <div className="bg-white rounded-lg shadow-lg p-6">
         {/* Header Section */}
         <div className="flex items-center mb-6 pb-4 border-b">

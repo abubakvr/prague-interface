@@ -29,10 +29,11 @@ export const getOrders = async ({
     return rawData.data.result;
   } catch (err) {
     console.error("Error fetching sell orders:", err);
+    throw err; // Re-throw the error to be handled by react-query
   }
 };
 
-export const getPendingOrders = async () => {
+const getPendingOrders = async () => {
   try {
     const response = await fetch("http://localhost:8000/orders/pending");
     if (!response.ok) {
@@ -42,6 +43,7 @@ export const getPendingOrders = async () => {
     return data;
   } catch (err) {
     console.error("Error fetching pending orders:", err);
+    throw err; // Re-throw the error
   }
 };
 
@@ -60,6 +62,7 @@ export const getUserProfile = async (
     return rawData.data.result;
   } catch (err) {
     console.error("Error fetching user profile:", err);
+    throw err; // Re-throw the error
   }
 };
 
@@ -73,18 +76,29 @@ export const getOrderDetails = async (id: string) => {
     return rawData.data.result;
   } catch (err) {
     console.error("Error fetching order details:", err);
+    throw err; // Re-throw the error
   }
 };
 
-export const getMyPayments = async () => {
+export const markPaidOrder = async (
+  orderId: string,
+  paymentType: string,
+  paymentId: string
+) => {
   try {
-    const response = await fetch("http://localhost:8000/payments");
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
+    return await fetch(`http://localhost:8000/api/orders/${orderId}/pay`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        orderId,
+        paymentType,
+        paymentId,
+      }),
+    });
   } catch (err) {
-    console.error("Error fetching payment methods:", err);
+    console.error("Error fetching order details:", err);
+    throw err; // Re-throw the error
   }
 };

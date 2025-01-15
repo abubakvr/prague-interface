@@ -1,41 +1,66 @@
-import { OrderDetails } from "@/types/order";
+import { useEffect, useState } from "react";
+import { OrderDetails, OrderStatus } from "@/types/order";
 import { getOrderDetails } from "./useOrders";
 
-export const getOrders = async ({
+export const useGetOrders = ({
   page,
   size,
-  status = 50,
+  status = OrderStatus.FINISH_ORDER,
   side = 0,
 }: {
   page: number;
   size: number;
   status?: number;
   side?: number;
-}): Promise<OrderDetails[] | undefined> => {
-  try {
-    const response = await fetch("http://localhost:8000/api/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        page,
-        size,
-        status,
-        side,
-      }),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+}) => {
+  const [data, setData] = useState<OrderDetails[] | undefined>(undefined);
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchOrders = async () => {
+    setLoading(true);
+    setError(null); // Clear any previous errors
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:8000/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          page,
+          size,
+          status,
+          side,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const rawData = await response.json();
+      const dataArray = rawData.data.result.items;
+      const getOrderId: string[] = dataArray.map((item: any) => item.id);
+      const getBulkOrders = await getBulkOrderDetails(getOrderId);
+      setData(getBulkOrders);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("An unknown error occurred")
+      );
+      console.error("Error fetching buy orders:", err);
+    } finally {
+      setLoading(false);
     }
-    const rawData = await response.json();
-    const dataArray = rawData.data.result.items;
-    const getOrderId: string[] = dataArray.map((item: any) => item.id);
-    const getBulkOrders = await getBulkOrderDetails(getOrderId);
-    return getBulkOrders;
-  } catch (err) {
-    console.error("Error fetching buy orders:", err);
-  }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  return {
+    data,
+    error,
+    loading,
+  };
 };
 
 export const getBulkOrderDetails = async (

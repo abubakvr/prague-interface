@@ -1,6 +1,7 @@
 import { getOrderDetails } from "@/hooks/useOrders";
 import { getStatusText } from "@/lib/helpers";
 import { OrderDetails } from "@/types/order";
+import Link from "next/link";
 
 export default async function Page({
   searchParams,
@@ -15,24 +16,48 @@ export default async function Page({
   const orderDetails: OrderDetails = await getOrderDetails(orderId!);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Order Details</h1>
-
+    <div className="container mx-auto">
+      <div className="flex space-x-2 items-center mb-6">
+        <Link href="/orders" className="px-4 py-2 bg-slate-200 rounded-lg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={4}
+            stroke="currentColor"
+            className="w-6 h-6 text-black hover:cursor-pointer"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
+          </svg>
+        </Link>
+        <h1 className="text-2xl font-semibold">Order Details</h1>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 rounded-lg shadow">
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Order Information</h2>
-          <InfoItem label="Order ID" value={orderDetails.id} />
-          <InfoItem
-            label="Type"
-            value={orderDetails.side === 0 ? "BUY" : "SELL"}
-          />
-          <InfoItem label="Status" value={getStatusText(orderDetails.status)} />
-          <InfoItem label="Order Type" value={orderDetails.orderType} />
-          <InfoItem label="Created" value={orderDetails.createDate} />
-          {orderDetails.transferDate && (
-            <InfoItem label="Transfer Date" value={orderDetails.transferDate} />
-          )}
-        </div>
+        {orderDetails.paymentTermList.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold">Payment Information</h2>
+            {orderDetails.paymentTermList.map((term, index) => (
+              <div key={term.id} className="border p-3 rounded">
+                <h3 className="font-medium">Payment Method {index + 1}</h3>
+                <InfoItem label="Name" value={term.realName} />
+                <InfoItem
+                  label="Payment Type"
+                  value={term.paymentType.toString()}
+                />
+                {term.bankName && (
+                  <InfoItem label="Bank" value={term.bankName} />
+                )}
+                {term.accountNo && (
+                  <InfoItem label="Account" value={term.accountNo} />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Trade Details</h2>
@@ -62,27 +87,20 @@ export default async function Page({
           />
         </div>
 
-        {orderDetails.paymentTermList.length > 0 && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Payment Information</h2>
-            {orderDetails.paymentTermList.map((term, index) => (
-              <div key={term.id} className="border p-3 rounded">
-                <h3 className="font-medium">Payment Method {index + 1}</h3>
-                <InfoItem label="Name" value={term.realName} />
-                <InfoItem
-                  label="Payment Type"
-                  value={term.paymentType.toString()}
-                />
-                {term.bankName && (
-                  <InfoItem label="Bank" value={term.bankName} />
-                )}
-                {term.accountNo && (
-                  <InfoItem label="Account" value={term.accountNo} />
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Order Information</h2>
+          <InfoItem label="Order ID" value={orderDetails.id} />
+          <InfoItem
+            label="Type"
+            value={orderDetails.side === 0 ? "BUY" : "SELL"}
+          />
+          <InfoItem label="Status" value={getStatusText(orderDetails.status)} />
+          <InfoItem label="Order Type" value={orderDetails.orderType} />
+          <InfoItem label="Created" value={orderDetails.createDate} />
+          {orderDetails.transferDate && (
+            <InfoItem label="Transfer Date" value={orderDetails.transferDate} />
+          )}
+        </div>
 
         {orderDetails.extension && (
           <div className="space-y-4">

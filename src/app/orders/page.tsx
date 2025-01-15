@@ -2,6 +2,7 @@ import { getOrders } from "@/hooks/useOrders";
 import { OrderTable } from "@/components/OrderTable";
 import { OrderListResponse } from "@/types/order";
 import { FilterControls } from "@/components/FilterControls";
+import { Pagination } from "@/components/Pagination";
 
 export default async function Page({
   searchParams,
@@ -25,8 +26,12 @@ export default async function Page({
 
   const totalPages = Math.ceil(response.count / pageSize);
 
+  if (!response || !response?.items?.length) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="w-fit">
+    <div className="w-full">
       <div className="flex justify-between items-center mb-2">
         <div className="text-sm text-gray-500">
           Total Orders: {response.count}
@@ -37,21 +42,12 @@ export default async function Page({
 
       <OrderTable orders={response.items} />
 
-      <div className="mt-6 flex justify-center gap-2">
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-          <a
-            key={pageNum}
-            href={`?page=${pageNum}&status=${currentStatus}&side=${currentSide}`}
-            className={`px-3 py-1 border rounded ${
-              pageNum === currentPage
-                ? "bg-blue-500 text-white"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            {pageNum}
-          </a>
-        ))}
-      </div>
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        currentSide={currentPage}
+        currentStatus={currentStatus}
+      />
     </div>
   );
 }

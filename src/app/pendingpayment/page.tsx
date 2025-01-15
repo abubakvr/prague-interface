@@ -25,9 +25,8 @@ export default async function Page({
   const totalPages = Math.ceil(response.count / pageSize);
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Your Orders</h1>
+    <div className="">
+      <div className="flex justify-between items-center mb-2">
         <div className="text-sm text-gray-500">
           Total Orders: {response.count}
         </div>
