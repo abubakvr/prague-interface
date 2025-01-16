@@ -5,7 +5,7 @@ import { getOrderDetails } from "./useOrders";
 export const useGetOrders = ({
   page,
   size,
-  status = OrderStatus.FINISH_ORDER,
+  status = OrderStatus.WAITING_FOR_BUY_PAY,
   side = 0,
 }: {
   page: number;
@@ -19,7 +19,7 @@ export const useGetOrders = ({
 
   const fetchOrders = async () => {
     setLoading(true);
-    setError(null); // Clear any previous errors
+    setError(null);
     try {
       setLoading(true);
       const response = await fetch("http://localhost:8000/api/orders", {
@@ -34,19 +34,19 @@ export const useGetOrders = ({
           side,
         }),
       });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (response.ok) {
+        const rawData = await response.json();
+        const dataArray = rawData.data.result.items;
+        const getOrderId: string[] = dataArray.map((item: any) => item.id);
+        const getBulkOrders = await getBulkOrderDetails(getOrderId);
+        setData(getBulkOrders);
       }
-      const rawData = await response.json();
-      const dataArray = rawData.data.result.items;
-      const getOrderId: string[] = dataArray.map((item: any) => item.id);
-      const getBulkOrders = await getBulkOrderDetails(getOrderId);
-      setData(getBulkOrders);
     } catch (err) {
       setError(
         err instanceof Error ? err : new Error("An unknown error occurred")
       );
       console.error("Error fetching buy orders:", err);
+      throw new Error(`Error! ${err}`);
     } finally {
       setLoading(false);
     }
@@ -60,6 +60,7 @@ export const useGetOrders = ({
     data,
     error,
     loading,
+    fetchOrders,
   };
 };
 

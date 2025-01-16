@@ -1,39 +1,98 @@
-export const getAdminDetail = async () => {
-  try {
-    const response = await fetch(`http://localhost:8000/api/account`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+import { UserProfile } from "@/types/user";
+import { useEffect, useState } from "react";
+
+export const useAdminDetails = () => {
+  const [data, setData] = useState<UserProfile | undefined>(undefined);
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`http://localhost:8000/api/account`);
+      if (response.ok) {
+        const rawData = await response.json();
+        setData(rawData.data.result);
+      } else {
+        setError(new Error(`HTTP error! status: ${response.status}`));
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("An unknown error occurred")
+      );
+      console.error("Error fetching user profile:", err);
+    } finally {
+      setLoading(false);
     }
-    const rawData = await response.json();
-    return rawData.data.result;
-  } catch (err) {
-    console.error("Error fetching user profile:", err);
-  }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return { loading, data, error, fetchData };
 };
 
-export const getAdminBalance = async () => {
-  try {
-    const response = await fetch(`http://localhost:3000/api/getbalance`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+export const useAdminBalance = () => {
+  const [data, setData] = useState<any | undefined>(undefined);
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`http://localhost:3000/api/getbalance`);
+      if (response.ok) {
+        const data = await response.json();
+        setData(data.result.balance[0]);
+      } else {
+        setError(new Error(`HTTP error! status: ${response.status}`));
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("An unknown error occurred")
+      );
+      console.error("Error fetching user profile:", err);
+    } finally {
+      setLoading(false);
     }
-    const data = await response.json();
-    return data.result.balance[0];
-  } catch (err) {
-    console.error("Error fetching user profile:", err);
-  }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return { loading, data, error, fetchData };
 };
 
-export const getAdminPaymentMethod = async () => {
-  try {
-    const response = await fetch("http://localhost:8000/api/payments");
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+export const useAdminPayment = () => {
+  const [data, setData] = useState<unknown | undefined>(undefined);
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`http://localhost:3000/api/getbalance`);
+      if (response.ok) {
+        const rawData = await response.json();
+        setData(rawData.data.result);
+      } else {
+        setError(new Error(`HTTP error! status: ${response.status}`));
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("An unknown error occurred")
+      );
+      console.error("Error fetching user profile:", err);
+    } finally {
+      setLoading(false);
     }
-    const rawData = await response.json();
-    return rawData.data.result;
-  } catch (err) {
-    console.error("Error fetching payment methods:", err);
-    throw err; // Re-throw the error
-  }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return { loading, data, error };
 };

@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function OrdersTable() {
-  const { data, loading, error } = useGetOrders({ page: 1, size: 30 });
+  const { data, loading, error, fetchOrders } = useGetOrders({
+    page: 1,
+    size: 30,
+  });
   const [modal, setModal] = useState({
     open: false,
     message: "",
@@ -60,7 +63,7 @@ export default function OrdersTable() {
       <div className="w-full flex flex-col h-screen items-center text-center gap-4">
         <p className="text-red-600">Error fetching orders: {error.message}</p>
         <button
-          onClick={() => window.location.reload()}
+          onClick={() => fetchOrders()}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
           Retry
@@ -94,10 +97,16 @@ export default function OrdersTable() {
       )}
       {data && data.length > 0 ? (
         <>
-          <div className="flex justify-between items-center mb-2">
+          <div className="flex space-x-4 items-center mb-2">
             <div className="text-sm text-gray-500">
               Total Orders: {data.length}
             </div>
+            <button
+              onClick={() => fetchOrders()}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Reload
+            </button>
           </div>
           <table className="w-full bg-white border border-gray-300">
             <thead className="bg-gray-50">
@@ -158,7 +167,7 @@ export default function OrdersTable() {
                       onClick={() =>
                         markOrderAsPaid(
                           order.id,
-                          order.orderType,
+                          order.paymentTermList[0].paymentType.toString(),
                           order.paymentTermList[0].id
                         )
                       }

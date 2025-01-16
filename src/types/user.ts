@@ -22,6 +22,7 @@ export interface UserProfile {
   authStatus: number;
   kycCountryCode: string;
   blocked: string;
+  isActive: boolean;
   goodAppraiseRate: string;
   goodAppraiseCount: number;
   badAppraiseCount: number;

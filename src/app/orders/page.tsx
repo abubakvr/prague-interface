@@ -26,7 +26,7 @@ export default async function Page({
 
   const totalPages = Math.ceil(response.count / pageSize);
 
-  if (!response || !response?.items?.length) {
+  if (!response) {
     return <div>Loading...</div>;
   }
 
@@ -40,7 +40,11 @@ export default async function Page({
 
       <FilterControls currentStatus={currentStatus} currentSide={currentSide} />
 
-      <OrderTable orders={response.items} />
+      {response?.items?.length ? (
+        <OrderTable orders={response.items} />
+      ) : (
+        <p className="">No order match the filter</p>
+      )}
 
       <Pagination
         totalPages={totalPages}
