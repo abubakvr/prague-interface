@@ -4,15 +4,15 @@ import { useAdminBalance, useAdminDetails } from "@/hooks/useAccount";
 export default function Home() {
   const {
     data: adminDetails,
-    loading: adminDetailLoading,
+    isLoading: adminDetailLoading,
     error: adminDetailError,
-    fetchData: fetchAdminDetails,
+    refetch: fetchAdminDetails,
   } = useAdminDetails();
   const {
     data: adminBalance,
-    loading: adminBalanceLoading,
+    isLoading: adminBalanceLoading,
     error: adminBalanceError,
-    fetchData: fetchAdminBalance,
+    refetch: fetchAdminBalance,
   } = useAdminBalance();
 
   const refetchPageData = () => {
@@ -46,8 +46,7 @@ export default function Home() {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+    <div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Admin Details Cards */}
         <div className="p-6 rounded shadow">

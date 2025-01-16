@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { OrderDetails, OrderStatus } from "@/types/order";
 import { getOrderDetails } from "./useOrders";
 
@@ -13,15 +13,9 @@ export const useGetOrders = ({
   status?: number;
   side?: number;
 }) => {
-  const [data, setData] = useState<OrderDetails[] | undefined>(undefined);
-  const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const fetchOrders = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      setLoading(true);
+  const query = useQuery({
+    queryKey: ["orders", page, size, status, side],
+    queryFn: async () => {
       const response = await fetch("http://localhost:8000/api/orders", {
         method: "POST",
         headers: {
@@ -34,33 +28,19 @@ export const useGetOrders = ({
           side,
         }),
       });
-      if (response.ok) {
-        const rawData = await response.json();
-        const dataArray = rawData.data.result.items;
-        const getOrderId: string[] = dataArray.map((item: any) => item.id);
-        const getBulkOrders = await getBulkOrderDetails(getOrderId);
-        setData(getBulkOrders);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    } catch (err) {
-      setError(
-        err instanceof Error ? err : new Error("An unknown error occurred")
-      );
-      console.error("Error fetching buy orders:", err);
-      throw new Error(`Error! ${err}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+      const rawData = await response.json();
+      const dataArray = rawData.data.result.items;
+      const orderIds: string[] = dataArray.map((item: any) => item.id);
+      const orderDetails = await getBulkOrderDetails(orderIds);
+      return orderDetails;
+    },
+  });
 
   return {
-    data,
-    error,
-    loading,
-    fetchOrders,
+    ...query,
   };
 };
 

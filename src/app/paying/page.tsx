@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function OrdersTable() {
-  const { data, loading, error, fetchOrders } = useGetOrders({
+  const { data, isLoading, error, refetch } = useGetOrders({
     page: 1,
     size: 30,
   });
@@ -21,7 +21,7 @@ export default function OrdersTable() {
     paymentType: string,
     paymentId: string
   ) => {
-    setIsMarkingPaid(true); // Set loading state to true
+    setIsMarkingPaid(true); // Set isLoading state to true
     setModal({ open: false, message: "", type: "" }); //Close any open modals
     setModal({ open: true, message: "Marking order as paid...", type: "info" }); // Update modal message
 
@@ -45,11 +45,11 @@ export default function OrdersTable() {
         type: "error",
       });
     } finally {
-      setIsMarkingPaid(false); // Set loading state to false
+      setIsMarkingPaid(false); // Set isLoading state to false
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="w-full flex flex-col gap-y-5 h-screen items-center text-center">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-gray-900"></div>
@@ -63,7 +63,7 @@ export default function OrdersTable() {
       <div className="w-full flex flex-col h-screen items-center text-center gap-4">
         <p className="text-red-600">Error fetching orders: {error.message}</p>
         <button
-          onClick={() => fetchOrders()}
+          onClick={() => refetch()}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
           Retry
@@ -102,7 +102,7 @@ export default function OrdersTable() {
               Total Orders: {data.length}
             </div>
             <button
-              onClick={() => fetchOrders()}
+              onClick={() => refetch()}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
               Reload
