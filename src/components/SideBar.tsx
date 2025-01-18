@@ -11,6 +11,8 @@ const navigationLinks = [
     routeKey: "/pendingpayment",
   },
   { href: "/paying", label: "Pay Orders", routeKey: "/paying" },
+  { href: "/selling", label: "Release Coins", routeKey: "/selling" },
+  { href: "/ads", label: "My Ads", routeKey: "/ads" },
 ];
 
 export const SideBar = () => {

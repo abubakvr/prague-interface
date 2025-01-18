@@ -1,9 +1,9 @@
 "use client";
+import Link from "next/link";
 import { useGetOrders } from "@/hooks/useGetBuyDetails";
 import { markPaidOrder } from "@/hooks/useOrders";
-import Link from "next/link";
 import { useState } from "react";
-
+import { toast, Toaster } from "react-hot-toast";
 export default function OrdersTable() {
   const { data, isLoading, error, refetch } = useGetOrders({
     page: 1,
@@ -21,31 +21,27 @@ export default function OrdersTable() {
     paymentType: string,
     paymentId: string
   ) => {
-    setIsMarkingPaid(true); // Set isLoading state to true
-    setModal({ open: false, message: "", type: "" }); //Close any open modals
-    setModal({ open: true, message: "Marking order as paid...", type: "info" }); // Update modal message
-
+    setIsMarkingPaid(true);
     try {
       const response = await markPaidOrder(orderId, paymentType, paymentId);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const rawData = await response.json();
-      console.log(rawData);
-      setModal({
-        open: true,
-        message: "Order marked as paid successfully!",
-        type: "success",
-      });
+      if (rawData.data.ret_msg === "SUCCESS") {
+        toast.success("Order marked as paid successfully!");
+      }
+      refetch();
     } catch (error: any) {
       console.error("Error marking order as paid:", error);
+      toast.error(`Error marking order as paid: ${error.message}`); // Use react-hot-toast
       setModal({
         open: true,
         message: `Error marking order as paid: ${error.message}`,
         type: "error",
       });
     } finally {
-      setIsMarkingPaid(false); // Set isLoading state to false
+      setIsMarkingPaid(false);
     }
   };
 
@@ -74,6 +70,7 @@ export default function OrdersTable() {
 
   return (
     <div className="">
+      <Toaster />
       {modal.open && (
         <div
           className={`fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 ${
