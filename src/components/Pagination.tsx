@@ -6,6 +6,9 @@ interface PaginationProps {
   totalPages: number;
   currentStatus: number;
   currentSide: number;
+  setCurrentPage: (page: number) => void;
+  setCurrentStatus: (status: number) => void;
+  setCurrentSide: (side: number) => void;
 }
 
 export const Pagination = ({
@@ -13,16 +16,20 @@ export const Pagination = ({
   totalPages,
   currentStatus,
   currentSide,
+  setCurrentPage,
+  setCurrentStatus,
+  setCurrentSide,
 }: PaginationProps) => {
-  const router = useRouter(); // Use useRouter
+  const router = useRouter();
 
   const handlePageChange = (page: number) => {
+    setCurrentPage(page);
     const query = {
       page: page.toString(),
       status: currentStatus.toString(),
       side: currentSide.toString(),
     };
-    router.push(`/orders?${new URLSearchParams(query).toString()}`); // Construct the URL string
+    router.push(`/orders?${new URLSearchParams(query).toString()}`);
   };
 
   return (

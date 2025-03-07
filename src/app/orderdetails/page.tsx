@@ -1,19 +1,40 @@
+"use client";
+
 import { getOrderDetails } from "@/hooks/useOrders";
 import { getStatusText } from "@/lib/helpers";
 import { OrderDetails } from "@/types/order";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: { orderId?: string };
-}) {
-  // Await the entire searchParams object
-  searchParams = await searchParams;
+export default function Page() {
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get("orderId");
+  const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const orderId = await searchParams.orderId;
+  useEffect(() => {
+    async function fetchOrderDetails() {
+      if (orderId) {
+        setLoading(true);
+        try {
+          const data = await getOrderDetails(orderId);
+          setOrderDetails(data);
+        } catch (error) {
+          console.error("Error fetching order details:", error);
+          // Handle error appropriately, maybe set an error state
+        } finally {
+          setLoading(false);
+        }
+      }
+    }
 
-  const orderDetails: OrderDetails = await getOrderDetails(orderId!);
+    fetchOrderDetails();
+  }, [orderId]);
+
+  if (loading || !orderDetails) {
+    return <div>Loading order details...</div>;
+  }
 
   return (
     <div className="container mx-auto">

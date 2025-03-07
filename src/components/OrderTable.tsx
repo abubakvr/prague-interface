@@ -1,6 +1,5 @@
 import { getStatusBadgeColor, getStatusText } from "@/lib/helpers";
-import { OrderItem, OrderStatus, OrderType } from "@/types/order";
-import { format } from "date-fns";
+import { OrderItem } from "@/types/order";
 import Link from "next/link";
 
 interface OrderTableProps {

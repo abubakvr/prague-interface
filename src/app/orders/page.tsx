@@ -1,32 +1,53 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { getOrders } from "@/hooks/useOrders";
 import { OrderTable } from "@/components/OrderTable";
 import { OrderListResponse } from "@/types/order";
 import { FilterControls } from "@/components/FilterControls";
 import { Pagination } from "@/components/Pagination";
+import { useSearchParams } from "next/navigation";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: { page?: string; status?: string; side?: string };
-}) {
-  // Await the entire searchParams object
-  searchParams = await searchParams;
-  // Convert searchParams to numbers with default values
-  const currentPage = Number(await searchParams.page) || 1;
-  const currentStatus = Number(await searchParams.status) || 50;
-  const currentSide = Number(await searchParams.side) || 0;
+export default function Page() {
+  const searchParams = useSearchParams();
+
+  // Get params from URL
+  const pageParam = searchParams.get("page");
+  const statusParam = searchParams.get("status");
+  const sideParam = searchParams.get("side");
+
+  // Set state with default values
+  const [currentPage, setCurrentPage] = useState(Number(pageParam) || 1);
+  const [currentStatus, setCurrentStatus] = useState(Number(statusParam) || 50);
+  const [currentSide, setCurrentSide] = useState(Number(sideParam) || 0);
+  const [response, setResponse] = useState<OrderListResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const pageSize = 30;
+  const totalPages = response ? Math.ceil(response.count / pageSize) : 0;
 
-  const response: OrderListResponse = await getOrders({
-    page: currentPage,
-    size: pageSize,
-    side: currentSide,
-    status: currentStatus,
-  });
+  useEffect(() => {
+    async function fetchOrders() {
+      setLoading(true);
+      try {
+        const data = await getOrders({
+          page: currentPage,
+          size: pageSize,
+          side: currentSide,
+          status: currentStatus,
+        });
+        setResponse(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  const totalPages = Math.ceil(response.count / pageSize);
+    fetchOrders();
+  }, [currentPage, currentStatus, currentSide]);
 
-  if (!response) {
+  if (loading && !response) {
     return <div>Loading...</div>;
   }
 
@@ -34,11 +55,17 @@ export default async function Page({
     <div className="w-full">
       <div className="flex justify-between items-center mb-2">
         <div className="text-sm text-gray-500">
-          Total Orders: {response.count}
+          Total Orders: {response?.count || 0}
         </div>
       </div>
 
-      <FilterControls currentStatus={currentStatus} currentSide={currentSide} />
+      <FilterControls
+        currentStatus={currentStatus}
+        currentSide={currentSide}
+        setCurrentStatus={setCurrentStatus}
+        setCurrentSide={setCurrentSide}
+        setCurrentPage={setCurrentPage}
+      />
 
       {response?.items?.length ? (
         <OrderTable orders={response.items} />
@@ -49,8 +76,11 @@ export default async function Page({
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
-        currentSide={currentPage}
+        currentSide={currentSide}
         currentStatus={currentStatus}
+        setCurrentPage={setCurrentPage}
+        setCurrentStatus={setCurrentStatus}
+        setCurrentSide={setCurrentSide}
       />
     </div>
   );

@@ -1,19 +1,40 @@
+"use client";
+
 import { getUserProfile } from "@/hooks/useOrders";
 import { UserProfile } from "@/types/user";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  // Await the entire searchParams object
-  searchParams = await searchParams;
-  // Extract userId and orderId from either params or searchParams
-  const userId = (await searchParams.userId) as string;
-  const orderId = (await searchParams.orderId) as string;
+export default function Page() {
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("userId");
+  const orderId = searchParams.get("orderId");
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const profile: UserProfile = await getUserProfile(orderId, userId);
+  useEffect(() => {
+    async function fetchUserProfile() {
+      if (userId && orderId) {
+        setLoading(true);
+        try {
+          const userProfile = await getUserProfile(orderId, userId);
+          setProfile(userProfile);
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+          // Handle error appropriately, maybe set an error state
+        } finally {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchUserProfile();
+  }, [userId, orderId]);
+
+  if (loading || !profile) {
+    return <div>Loading user profile...</div>;
+  }
 
   return (
     <div className=" max-w-4xl mx-auto">

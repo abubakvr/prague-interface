@@ -1,28 +1,49 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { getOrders } from "@/hooks/useOrders";
 import { OrderTable } from "@/components/OrderTable";
 import { OrderListResponse, OrderSide, OrderStatus } from "@/types/order";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: { page?: string };
-}) {
-  // Await the entire searchParams object
-  searchParams = await searchParams;
-  // Convert searchParams to numbers with default values
-  const currentPage = Number(await searchParams.page) || 1;
+export default function Page() {
+  const [currentPage, setCurrentPage] = useState(1);
   const currentStatus = OrderStatus.WAITING_FOR_BUY_PAY;
   const currentSide = OrderSide.BUY;
   const pageSize = 30;
 
-  const response: OrderListResponse = await getOrders({
-    page: currentPage,
-    size: pageSize,
-    side: currentSide,
-    status: currentStatus,
-  });
+  const [response, setResponse] = useState<OrderListResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchOrders() {
+      setLoading(true);
+      try {
+        const data = await getOrders({
+          page: currentPage,
+          size: pageSize,
+          side: currentSide,
+          status: currentStatus,
+        });
+        setResponse(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchOrders();
+  }, [currentPage, currentSide, currentStatus, pageSize]);
+
+  if (loading || !response) {
+    return <div>Loading...</div>;
+  }
 
   const totalPages = Math.ceil(response.count / pageSize);
+
+  const handlePageChange = (pageNum: number) => {
+    setCurrentPage(pageNum);
+  };
 
   return (
     <div className="">
@@ -36,9 +57,9 @@ export default async function Page({
 
       <div className="mt-6 flex justify-center gap-2">
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-          <a
+          <button
             key={pageNum}
-            href={`?page=${pageNum}`}
+            onClick={() => handlePageChange(pageNum)}
             className={`px-3 py-1 border rounded ${
               pageNum === currentPage
                 ? "bg-blue-500 text-white"
@@ -46,7 +67,7 @@ export default async function Page({
             }`}
           >
             {pageNum}
-          </a>
+          </button>
         ))}
       </div>
     </div>

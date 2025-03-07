@@ -1,4 +1,5 @@
-import { OrderStatus } from "@/lib/constants";
+import { BASE_URL } from "@/lib/constants";
+import { OrderStatus } from "@/types/order";
 import { OrderSide } from "@/types/order";
 import { useQuery } from "@tanstack/react-query";
 
@@ -10,9 +11,11 @@ export const useGetSellOrders = () => {
   const query = useQuery({
     queryKey: ["releaseOrders"],
     queryFn: async () => {
-      const response = await fetch("http://localhost:8000/api/orders", {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch(`${BASE_URL}/api/p2p/orders`, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -25,9 +28,8 @@ export const useGetSellOrders = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const rawData = await response.json();
-      console.log(rawData);
-      return rawData.data.result.items;
+      const data = await response.json();
+      return data.result.items;
     },
   });
 
@@ -38,9 +40,11 @@ export const useGetSellOrders = () => {
 
 export const releaseDigitalAsset = async (order_id: string) => {
   try {
-    return await fetch(`http://localhost:8000/api/orders/release`, {
+    const token = localStorage.getItem("accessToken");
+    return await fetch(`${BASE_URL}/api/p2p/orders/release`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { OrderDetails, OrderStatus } from "@/types/order";
 import { getOrderDetails } from "./useOrders";
+import { BASE_URL } from "@/lib/constants";
 
 export const useGetOrders = ({
   page,
   size,
-  status = OrderStatus.WAITING_FOR_BUY_PAY,
+  status = OrderStatus.FINISH_ORDER,
   side = 0,
 }: {
   page: number;
@@ -16,9 +17,11 @@ export const useGetOrders = ({
   const query = useQuery({
     queryKey: ["orders", page, size, status, side],
     queryFn: async () => {
-      const response = await fetch("http://localhost:8000/api/orders", {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch(`${BASE_URL}/api/p2p/orders`, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -31,8 +34,8 @@ export const useGetOrders = ({
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const rawData = await response.json();
-      const dataArray = rawData.data.result.items;
+      const data = await response.json();
+      const dataArray = data.result.items;
       const orderIds: string[] = dataArray.map((item: any) => item.id);
       const orderDetails = await getBulkOrderDetails(orderIds);
       return orderDetails;

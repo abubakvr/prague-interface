@@ -1,4 +1,4 @@
-import { OrderStatus } from "./constants";
+import { OrderStatus } from "../types/order";
 
 export const getStatusText = (status: OrderStatus) => {
   const statusMap: Record<OrderStatus, string> = {
@@ -19,12 +19,17 @@ export const getStatusText = (status: OrderStatus) => {
 };
 
 export const fetchData = async (url: string) => {
-  const response = await fetch(url);
+  const token = localStorage.getItem("accessToken");
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  const rawData = await response.json();
-  return rawData.data.result;
+  const data = await response.json();
+  return data.result;
 };
 
 /**

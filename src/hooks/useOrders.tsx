@@ -1,3 +1,6 @@
+import { BASE_URL } from "@/lib/constants";
+import { fetchData } from "@/lib/helpers";
+
 export const getOrders = async ({
   page,
   size,
@@ -10,9 +13,11 @@ export const getOrders = async ({
   side?: number;
 }) => {
   try {
-    const response = await fetch("http://localhost:8000/api/orders", {
+    const token = localStorage.getItem("accessToken");
+    const response = await fetch(`${BASE_URL}/api/p2p/orders`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -23,8 +28,10 @@ export const getOrders = async ({
       }),
     });
     if (response.ok) {
-      const rawData = await response.json();
-      return rawData.data.result;
+      const data = await response.json();
+      console.log(data);
+      console.log("token", token);
+      return data.result;
     }
   } catch (err) {
     console.error("Error fetching sell orders:", err);
@@ -34,11 +41,7 @@ export const getOrders = async ({
 
 export const getPendingOrders = async () => {
   try {
-    const response = await fetch("http://localhost:8000/orders/pending");
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    }
+    return fetchData(`${BASE_URL}/api/p2p/orders/pending`);
   } catch (err) {
     console.error("Error fetching pending orders:", err);
     throw err; // Re-throw the error
@@ -50,13 +53,9 @@ export const getUserProfile = async (
   original_uid: string
 ) => {
   try {
-    const response = await fetch(
-      `http://localhost:8000/api/orders/${order_id}/stats?original_uid=${original_uid}`
+    return fetchData(
+      `${BASE_URL}/api/p2p/orders/${order_id}/stats?original_uid=${original_uid}`
     );
-    if (response.ok) {
-      const rawData = await response.json();
-      return rawData.data.result;
-    }
   } catch (err) {
     console.error("Error fetching user profile:", err);
     throw err; // Re-throw the error
@@ -65,11 +64,7 @@ export const getUserProfile = async (
 
 export const getOrderDetails = async (id: string) => {
   try {
-    const response = await fetch(`http://localhost:8000/api/orders/${id}`);
-    if (response.ok) {
-      const rawData = await response.json();
-      return rawData.data.result;
-    }
+    return fetchData(`${BASE_URL}/api/p2p/orders/${id}`);
   } catch (err) {
     console.error("Error fetching order details:", err);
     throw err; // Re-throw the error
@@ -82,9 +77,11 @@ export const markPaidOrder = async (
   paymentId: string
 ) => {
   try {
-    return await fetch(`http://localhost:8000/api/orders/pay`, {
+    const token = localStorage.getItem("accessToken");
+    return await fetch(`${BASE_URL}/api/p2p/orders/pay`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

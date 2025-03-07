@@ -1,17 +1,23 @@
+import { BASE_URL } from "@/lib/constants";
 import { fetchData } from "@/lib/helpers";
 import { useQuery } from "@tanstack/react-query";
 
 export const useAdminDetails = () => {
   const query = useQuery({
     queryKey: ["adminDetails"],
-    queryFn: () => fetchData("http://localhost:8000/api/account"),
+    queryFn: () => fetchData(`${BASE_URL}/api/p2p/account`),
   });
 
   return { ...query, fetchData: query.refetch };
 };
 
 const fetchAdminBalance = async () => {
-  const response = await fetch(`http://localhost:3000/api/getbalance`);
+  const token = localStorage.getItem("accessToken");
+  const response = await fetch(`${BASE_URL}/api/p2p/balance`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
@@ -23,24 +29,6 @@ export const useAdminBalance = () => {
   const query = useQuery({
     queryKey: ["adminBalance"],
     queryFn: fetchAdminBalance,
-  });
-
-  return { ...query };
-};
-
-const fetchAdminPayment = async () => {
-  const response = await fetch(`http://localhost:3000/api/getbalance`);
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-  const rawData = await response.json();
-  return rawData.data.result;
-};
-
-export const useAdminPayment = () => {
-  const query = useQuery({
-    queryKey: ["adminPayment"],
-    queryFn: fetchAdminPayment,
   });
 
   return { ...query };

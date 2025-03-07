@@ -3,22 +3,34 @@
 interface FilterControlsProps {
   currentStatus: number;
   currentSide: number;
+  setCurrentStatus: (status: number) => void;
+  setCurrentSide: (side: number) => void;
+  setCurrentPage: (page: number) => void;
 }
 
 export function FilterControls({
   currentStatus,
   currentSide,
+  setCurrentStatus,
+  setCurrentSide,
+  setCurrentPage,
 }: FilterControlsProps) {
+  const handleStatusChange = (value: string) => {
+    setCurrentStatus(Number(value));
+    setCurrentPage(1); // Reset to first page when filter changes
+  };
+
+  const handleSideChange = (value: string) => {
+    setCurrentSide(Number(value));
+    setCurrentPage(1); // Reset to first page when filter changes
+  };
+
   return (
     <div className="mb-6 flex gap-4">
       <select
         className="border rounded px-3 py-2"
-        defaultValue={currentStatus}
-        onChange={(e) => {
-          const url = new URL(window.location.href);
-          url.searchParams.set("status", e.target.value);
-          window.location.href = url.toString();
-        }}
+        value={currentStatus}
+        onChange={(e) => handleStatusChange(e.target.value)}
       >
         <option value="5">Waiting for Chain</option>
         <option value="10">Waiting for Payment</option>
@@ -36,12 +48,8 @@ export function FilterControls({
 
       <select
         className="border rounded px-3 py-2"
-        defaultValue={currentSide}
-        onChange={(e) => {
-          const url = new URL(window.location.href);
-          url.searchParams.set("side", e.target.value);
-          window.location.href = url.toString();
-        }}
+        value={currentSide}
+        onChange={(e) => handleSideChange(e.target.value)}
       >
         <option value="0">Buy</option>
         <option value="1">Sell</option>
