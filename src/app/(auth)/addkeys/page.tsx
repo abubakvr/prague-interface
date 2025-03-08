@@ -18,6 +18,8 @@ const AddApiKey = () => {
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [showApiKey, setShowApiKey] = useState<boolean>(false);
+  const [showApiSecret, setShowApiSecret] = useState<boolean>(false);
   const router = useRouter();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +68,7 @@ const AddApiKey = () => {
 
       // Redirect to dashboard after a short delay
       setTimeout(() => {
-        router.push("/dashboard");
+        window.location.href = "/dashboard";
       }, 2000);
     } catch (error: any) {
       console.error("API key error:", error);
@@ -74,6 +76,14 @@ const AddApiKey = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const toggleShowApiKey = () => {
+    setShowApiKey(!showApiKey);
+  };
+
+  const toggleShowApiSecret = () => {
+    setShowApiSecret(!showApiSecret);
   };
 
   return (
@@ -98,32 +108,50 @@ const AddApiKey = () => {
             <label className="block text-gray-700 mb-2" htmlFor="api_key">
               API Key
             </label>
-            <input
-              id="api_key"
-              type="text"
-              name="api_key"
-              value={formData.api_key}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-              placeholder="Enter your API key"
-              required
-            />
+            <div className="relative">
+              <input
+                id="api_key"
+                type={showApiKey ? "text" : "password"}
+                name="api_key"
+                value={formData.api_key}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                placeholder="Enter your API key"
+                required
+              />
+              <button
+                type="button"
+                onClick={toggleShowApiKey}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-500 hover:text-gray-700"
+              >
+                {showApiKey ? "Hide" : "Show"}
+              </button>
+            </div>
           </div>
 
           <div className="mb-6">
             <label className="block text-gray-700 mb-2" htmlFor="api_secret">
               API Secret
             </label>
-            <input
-              id="api_secret"
-              type="text"
-              name="api_secret"
-              value={formData.api_secret}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-              placeholder="Enter your API secret"
-              required
-            />
+            <div className="relative">
+              <input
+                id="api_secret"
+                type={showApiSecret ? "text" : "password"}
+                name="api_secret"
+                value={formData.api_secret}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                placeholder="Enter your API secret"
+                required
+              />
+              <button
+                type="button"
+                onClick={toggleShowApiSecret}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-500 hover:text-gray-700"
+              >
+                {showApiSecret ? "Hide" : "Show"}
+              </button>
+            </div>
           </div>
 
           <button
