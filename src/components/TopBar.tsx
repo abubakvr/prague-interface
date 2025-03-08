@@ -29,14 +29,21 @@ export const TopBar = () => {
 
   const handleLogout = async () => {
     try {
-      // Call the logout API route
-      await fetch("/api/logout");
+      // Call the logout API route with the full URL
+      await fetch(`${window.location.origin}/api/logout`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       // Clear localStorage if you're also using that
       localStorage.removeItem("accessToken");
 
-      // Redirect to login page
-      router.push("/login");
+      // Redirect to login page using router.replace instead of push
+      // and use the relative path
+      router.replace("/login");
     } catch (error) {
       console.error("Logout error:", error);
     }
