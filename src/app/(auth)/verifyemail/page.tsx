@@ -137,8 +137,8 @@ const VerifyEmailContent = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
+    <div className="min-h-screen flex mt-6 md:mt-16 justify-center bg-gray-100">
+      <div className="max-w-md w-full h-fit p-6 bg-white rounded-lg shadow-lg">
         {content}
       </div>
     </div>
@@ -150,7 +150,7 @@ const VerifyEmail = () => {
     <Suspense
       fallback={
         <div className="min-h-screen flex mt-6 md:mt-16 justify-center bg-gray-100">
-          <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg text-center">
+          <div className="max-w-md w-full h-fitp-6 bg-white rounded-lg shadow-lg text-center">
             <div className="flex justify-center mb-4">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
