@@ -6,8 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 export const useGetSellOrders = () => {
   const page = 1;
   const size = 30;
-  const status = OrderStatus.FINISH_ORDER;
-  // const status = OrderStatus.WAITING_FOR_SELLER_RELEASE;
+  const status = OrderStatus.WAITING_FOR_SELLER_RELEASE;
   const side = OrderSide.SELL;
   const query = useQuery({
     queryKey: ["releaseOrders"],
