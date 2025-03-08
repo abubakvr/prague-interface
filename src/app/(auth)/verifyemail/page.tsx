@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
+import { BASE_URL } from "@/lib/constants";
 
 const VerifyEmailContent = () => {
   const searchParams = useSearchParams();
@@ -25,7 +26,7 @@ const VerifyEmailContent = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:5005/api/auth/verifyemail?token=${token}`
+          `${BASE_URL}api/auth/verifyemail?token=${token}`
         );
 
         console.log(response);

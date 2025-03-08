@@ -4,6 +4,7 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { BASE_URL } from "@/lib/constants";
 
 interface FormData {
   email: string;
@@ -39,7 +40,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5005/api/auth/login", {
+      const response = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

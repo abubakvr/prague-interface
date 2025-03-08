@@ -4,6 +4,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { BASE_URL } from "@/lib/constants";
 
 // Component that uses useSearchParams
 const EmailContent = () => {
@@ -22,12 +23,9 @@ const EmailContent = () => {
     setResendMessage("");
 
     try {
-      const response = await axios.post(
-        "http://localhost:5005/api/auth/resendemail",
-        {
-          email,
-        }
-      );
+      const response = await axios.post(`${BASE_URL}5/api/auth/resendemail`, {
+        email,
+      });
       setResendMessage(response.data.message);
     } catch (error) {
       setResendMessage(

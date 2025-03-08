@@ -3,6 +3,7 @@ import { useState, useEffect, ChangeEvent, FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
+import { BASE_URL } from "@/lib/constants";
 
 interface FormValues {
   newPassword?: string;
@@ -41,7 +42,7 @@ const ResetPasswordContent = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:5005/api/auth/validatereset?token=${token}`
+          `${BASE_URL}api/auth/validatereset?token=${token}`
         );
 
         if (response.data.valid === true) {
@@ -95,13 +96,10 @@ const ResetPasswordContent = () => {
     setMessage({ text: "", type: "" });
 
     try {
-      const response = await axios.post(
-        "http://localhost:5005/api/auth/resetpassword",
-        {
-          token,
-          newPassword: formData.newPassword,
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/api/auth/resetpassword`, {
+        token,
+        newPassword: formData.newPassword,
+      });
 
       setMessage({
         text: (response.data as { message: string }).message,

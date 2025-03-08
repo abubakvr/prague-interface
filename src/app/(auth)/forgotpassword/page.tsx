@@ -2,6 +2,7 @@
 
 import { useState, FormEvent, ChangeEvent } from "react";
 import Link from "next/link";
+import { BASE_URL } from "@/lib/constants";
 
 interface Message {
   text: string;
@@ -19,14 +20,11 @@ const ForgotPassword = () => {
     setMessage({ text: "", type: "" });
 
     try {
-      const response = await fetch(
-        "http://localhost:5005/api/auth/requestreset",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/auth/requestreset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { BASE_URL } from "./lib/constants";
 
 export default async function middleware(request: NextRequest) {
   // Get the token from cookies or localStorage (in client components)
@@ -13,7 +14,7 @@ export default async function middleware(request: NextRequest) {
   try {
     // Check if user has verified email
     const verificationResponse = await fetch(
-      "http://localhost:5005/api/auth/verify-status",
+      `${BASE_URL}/api/auth/verify-status`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -29,15 +30,12 @@ export default async function middleware(request: NextRequest) {
     }
 
     // Check if user has API keys
-    const apiKeysResponse = await fetch(
-      "http://localhost:5005/api/keys/api_keys",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const apiKeysResponse = await fetch(`${BASE_URL}/api/keys/api_keys`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     const apiKeysData = await apiKeysResponse.json();
 

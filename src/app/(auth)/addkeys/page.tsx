@@ -3,6 +3,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { BASE_URL } from "@/lib/constants";
 
 interface FormData {
   api_key: string;
@@ -42,7 +43,7 @@ const AddApiKey = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:5005/api/keys/api_keys", {
+      const response = await fetch(`${BASE_URL}/api/keys/api_keys`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
