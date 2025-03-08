@@ -3,7 +3,7 @@
 import { getUserProfile } from "@/hooks/useOrders";
 import { UserProfile } from "@/types/user";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   HiOutlineArrowLeft,
@@ -21,7 +21,7 @@ import {
   HiOutlineStatusOnline,
 } from "react-icons/hi";
 
-export default function Page() {
+function UserProfileContent() {
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
   const orderId = searchParams.get("orderId");
@@ -224,6 +224,23 @@ export default function Page() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-64">
+          <div className="flex flex-col items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600 mb-3"></div>
+            <div className="text-blue-600 font-medium">Loading...</div>
+          </div>
+        </div>
+      }
+    >
+      <UserProfileContent />
+    </Suspense>
   );
 }
 

@@ -221,7 +221,7 @@ export default function Home() {
             </div>
             <div className="flex items-center">
               <p className="font-medium text-gray-600 w-28 sm:w-32">
-                Recent Orders:
+                30-day Orders:
               </p>
               <p className="text-gray-800 font-semibold">
                 {adminDetails?.recentFinishCount || "N/A"}

@@ -4,7 +4,7 @@ import { getOrderDetails } from "@/hooks/useOrders";
 import { getStatusText } from "@/lib/helpers";
 import { OrderDetails } from "@/types/order";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   HiOutlineArrowLeft,
@@ -15,7 +15,7 @@ import {
   HiOutlineClock,
 } from "react-icons/hi";
 
-export default function Page() {
+function OrderDetailsContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
@@ -205,6 +205,23 @@ export default function Page() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-64">
+          <div className="flex flex-col items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600 mb-3"></div>
+            <div className="text-blue-600 font-medium">Loading...</div>
+          </div>
+        </div>
+      }
+    >
+      <OrderDetailsContent />
+    </Suspense>
   );
 }
 
