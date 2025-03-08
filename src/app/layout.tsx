@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 // Metadata
 export const metadata: Metadata = {
-  title: "Apex Merchant",
+  title: "Apex Trader",
   description: "Simplify your trading experience",
 };
 
@@ -30,10 +30,9 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning={true}
       >
-        <QueryClientContextProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </QueryClientContextProvider>
+        <QueryClientContextProvider>{children}</QueryClientContextProvider>
       </body>
     </html>
   );

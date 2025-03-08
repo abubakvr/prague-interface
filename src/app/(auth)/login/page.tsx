@@ -1,141 +1,222 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+interface FormData {
+  email: string;
+  password: string;
+}
+
+const Login = () => {
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (error) {
+      setError("");
+    }
+  };
 
-    // Reset error
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
     setError("");
 
-    // Validate form
-    if (!email || !password) {
-      setError("Email and password are required");
-      return;
-    }
-
     try {
-      setLoading(true);
-
       const response = await fetch("http://localhost:5005/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Login failed");
+        if (data.error === "Email not verified") {
+          router.push(
+            `/email-sent?email=${encodeURIComponent(formData.email)}`
+          );
+        } else {
+          throw new Error(data.error || "Invalid credentials");
+        }
       }
 
-      const data = await response.json();
-      localStorage.setItem("accessToken", data.token);
+      if (data.token) {
+        localStorage.setItem("accessToken", data.token);
+        // Set token in cookies instead of localStorage
+        document.cookie = `accessToken=${data.token}; path=/; max-age=86400; SameSite=Strict`;
 
-      // Redirect to dashboard or home page after successful login
-      router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.message || "Invalid email or password");
-      console.error(err);
+        setTimeout(() => {
+          // Force a refresh of the authentication state before redirecting
+          router.push("/dashboard");
+        }, 1000);
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setError(error.message || "An error occurred. Please try again.");
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Sign in to your account
-          </h2>
+    <div className="min-h-screen flex bg-gray-100">
+      <div className="flex w-full h-screen">
+        {/* Left side - Platform Info */}
+        <div className="hidden md:flex md:w-1/2 bg-blue-900 text-white flex-col p-8">
+          <div className="">
+            <div className="flex items-center space-x-1">
+              <div className="w-8 h-8 relative">
+                <Image
+                  src="/assets/logos/apex-logo@2x.png"
+                  alt="App Logo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <h1 className="text-xl font-bold text-gray-00">Apex Trader</h1>
+            </div>
+            <div className="w-full h-full mt-10 flex items-center justify-center">
+              <div className="max-w-md">
+                <h2 className="text-3xl font-bold mb-6 text-center">
+                  Welcome to Apex Trader
+                </h2>
+                <p className="text-xl mb-6 text-center">
+                  Access real-time market data, advanced trading tools, and
+                  comprehensive analytics to make informed investment decisions.
+                </p>
+                <div className="bg-blue-800 p-6 rounded-lg">
+                  <h3 className="text-xl font-semibold mb-4">
+                    Platform Features
+                  </h3>
+                  <ul className="list-disc pl-6 space-y-3">
+                    <li>Real-time market data and insights</li>
+                    <li>Advanced trading tools and indicators</li>
+                    <li>Secure and reliable platform</li>
+                    <li>24/7 customer support</li>
+                    <li>Customizable dashboards and alerts</li>
+                    <li>Mobile trading capabilities</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{error}</div>
-            </div>
-          )}
+        {/* Right side - Login Form */}
+        <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8">
+          <div className="w-full max-w-md">
+            <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+              Login to Your Account
+            </h1>
 
-          <div className="space-y-4 rounded-md shadow-sm">
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="relative block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
+            {error && (
+              <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg border border-red-200">
+                {error}
+              </div>
+            )}
 
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="relative block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label
+                  className="block text-gray-700 text-sm font-semibold mb-2"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Your email"
+                  required
+                />
+              </div>
 
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <Link
-                href="/forgot-password"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
+              <div>
+                <div className="flex justify-between mb-2">
+                  <label
+                    className="text-gray-700 text-sm font-semibold"
+                    htmlFor="password"
+                  >
+                    Password
+                  </label>
+                </div>
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Your password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 transition duration-200"
               >
-                Forgot your password?
+                {isSubmitting ? "Logging in..." : "Log In"}
+              </button>
+            </form>
+
+            <div className="mt-4 text-right">
+              <Link
+                href="/forgotpassword"
+                className="text-blue-600 text-sm hover:text-blue-800"
+              >
+                Forgot Password?
               </Link>
             </div>
-          </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative flex w-full justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-indigo-400"
-            >
-              {loading ? "Signing in..." : "Sign in"}
-            </button>
-          </div>
-
-          <div className="text-sm text-center">
-            <p>
+            <p className="mt-8 text-center text-gray-600">
               Don't have an account?{" "}
               <Link
                 href="/signup"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
+                className="text-blue-600 font-medium hover:text-blue-800"
               >
                 Sign up
               </Link>
             </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default Login;

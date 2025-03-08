@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -18,17 +19,27 @@ const navigationLinks = [
 export const SideBar = () => {
   const pathname = usePathname();
   return (
-    <nav className="fixed top-0 left-0 h-screen w-64 bg-gray-100 p-4">
-      <h2 className="font-bold text-2xl mt-3">
-        APE<span className="text-4xl">X</span>
-      </h2>
-      <ul className="space-y-2 mt-6">
+    <nav className="fixed top-0 left-0 h-screen w-64 bg-blue-900 p-4 text-white shadow-lg">
+      <div className="flex items-center space-x-1 mt-3">
+        <div className="w-8 h-8 relative">
+          <Image
+            src="/assets/logos/apex-logo@2x.png"
+            alt="App Logo"
+            fill
+            className="object-contain"
+          />
+        </div>
+        <h1 className="text-xl font-bold text-gray-00">Apex Trader</h1>
+      </div>
+      <ul className="space-y-2 mt-8">
         {navigationLinks.map((link) => (
           <li key={link.href}>
             <Link
               href={link.href}
-              className={`block p-2 rounded hover:bg-gray-300 ${
-                pathname.startsWith(link.routeKey) ? "bg-gray-200" : ""
+              className={`block p-2 rounded transition-colors duration-200 hover:bg-blue-700 ${
+                pathname.startsWith(link.routeKey)
+                  ? "bg-blue-800 border-l-4 border-blue-300"
+                  : ""
               }`}
             >
               {link.label}

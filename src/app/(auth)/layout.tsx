@@ -1,8 +1,11 @@
-import type { Metadata } from "next";
+"use client";
+
 import { Geist, Geist_Mono } from "next/font/google";
 import { QueryClientContextProvider } from "@/components/QueryProvider";
 import { AuthProvider } from "@/context/AuthContext";
 import "../globals.css";
+import Header from "@/components/Header";
+import { usePathname } from "next/navigation";
 
 // Font definitions
 const geistSans = Geist({
@@ -15,24 +18,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Metadata
-export const metadata: Metadata = {
-  title: "Apex Merchant",
-  description: "Simplify your trading experience",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const hideHeader = pathname === "/login" || pathname === "/signup";
+
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100 h-full`}
+        suppressHydrationWarning={true}
       >
         <QueryClientContextProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            {!hideHeader && <Header />}
+            {children}
+          </AuthProvider>
         </QueryClientContextProvider>
       </body>
     </html>

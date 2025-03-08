@@ -6,20 +6,12 @@ import { OrderTable } from "@/components/OrderTable";
 import { OrderListResponse } from "@/types/order";
 import { FilterControls } from "@/components/FilterControls";
 import { Pagination } from "@/components/Pagination";
-import { useSearchParams } from "next/navigation";
 
 export default function Page() {
-  const searchParams = useSearchParams();
-
-  // Get params from URL
-  const pageParam = searchParams.get("page");
-  const statusParam = searchParams.get("status");
-  const sideParam = searchParams.get("side");
-
   // Set state with default values
-  const [currentPage, setCurrentPage] = useState(Number(pageParam) || 1);
-  const [currentStatus, setCurrentStatus] = useState(Number(statusParam) || 50);
-  const [currentSide, setCurrentSide] = useState(Number(sideParam) || 0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentStatus, setCurrentStatus] = useState(50);
+  const [currentSide, setCurrentSide] = useState(0);
   const [response, setResponse] = useState<OrderListResponse | null>(null);
   const [loading, setLoading] = useState(true);
 

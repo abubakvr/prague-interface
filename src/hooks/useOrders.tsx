@@ -29,8 +29,6 @@ export const getOrders = async ({
     });
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
-      console.log("token", token);
       return data.result;
     }
   } catch (err) {
@@ -48,13 +46,10 @@ export const getPendingOrders = async () => {
   }
 };
 
-export const getUserProfile = async (
-  order_id: string,
-  original_uid: string
-) => {
+export const getUserProfile = async (orderId: string, originalUid: string) => {
   try {
     return fetchData(
-      `${BASE_URL}/api/p2p/orders/${order_id}/stats?original_uid=${original_uid}`
+      `${BASE_URL}/api/p2p/orders/stats/${originalUid}/${orderId}`
     );
   } catch (err) {
     console.error("Error fetching user profile:", err);

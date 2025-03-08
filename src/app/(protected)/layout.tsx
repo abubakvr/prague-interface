@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { SideBar } from "@/components/SideBar";
 import { TopBar } from "@/components/TopBar";
-import { useAuth } from "@/context/AuthContext";
 import "../globals.css";
 
 export default function ProtectedLayout({
@@ -12,21 +11,6 @@ export default function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isAuthenticated } = useAuth();
-  const router = useRouter();
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/login");
-    }
-  }, [isAuthenticated, router]);
-
-  // Don't render anything while redirecting
-  if (!isAuthenticated) {
-    return null;
-  }
-
   // Render the protected layout with navigation components
   return (
     <div className="flex min-h-screen">

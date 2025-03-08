@@ -28,7 +28,7 @@ export function FilterControls({
   return (
     <div className="mb-6 flex gap-4">
       <select
-        className="border rounded px-3 py-2"
+        className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2.5 text-blue-800 font-medium shadow-sm hover:border-blue-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all duration-200"
         value={currentStatus}
         onChange={(e) => handleStatusChange(e.target.value)}
       >
@@ -47,7 +47,7 @@ export function FilterControls({
       </select>
 
       <select
-        className="border rounded px-3 py-2"
+        className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2.5 text-blue-800 font-medium shadow-sm hover:border-blue-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-all duration-200"
         value={currentSide}
         onChange={(e) => handleSideChange(e.target.value)}
       >
