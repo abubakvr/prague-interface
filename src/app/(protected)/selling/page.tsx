@@ -26,7 +26,7 @@ export default function OrdersTable() {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const rawData = await response.json();
+      const data = await response.json();
       if (data.ret_msg === "SUCCESS") {
         toast.success("Asset released successfully!");
         setAssetDetails({

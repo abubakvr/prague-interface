@@ -1,0 +1,61 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main # Deploy only when changes are pushed to `main`
+
+jobs:
+  deploy:
+    name: Deploy project with Docker and Nginx
+    permissions:
+      deployments: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Create GitHub deployment
+        uses: chrnorm/deployment-action@v2
+        id: deployment
+        with:
+          token: "${{ secrets.ACCESS_TOKEN }}"
+          environment-url: ${{ vars.MY_APP }}
+          environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            cd /home/workspace/apex-server || exit 1
+            git pull origin main
+            npm install
+            npm run build
+            pm2 delete apex-trader || true
+            pm2 start npm --name apex-trader -- start --prefix /home/workspace/apex-interface
+            pm2 save
+
+      - name: Update deployment status (success)
+        if: success()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: "${{ github.token }}"
+          environment-url: ${{ vars.MY_APP }}
+          state: "success"
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - name: Update deployment status (failure)
+        if: failure()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: "${{ github.token }}"
+          environment-url: ${{ vars.MY_APP }}
+          state: "failure"
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
