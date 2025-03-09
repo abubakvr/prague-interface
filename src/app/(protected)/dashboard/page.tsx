@@ -63,7 +63,7 @@ export default function Home() {
       {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-blue-700 to-indigo-800 rounded-xl p-4 sm:p-6 shadow-lg text-white">
         <h1 className="text-xl sm:text-2xl font-bold mb-2">
-          Welcomeded back, {adminDetails?.nickName || "Trader"}!
+          Welcome back, {adminDetails?.nickName || "Trader"}!
         </h1>
         <p className="opacity-90 text-sm sm:text-base">
           Your trading dashboard is ready with the latest updates.
