@@ -14,24 +14,28 @@ export default function OrdersTable() {
     message: "",
     type: "",
   });
-  const [isMarkingPaid, setIsMarkingPaid] = useState(false);
+  const [markingPaidOrderId, setMarkingPaidOrderId] = useState<string | null>(
+    null
+  );
 
   const markOrderAsPaid = async (
     orderId: string,
     paymentType: string,
     paymentId: string
   ) => {
-    setIsMarkingPaid(true);
+    setMarkingPaidOrderId(orderId);
     try {
       const response = await markPaidOrder(orderId, paymentType, paymentId);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const rawData = await response.json();
-      if (rawData.data.ret_msg === "SUCCESS") {
+      const data = await response.json();
+      if (data.ret_msg === "SUCCESS") {
         toast.success("Order marked as paid successfully!");
+        refetch();
+      } else {
+        toast.error("An error occurred");
       }
-      refetch();
     } catch (error: any) {
       console.error("Error marking order as paid:", error);
       toast.error(`Error marking order as paid: ${error.message}`); // Use react-hot-toast
@@ -41,7 +45,7 @@ export default function OrdersTable() {
         type: "error",
       });
     } finally {
-      setIsMarkingPaid(false);
+      setMarkingPaidOrderId(null);
     }
   };
 
@@ -195,9 +199,9 @@ export default function OrdersTable() {
                           )
                         }
                         className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-md hover:shadow-green-300/50 transition-all duration-300"
-                        disabled={isMarkingPaid}
+                        disabled={markingPaidOrderId !== null}
                       >
-                        {isMarkingPaid ? (
+                        {markingPaidOrderId === order.id ? (
                           <>
                             <svg
                               className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"

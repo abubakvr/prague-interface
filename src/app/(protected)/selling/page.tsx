@@ -27,15 +27,18 @@ export default function OrdersTable() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const rawData = await response.json();
-      console.log(rawData);
-      toast.success("Asset released successfully!");
-      setAssetDetails({
-        orderId: "",
-        buyerName: "",
-        amount: "",
-      });
-      setOpenModal(false);
-      refetch();
+      if (data.ret_msg === "SUCCESS") {
+        toast.success("Asset released successfully!");
+        setAssetDetails({
+          orderId: "",
+          buyerName: "",
+          amount: "",
+        });
+        setOpenModal(false);
+        refetch();
+      } else {
+        toast.error("An error occurred");
+      }
     } catch (error: any) {
       console.error("Error marking order as paid:", error);
       toast.error(`Error marking order as paid: ${error.message}`); // Use react-hot-toast
