@@ -41,17 +41,8 @@ const page = () => {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-blue-700 to-indigo-800 rounded-xl p-4 sm:p-6 shadow-lg text-white">
-        <h1 className="text-xl sm:text-2xl font-bold mb-2">
-          Your Advertisements
-        </h1>
-        <p className="opacity-90 text-sm sm:text-base">
-          Manage your buy and sell advertisements from one place
-        </p>
-      </div>
-
       {/* Controls Section */}
       <div className="flex justify-between items-center">
         <div className="flex space-x-4 items-center">
@@ -69,7 +60,7 @@ const page = () => {
       </div>
 
       {/* Table Section */}
-      <div className="overflow-x-auto rounded-xl shadow-md bg-white/80 backdrop-blur-sm border border-blue-200">
+      <div className="mt-4 md::mt-6 overflow-x-auto rounded-xl shadow-md bg-white/80 backdrop-blur-sm border border-blue-200">
         <table className="min-w-full">
           <thead className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
             <tr>

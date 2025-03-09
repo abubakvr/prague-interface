@@ -14,6 +14,7 @@ const navigationLinks = [
   { href: "/paying", label: "Pay Orders", routeKey: "/paying" },
   { href: "/selling", label: "Release Coins", routeKey: "/selling" },
   { href: "/ads", label: "My Ads", routeKey: "/ads" },
+  { href: "/onlineads", label: "P2P Ads", routeKey: "/onlineads" },
 ];
 
 export const SideBar = () => {
