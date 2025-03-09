@@ -34,8 +34,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            cd /home/workspace/apex-server || exit 1
-            git pull origin main
+            cd /home/workspace/apex-interface || exit 1
+            git pull
             npm install
             npm run build
             pm2 delete apex-trader || true
