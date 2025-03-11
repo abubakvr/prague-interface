@@ -51,7 +51,7 @@ export default function OrdersTable() {
 
   if (isLoading) {
     return (
-      <div className="w-full flex flex-col gap-y-5 h-screen items-center text-center justify-center">
+      <div className="w-full flex flex-col gap-y-5 h-screen items-center text-center mt-16">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
         <p className="text-blue-700 font-medium">
           Fetching orders. Please wait

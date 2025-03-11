@@ -34,7 +34,7 @@ export default function Home() {
 
   if (adminDetailLoading || adminBalanceLoading) {
     return (
-      <div className="w-full flex flex-col gap-y-5 h-screen items-center text-center justify-center p-4">
+      <div className="w-full flex flex-col gap-y-5 h-screen items-center text-center  mt-16 p-4">
         <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-t-4 border-b-4 border-blue-600"></div>
         <p className="text-blue-800 font-medium">Loading dashboard data...</p>
       </div>

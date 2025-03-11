@@ -1,5 +1,7 @@
 import { BASE_URL } from "@/lib/constants";
 import { fetchData } from "@/lib/helpers";
+import { OrderSide, OrderStatus } from "@/types/order";
+import { useQuery } from "@tanstack/react-query";
 
 export const getOrders = async ({
   page,
@@ -9,9 +11,15 @@ export const getOrders = async ({
 }: {
   page: number;
   size: number;
-  status?: number;
-  side?: number;
+  status: number;
+  side: number;
 }) => {
+  console.log({
+    page,
+    size,
+    status,
+    side,
+  });
   try {
     const token = localStorage.getItem("accessToken");
     const response = await fetch(`${BASE_URL}/api/p2p/orders`, {
@@ -29,6 +37,7 @@ export const getOrders = async ({
     });
     if (response.ok) {
       const data = await response.json();
+      console.log(data.result);
       return data.result;
     }
   } catch (err) {
@@ -89,4 +98,23 @@ export const markPaidOrder = async (
     console.error("Error fetching order details:", err);
     throw err;
   }
+};
+
+export const useOrders = ({
+  page = 0,
+  size = 30,
+  status = OrderStatus.FINISH_ORDER,
+  side = OrderSide.SELL,
+}: {
+  page: number;
+  size: number;
+  side: number;
+  status: number;
+}) => {
+  const query = useQuery({
+    queryKey: ["listedAds", page, size, status, side],
+    queryFn: () => getOrders({ page, size, side, status }),
+  });
+
+  return { ...query };
 };

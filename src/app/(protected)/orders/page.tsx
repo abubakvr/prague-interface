@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getOrders } from "@/hooks/useOrders";
+import { useState } from "react";
+import { useOrders } from "@/hooks/useOrders";
 import { OrderTable } from "@/components/OrderTable";
-import { OrderListResponse } from "@/types/order";
 import { FilterControls } from "@/components/FilterControls";
 import { Pagination } from "@/components/Pagination";
 
@@ -12,36 +11,15 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentStatus, setCurrentStatus] = useState(50);
   const [currentSide, setCurrentSide] = useState(0);
-  const [response, setResponse] = useState<OrderListResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: response, isLoading } = useOrders({
+    page: currentPage,
+    size: 30,
+    side: currentSide,
+    status: currentStatus,
+  });
 
   const pageSize = 30;
   const totalPages = response ? Math.ceil(response.count / pageSize) : 0;
-
-  useEffect(() => {
-    async function fetchOrders() {
-      setLoading(true);
-      try {
-        const data = await getOrders({
-          page: currentPage,
-          size: pageSize,
-          side: currentSide,
-          status: currentStatus,
-        });
-        setResponse(data);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchOrders();
-  }, [currentPage, currentStatus, currentSide]);
-
-  if (loading && !response) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="w-full">
@@ -59,7 +37,14 @@ export default function Page() {
         setCurrentPage={setCurrentPage}
       />
 
-      {response?.items?.length ? (
+      {isLoading ? (
+        <div className="w-full flex flex-col gap-y-5 h-screen items-center text-center mt-16">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+          <p className="text-blue-700 font-medium">
+            Fetching orders. Please wait
+          </p>
+        </div>
+      ) : response?.items ? (
         <OrderTable orders={response.items} />
       ) : (
         <p className="">No order match the filter</p>
