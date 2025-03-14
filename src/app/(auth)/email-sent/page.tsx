@@ -23,7 +23,7 @@ const EmailContent = () => {
     setResendMessage("");
 
     try {
-      const response = await axios.post(`${BASE_URL}5/api/auth/resendemail`, {
+      const response = await axios.post(`${BASE_URL}/api/auth/resendemail`, {
         email,
       });
       setResendMessage(response.data.message);
