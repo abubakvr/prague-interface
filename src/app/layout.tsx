@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 // Metadata
 export const metadata: Metadata = {
-  title: "Apex Trader",
+  title: "Prague",
   description: "Simplify your trading experience",
 };
 

@@ -30,7 +30,7 @@ export const SideBar = () => {
             className="object-contain"
           />
         </div>
-        <h1 className="text-xl font-bold text-gray-00">Apex Trader</h1>
+        <h1 className="text-xl font-bold text-gray-00">Prague</h1>
       </div>
       <ul className="space-y-2 mt-8">
         {navigationLinks.map((link) => (

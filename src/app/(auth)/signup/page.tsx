@@ -134,12 +134,12 @@ const SignUpPage = () => {
                   className="object-contain"
                 />
               </div>
-              <h1 className="text-xl font-bold text-gray-00">Apex Trader</h1>
+              <h1 className="text-xl font-bold text-gray-00">Prague</h1>
             </div>
             <div className="w-full h-full mt-10 flex items-center justify-center">
               <div className="max-w-md">
                 <h2 className="text-3xl font-bold mb-6 text-center">
-                  Join Apex Trader Today
+                  Join Prague Today
                 </h2>
                 <p className="text-xl mb-6 text-center">
                   Create your account to access real-time market data, advanced

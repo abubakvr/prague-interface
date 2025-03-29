@@ -17,7 +17,7 @@ const Header: React.FC = () => {
         </div>
 
         {/* App Name */}
-        <h1 className="text-xl font-bold text-gray-800">Apex Trader</h1>
+        <h1 className="text-xl font-bold text-gray-800">Prague</h1>
       </div>
 
       {/* Contact Button */}
