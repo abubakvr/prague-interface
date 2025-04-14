@@ -4,6 +4,7 @@ import { useGetOrders } from "@/hooks/useGetBuyDetails";
 import { markPaidOrder } from "@/hooks/useOrders";
 import { useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
+
 export default function OrdersTable() {
   const { data, isLoading, error, refetch } = useGetOrders({
     page: 1,
@@ -76,6 +77,9 @@ export default function OrdersTable() {
     );
   }
 
+  // Ensure data is an array before continuing
+  const orders = Array.isArray(data) ? data : [];
+
   return (
     <div className=" rounded-xl shadow-lg">
       <Toaster />
@@ -100,12 +104,12 @@ export default function OrdersTable() {
           </div>
         </div>
       )}
-      {data && data.length > 0 ? (
+      {orders.length > 0 ? (
         <>
           <div className="flex justify-between items-center mb-4">
             <div className="flex space-x-4 items-center">
               <div className="text-sm text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
-                Total Orders: {data.length}
+                Total Orders: {orders.length}
               </div>
               <button
                 onClick={() => refetch()}
@@ -127,6 +131,28 @@ export default function OrdersTable() {
                 </svg>
                 Reload
               </button>
+              <a
+                href={`/api/export-orders?token=${localStorage.getItem(
+                  "accessToken"
+                )}`}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-blue-300/50 flex items-center gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-4 h-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75v-2.25m-9-5.25v-3m3-3.018C18.833 2.369 5.167 2.369 3 11.582"
+                  />
+                </svg>
+                Download CSV
+              </a>
             </div>
           </div>
           <div className="overflow-hidden rounded-xl shadow-md bg-white/80 backdrop-blur-sm border border-blue-200">
@@ -154,84 +180,92 @@ export default function OrdersTable() {
                 </tr>
               </thead>
               <tbody className="text-sm divide-y divide-blue-100">
-                {data.map((order) => (
-                  <tr
-                    key={order.id}
-                    className="hover:bg-blue-50 transition-colors duration-150"
-                  >
-                    <td className="px-4 py-4 whitespace-nowrap font-medium text-blue-900">
-                      {order.side === 1
-                        ? order.buyerRealName
-                        : order.sellerRealName}
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-blue-800">
-                      {order.paymentTermList[0]?.bankName || "N/A"}
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-blue-800">
-                      {order.paymentTermList[0]?.branchName || "N/A"}
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-blue-800">
-                      {order.paymentTermList[0]?.accountNo || "N/A"}
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap text-lg font-semibold text-blue-900">
-                      {parseFloat(
-                        (Number(order.quantity) * Number(order.price)).toFixed(
-                          2
-                        )
-                      ).toLocaleString("en-NG", {
-                        style: "currency",
-                        currency: "NGN",
-                      })}
-                    </td>
-                    <td className="px-4 py-4 space-x-2 whitespace-nowrap">
-                      <Link
-                        href={`/user?userId=${order.targetUserId}&orderId=${order.id}`}
-                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-md hover:shadow-blue-300/50 transition-all duration-300"
-                      >
-                        Pay
-                      </Link>
-                      <button
-                        onClick={() =>
-                          markOrderAsPaid(
-                            order.id,
-                            order.paymentTermList[0].paymentType.toString(),
-                            order.paymentTermList[0].id
-                          )
-                        }
-                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-md hover:shadow-green-300/50 transition-all duration-300"
-                        disabled={markingPaidOrderId !== null}
-                      >
-                        {markingPaidOrderId === order.id ? (
-                          <>
-                            <svg
-                              className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              ></circle>
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                              ></path>
-                            </svg>
-                            Marking...
-                          </>
-                        ) : (
-                          "Mark Paid"
-                        )}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {orders.map((order) => {
+                  // Safely access payment term data with null checks
+                  const paymentList = order.paymentTermList || [];
+                  const paymentTerm =
+                    paymentList.length > 0 ? paymentList[0] : null;
+
+                  return (
+                    <tr
+                      key={order.id}
+                      className="hover:bg-blue-50 transition-colors duration-150"
+                    >
+                      <td className="px-4 py-4 whitespace-nowrap font-medium text-blue-900">
+                        {order.side === 1
+                          ? order.buyerRealName
+                          : order.sellerRealName}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-blue-800">
+                        {paymentTerm?.bankName || "N/A"}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-blue-800">
+                        {paymentTerm?.branchName || "N/A"}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-blue-800">
+                        {paymentTerm?.accountNo || "N/A"}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-lg font-semibold text-blue-900">
+                        {parseFloat(
+                          (
+                            (Number(order.quantity) || 0) *
+                            (Number(order.price) || 0)
+                          ).toFixed(2)
+                        ).toLocaleString("en-NG", {
+                          style: "currency",
+                          currency: "NGN",
+                        })}
+                      </td>
+                      <td className="px-4 py-4 space-x-2 whitespace-nowrap">
+                        <Link
+                          href={`/user?userId=${order.targetUserId}&orderId=${order.id}`}
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-md hover:shadow-blue-300/50 transition-all duration-300"
+                        >
+                          Pay
+                        </Link>
+                        <button
+                          onClick={() =>
+                            markOrderAsPaid(
+                              order.id,
+                              paymentTerm?.paymentType?.toString() || "0",
+                              paymentTerm?.id || ""
+                            )
+                          }
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-md hover:shadow-green-300/50 transition-all duration-300"
+                          disabled={markingPaidOrderId !== null}
+                        >
+                          {markingPaidOrderId === order.id ? (
+                            <>
+                              <svg
+                                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                              >
+                                <circle
+                                  className="opacity-25"
+                                  cx="12"
+                                  cy="12"
+                                  r="10"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                ></circle>
+                                <path
+                                  className="opacity-75"
+                                  fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                ></path>
+                              </svg>
+                              Marking...
+                            </>
+                          ) : (
+                            "Mark Paid"
+                          )}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

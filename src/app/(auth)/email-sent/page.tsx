@@ -37,7 +37,7 @@ const EmailContent = () => {
   };
 
   return (
-    <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-md w-full h-fit p-6 bg-white rounded-lg shadow-lg">
       <h1 className="text-2xl font-bold text-center mb-6">Verify Your Email</h1>
 
       <div className="mb-6 text-center">

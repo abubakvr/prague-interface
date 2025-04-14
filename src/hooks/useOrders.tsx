@@ -48,7 +48,7 @@ export const getOrders = async ({
 
 export const getPendingOrders = async () => {
   try {
-    return fetchData(`${BASE_URL}/api/p2p/orders/pending`);
+    return await fetchData(`${BASE_URL}/api/p2p/orders/pending`);
   } catch (err) {
     console.error("Error fetching pending orders:", err);
     throw err; // Re-throw the error
