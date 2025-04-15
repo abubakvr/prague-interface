@@ -42,14 +42,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Login function - store token
   const login = useCallback((newToken: string) => {
-    console.log("Storing new JWT token");
     localStorage.setItem(TOKEN_KEY, newToken);
     setToken(newToken);
   }, []);
 
   // Logout function - clear token
   const logout = useCallback(() => {
-    console.log("Removing JWT token");
     localStorage.removeItem(TOKEN_KEY);
     setToken(null);
   }, []);

@@ -45,6 +45,5 @@ export const getBulkOrderDetailsBatched = async (
     }
   }
 
-  console.log(allOrderDetails);
   return allOrderDetails;
 };

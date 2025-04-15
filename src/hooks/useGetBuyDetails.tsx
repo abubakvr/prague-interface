@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { OrderDetails, OrderStatus } from "@/types/order";
 import { BASE_URL } from "@/lib/constants";
 import { fetchData } from "@/lib/helpers";
-import { matchBank } from "@/lib/matchBank";
 
 const getOrderDetails = async (id: string): Promise<OrderDetails> => {
   try {
@@ -131,52 +130,9 @@ export const getBulkOrderDetailsBatched = async (
       }
     }
 
-    allOrderDetails.forEach((order) => {
-      // Safely access payment term data with null checks
-      const paymentList = order.paymentTermList || [];
-      const paymentTerm = paymentList.length > 0 ? paymentList[0] : null;
-
-      // console.log("Bank Name", paymentTerm?.bankName);
-      // console.log("Bank Code", matchBank(paymentTerm?.bankName)?.BANK_CODE);
-      // console.log("Account Number", paymentTerm?.accountNo);
-      // console.log("Amount", order.amount);
-    });
-
     return allOrderDetails;
   } catch (err: any) {
     console.error("Error fetching bulk order details in batches:", err);
     return [];
-  }
-};
-
-// Cache results to further improve performance
-// This can be a simple in-memory cache
-const orderDetailsCache: Record<string, OrderDetails> = {};
-
-// Optional cache wrapper for getOrderDetails
-const getCachedOrderDetails = async (id: string): Promise<OrderDetails> => {
-  // Check if we have this order in cache
-  if (orderDetailsCache[id]) {
-    return orderDetailsCache[id];
-  }
-
-  // If not in cache, fetch it
-  const orderDetails = await getOrderDetails(id);
-
-  // Store in cache for future use
-  orderDetailsCache[id] = orderDetails;
-
-  return orderDetails;
-};
-
-// Clear cache when it gets too large (optional)
-const clearCacheIfNeeded = () => {
-  const cacheSize = Object.keys(orderDetailsCache).length;
-  if (cacheSize > 100) {
-    // Arbitrary limit
-    console.log("Clearing order details cache");
-    for (const key of Object.keys(orderDetailsCache)) {
-      delete orderDetailsCache[key];
-    }
   }
 };

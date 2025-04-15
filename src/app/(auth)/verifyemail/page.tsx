@@ -16,25 +16,25 @@ const VerifyEmailContent = () => {
 
   useEffect(() => {
     const verifyEmailToken = async () => {
-      console.log("Verifying token");
       if (!token) {
-        console.log("No token");
         setStatus("error");
         return;
       }
-      console.log(token, "Token");
 
       try {
         const response = await fetch(
           `${BASE_URL}/api/auth/verifyemail?token=${token}`
         );
 
-        console.log(response);
-
-        setStatus("success");
-        setTimeout(() => router.push("/login"), 5000); // Redirect to login after 5 seconds
+        if (response.ok) {
+          setStatus("success");
+          setTimeout(() => router.push("/login"), 3000); // Redirect to login after 5 seconds
+        } else {
+          console.error("Email verification failed:", response.status);
+          setStatus("error");
+        }
       } catch (error) {
-        console.log(error);
+        console.error("Email verification error:", error);
         setStatus("error");
       }
     };

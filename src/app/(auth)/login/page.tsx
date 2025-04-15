@@ -38,10 +38,7 @@ const Login = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
-    console.log({
-      email: formData.email,
-      password: formData.password,
-    });
+
     try {
       const response = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",

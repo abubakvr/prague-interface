@@ -14,12 +14,6 @@ export const getOrders = async ({
   status: number;
   side: number;
 }) => {
-  console.log({
-    page,
-    size,
-    status,
-    side,
-  });
   try {
     const token = localStorage.getItem("accessToken");
     const response = await fetch(`${BASE_URL}/api/p2p/orders`, {
@@ -37,7 +31,6 @@ export const getOrders = async ({
     });
     if (response.ok) {
       const data = await response.json();
-      console.log(data.result);
       return data.result;
     }
   } catch (err) {

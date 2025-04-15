@@ -81,7 +81,6 @@ export async function POST(req: NextRequest) {
     }
 
     const orders = await getOrdersServerSide({ token });
-    console.log(orders);
     const userPaymentData = transformOrderToPaymentData(orders);
     console.log(userPaymentData);
 
