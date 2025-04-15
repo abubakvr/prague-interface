@@ -193,7 +193,7 @@ export const useFilteredListedAds = ({
 
 // Helper constants for filtering
 export const MIN_AMOUNT_OPTIONS = [
-  0, 10000, 20000, 50000, 100000, 200000, 500000, 1000000,
+  0, 5000, 10000, 20000, 50000, 100000, 200000, 500000, 1000000,
 ];
 export const SUCCESS_RATE_OPTIONS = [
   0, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100,

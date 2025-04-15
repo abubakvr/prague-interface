@@ -136,10 +136,10 @@ export const getBulkOrderDetailsBatched = async (
       const paymentList = order.paymentTermList || [];
       const paymentTerm = paymentList.length > 0 ? paymentList[0] : null;
 
-      console.log("Bank Name", paymentTerm?.bankName);
-      console.log("Bank Code", matchBank(paymentTerm?.bankName)?.BANK_CODE);
-      console.log("Account Number", paymentTerm?.accountNo);
-      console.log("Amount", order.amount);
+      // console.log("Bank Name", paymentTerm?.bankName);
+      // console.log("Bank Code", matchBank(paymentTerm?.bankName)?.BANK_CODE);
+      // console.log("Account Number", paymentTerm?.accountNo);
+      // console.log("Amount", order.amount);
     });
 
     return allOrderDetails;

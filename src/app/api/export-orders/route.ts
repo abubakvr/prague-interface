@@ -3,7 +3,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOrdersServerSide } from "@/lib/server/getOrders";
 import { parse } from "json2csv";
-import { matchBank } from "@/lib/matchBank";
+import { findBankCode } from "@/lib/findBankCode";
 
 export async function GET(req: NextRequest) {
   try {
@@ -20,22 +20,30 @@ export async function GET(req: NextRequest) {
 
     const orders = await getOrdersServerSide({ token });
 
-    const csvData = orders.map((order) => {
-      const term = order.result.paymentTermList?.[0] || {};
-      return {
-        Account_Number: term.accountNo || "",
-        Amount: order.result.amount || "",
-        Bank_Codes: matchBank(term.bankName)?.BANK_CODE || "",
-        Narration: `Payment for goods on ${new Date().toLocaleDateString(
-          "en-US",
-          {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }
-        )}`,
-      };
-    });
+    const csvData = orders
+      .map((order) => {
+        const term = order.result.paymentTermList?.[0] || {};
+        const bankCodeInfo = findBankCode(term.bankName);
+
+        if (!bankCodeInfo) {
+          return null; // Skip this order if no matching bank code is found
+        }
+
+        return {
+          Account_Number: term.accountNo || "",
+          Amount: order.result.amount || "",
+          Bank_Codes: bankCodeInfo?.BANK_CODE || "",
+          Narration: `Payment for goods on ${new Date().toLocaleDateString(
+            "en-US",
+            {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }
+          )}`,
+        };
+      })
+      .filter(Boolean); // Remove null values (skipped orders)
 
     const csv = parse(csvData, {
       fields: ["Account_Number", "Amount", "Bank_Codes", "Narration"],

@@ -37,7 +37,6 @@ export default function ListedAdsPage() {
   });
 
   const [selectedAdId, setSelectedAdId] = useState<string | null>(null);
-  const totalItems = adsData?.data.count;
 
   const handleSideChange = (side: OrderSide) => {
     setCurrentSide(side);

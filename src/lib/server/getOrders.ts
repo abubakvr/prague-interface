@@ -1,4 +1,4 @@
-import { OrderDetails, OrderStatus } from "@/types/order";
+import { OrderStatus } from "@/types/order";
 import { BASE_URL } from "@/lib/constants";
 import { getBulkOrderDetailsBatched } from "./getBulkOrderDetailsBatched"; // move this too if needed
 
@@ -6,7 +6,7 @@ export const getOrdersServerSide = async ({
   token,
   page = 1,
   size = 30,
-  status = OrderStatus.FINISH_ORDER,
+  status = OrderStatus.WAITING_FOR_BUY_PAY,
   side = 0,
 }: {
   token: string;
@@ -45,7 +45,6 @@ export const getOrdersServerSide = async ({
     if (orderIds.length === 0) return [];
 
     const orderDetails = await getBulkOrderDetailsBatched(orderIds, token); // update to accept token
-    console.log("orderDetails");
     return orderDetails;
   } catch (error) {
     console.error("🔥 Error in getOrdersServerSide:", error);

@@ -1,9 +1,18 @@
 "use client";
 import Link from "next/link";
 import { useGetOrders } from "@/hooks/useGetBuyDetails";
-import { markPaidOrder } from "@/hooks/useOrders";
+import { markPaidOrder, payBulkOrders } from "@/hooks/useOrders";
 import { useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
+import { findBankCode } from "@/lib/findBankCode";
+
+const BANKS = [
+  "Access Bank",
+  "Guaranty Trust Bank",
+  "Zenith Bank",
+  "United Bank for Africa",
+  "First Bank of Nigeria",
+];
 
 export default function OrdersTable() {
   const { data, isLoading, error, refetch } = useGetOrders({
@@ -18,6 +27,16 @@ export default function OrdersTable() {
   const [markingPaidOrderId, setMarkingPaidOrderId] = useState<string | null>(
     null
   );
+  const [selectedBanks, setSelectedBanks] = useState<{
+    [orderId: string]: string;
+  }>({});
+
+  const handleBankSelect = (orderId: string, bankName: string) => {
+    setSelectedBanks((prevSelectedBanks) => ({
+      ...prevSelectedBanks,
+      [orderId]: bankName,
+    }));
+  };
 
   const markOrderAsPaid = async (
     orderId: string,
@@ -50,6 +69,25 @@ export default function OrdersTable() {
     }
   };
 
+  const payAllOrders = async () => {
+    try {
+      // Call the payOrders route
+      const paymentResult = await payBulkOrders();
+
+      // Handle the payment result
+      if (paymentResult) {
+        toast.success(`Payment initiated for all orders`);
+        // Optionally, you can refetch the orders to update the UI
+        refetch();
+      } else {
+        toast.error(`Payment failed for all orders`);
+      }
+    } catch (error: any) {
+      console.error("Error paying order:", error);
+      toast.error(`Error paying order: ${error.message}`);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="w-full flex flex-col gap-y-5 h-screen items-center text-center mt-16">
@@ -79,6 +117,14 @@ export default function OrdersTable() {
 
   // Ensure data is an array before continuing
   const orders = Array.isArray(data) ? data : [];
+
+  const truncateText = (text: string | undefined, maxLength: number) => {
+    if (!text) return "N/A";
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
+  };
 
   return (
     <div className=" rounded-xl shadow-lg">
@@ -154,6 +200,26 @@ export default function OrdersTable() {
                 Download CSV
               </a>
             </div>
+            <button
+              onClick={() => payAllOrders()}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-blue-300/50 flex items-center gap-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 18.75a8.25 8.25 0 0116.5 0m-16.5 0a8.25 8.25 0 0211.693 5.827m0 0l11.489-9.574M18.75 7.5a8.25 8.25 0 00-16.5 0m16.5 0a8.25 8.25 0 01-11.693 5.827m0 0l-11.489-9.574M9 9.75V15h6M3.75 21h16.5"
+                />
+              </svg>
+              Pay All
+            </button>
           </div>
           <div className="overflow-hidden rounded-xl shadow-md bg-white/80 backdrop-blur-sm border border-blue-200">
             <table className="w-full">
@@ -166,6 +232,9 @@ export default function OrdersTable() {
                     Bank Name
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    Bank Code
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Bank Branch
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
@@ -173,6 +242,9 @@ export default function OrdersTable() {
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Amount
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    Select Bank
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Actions
@@ -191,19 +263,50 @@ export default function OrdersTable() {
                       key={order.id}
                       className="hover:bg-blue-50 transition-colors duration-150"
                     >
-                      <td className="px-4 py-4 whitespace-nowrap font-medium text-blue-900">
-                        {order.side === 1
-                          ? order.buyerRealName
-                          : order.sellerRealName}
+                      <td
+                        className="px-4 py-4 whitespace-nowrap font-medium text-blue-900"
+                        title={
+                          order.side === 1
+                            ? order.buyerRealName
+                            : order.sellerRealName
+                        }
+                      >
+                        {truncateText(
+                          order.side === 1
+                            ? order.buyerRealName
+                            : order.sellerRealName,
+                          11
+                        )}
                       </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-blue-800">
-                        {paymentTerm?.bankName || "N/A"}
+                      <td
+                        className="px-4 py-4 whitespace-nowrap text-blue-800"
+                        title={paymentTerm?.bankName || "N/A"}
+                      >
+                        {truncateText(paymentTerm?.bankName, 11)}
                       </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-blue-800">
-                        {paymentTerm?.branchName || "N/A"}
+                      <td
+                        className="px-4 py-4 whitespace-nowrap text-blue-800"
+                        title={
+                          findBankCode(paymentTerm?.bankName)?.BANK_CODE ||
+                          "N/A"
+                        }
+                      >
+                        {truncateText(
+                          findBankCode(paymentTerm?.bankName)?.BANK_CODE,
+                          11
+                        )}
                       </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-blue-800">
-                        {paymentTerm?.accountNo || "N/A"}
+                      <td
+                        className="px-4 py-4 whitespace-nowrap text-blue-800"
+                        title={paymentTerm?.branchName || "N/A"}
+                      >
+                        {truncateText(paymentTerm?.branchName, 11)}
+                      </td>
+                      <td
+                        className="px-4 py-4 whitespace-nowrap text-blue-800"
+                        title={paymentTerm?.accountNo || "N/A"}
+                      >
+                        {truncateText(paymentTerm?.accountNo, 11)}
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-lg font-semibold text-blue-900">
                         {parseFloat(
@@ -215,6 +318,22 @@ export default function OrdersTable() {
                           style: "currency",
                           currency: "NGN",
                         })}
+                      </td>
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        <select
+                          value={selectedBanks[order.id] || ""}
+                          onChange={(e) =>
+                            handleBankSelect(order.id, e.target.value)
+                          }
+                          className="mt-1 block w-full rounded-md border-blue-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                        >
+                          <option value="">Select Bank</option>
+                          {BANKS.map((bank) => (
+                            <option key={bank} value={bank}>
+                              {bank}
+                            </option>
+                          ))}
+                        </select>
                       </td>
                       <td className="px-4 py-4 space-x-2 whitespace-nowrap">
                         <Link

@@ -8,18 +8,21 @@ import { BASE_URL } from "@/lib/constants";
 interface FormData {
   api_key: string;
   api_secret: string;
+  bank_api_key: string;
 }
 
 const AddApiKey = () => {
   const [formData, setFormData] = useState<FormData>({
     api_key: "",
     api_secret: "",
+    bank_api_key: "",
   });
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showApiKey, setShowApiKey] = useState<boolean>(false);
   const [showApiSecret, setShowApiSecret] = useState<boolean>(false);
+  const [showBankApiKey, setShowBankApiKey] = useState<boolean>(false);
   const router = useRouter();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +57,7 @@ const AddApiKey = () => {
         body: JSON.stringify({
           api_key: formData.api_key,
           api_secret: formData.api_secret,
+          bank_api_key: formData.bank_api_key,
         }),
       });
 
@@ -64,7 +68,7 @@ const AddApiKey = () => {
       }
 
       setSuccess("API key added successfully!");
-      setFormData({ api_key: "", api_secret: "" });
+      setFormData({ api_key: "", api_secret: "", bank_api_key: "" });
 
       // Redirect to dashboard after a short delay
       setTimeout(() => {
@@ -85,6 +89,12 @@ const AddApiKey = () => {
   const toggleShowApiSecret = () => {
     setShowApiSecret(!showApiSecret);
   };
+
+  const toggleShowBankApiKey = () => {
+    setShowBankApiKey(!showApiSecret);
+  };
+
+  setShowBankApiKey;
 
   return (
     <div className="min-h-screen flex pt-6 md:pt-16 justify-center bg-gray-100">
@@ -150,6 +160,31 @@ const AddApiKey = () => {
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-500 hover:text-gray-700"
               >
                 {showApiSecret ? "Hide" : "Show"}
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-gray-700 mb-2" htmlFor="api_secret">
+              Bank API Key
+            </label>
+            <div className="relative">
+              <input
+                id="bank_api_key"
+                type={showBankApiKey ? "text" : "password"}
+                name="bank_api_key"
+                value={formData.bank_api_key}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                placeholder="Enter your Bank API Key"
+                required
+              />
+              <button
+                type="button"
+                onClick={toggleShowBankApiKey}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-500 hover:text-gray-700"
+              >
+                {showBankApiKey ? "Hide" : "Show"}
               </button>
             </div>
           </div>
