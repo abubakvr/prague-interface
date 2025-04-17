@@ -1,6 +1,12 @@
 import { BASE_URL } from "@/lib/constants";
 import { fetchData } from "@/lib/helpers";
-import { OrderSide, OrderStatus } from "@/types/order";
+import {
+  transformOrderToPaymentData,
+  transformSingleOrderToPaymentData,
+} from "@/lib/transformOrderToPaymentsData";
+import { validatePaymentData } from "@/lib/validatePaymentInfo";
+import { OrderDetails, OrderSide, OrderStatus } from "@/types/order";
+import { IPaymentData } from "@/types/payment";
 import { useQuery } from "@tanstack/react-query";
 
 export const getOrders = async ({
@@ -90,6 +96,55 @@ export const markPaidOrder = async (
   } catch (err) {
     console.error("Error fetching order details:", err);
     throw err;
+  }
+};
+
+export const payAllOrders = async (orders: OrderDetails[]): Promise<any> => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const transformedOrders = transformOrderToPaymentData(orders);
+    const paymentDataArray = transformedOrders
+      .map((order) => (order ? validatePaymentData(order) : null))
+      .filter((result) => result && result.success)
+      .map((result) => result?.data);
+
+    return await fetch(`${BASE_URL}/api/payment/make-bulk-payment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ paymentDataArray }),
+    });
+  } catch (error: any) {
+    console.error("Payment API error:", error);
+  }
+};
+
+export const paySingleOrder = async (order: OrderDetails): Promise<any> => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const transformedOrder = transformSingleOrderToPaymentData(
+      order
+    ) as IPaymentData;
+
+    const validatedPaymentData = validatePaymentData(transformedOrder);
+
+    if (validatedPaymentData.success !== true) {
+      console.error("Payment API error:", validatedPaymentData.error);
+      throw new Error("Payment API error:");
+    }
+
+    return await fetch(`${BASE_URL}/api/payment/make-payment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ paymentData: validatedPaymentData.data }),
+    });
+  } catch (error: any) {
+    console.error("Payment API error:", error);
   }
 };
 

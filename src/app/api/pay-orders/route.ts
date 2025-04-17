@@ -3,46 +3,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOrdersServerSide } from "@/lib/server/getOrders";
 import { BASE_URL } from "@/lib/constants";
-import { findBankCode } from "@/lib/findBankCode";
-
-// Function to transform order data into payment data
-const transformOrderToPaymentData = (orders: any[]) => {
-  return orders
-    .map((order) => {
-      const term = order?.result?.paymentTermList?.[0] || {};
-      const bankCodeInfo = findBankCode(term?.bankName);
-
-      if (!bankCodeInfo) {
-        return null; // Skip this order if no matching bank code is found
-      }
-
-      return {
-        orderInfo: {
-          orderId: order?.result?.id,
-          paymentId: term?.id,
-          paymentType: `${term.paymentType}`,
-        },
-        paymentData: {
-          BeneficiaryAccount: term?.accountNo,
-          beneficiaryBankCode: bankCodeInfo?.BANK_CODE,
-          amount: Number(order?.result?.amount) * 100,
-          ClientAccountNumber: "3002466436",
-          beneficiaryName: term?.realName,
-          narration: `Payment for goods on ${new Date().toLocaleDateString(
-            "en-US",
-            {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }
-          )}`,
-          ClientFeeCharge: "10", //  hardcoded value
-          SenderName: "Abubakar Ibrahim", //  hardcoded value
-        },
-      };
-    })
-    .filter(Boolean);
-};
+import { transformOrderToPaymentData } from "@/lib/transformOrderToPaymentsData";
 
 // Function to make a bulk payment
 const makeBulkPayment = async (

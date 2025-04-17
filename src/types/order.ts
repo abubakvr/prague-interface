@@ -84,6 +84,7 @@ export interface OrderDetails {
   sellerRealName: string;
   buyerRealName: string;
   tokenId: string;
+  bankCode: string;
   currencyId: string;
   price: string;
   quantity: string;

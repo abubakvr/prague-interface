@@ -10,6 +10,7 @@ export type Bank = {
   BANK_NAME: string;
   BANK_CODE: string;
 };
+
 export const banks: Bank[] = [
   {
     BANK_NAME: "Kuda Microfinance Bank",
@@ -432,7 +433,7 @@ export const banks: Bank[] = [
     BANK_CODE: "000003",
   },
   {
-    BANK_NAME: "FCMB MFB",
+    BANK_NAME: "First City Monument Bank MFB",
     BANK_CODE: "090409",
   },
   {

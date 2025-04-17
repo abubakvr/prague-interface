@@ -71,3 +71,11 @@ export const getStatusBadgeColor = (status: OrderStatus) => {
       return "bg-gray-100 text-gray-800";
   }
 };
+
+export const truncateText = (text: string | undefined, maxLength: number) => {
+  if (!text) return "N/A";
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength) + "...";
+  }
+  return text;
+};
