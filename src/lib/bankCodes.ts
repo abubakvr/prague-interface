@@ -1317,8 +1317,8 @@ export const banks: Bank[] = [
     BANK_CODE: "090315",
   },
   {
-    BANK_NAME: "UBA MONI",
-    BANK_CODE: "000040",
+    BANK_NAME: "UBA",
+    BANK_CODE: "000004",
   },
   {
     BANK_NAME: "UBJ MFB",
