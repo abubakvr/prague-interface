@@ -69,13 +69,17 @@ export default function OrdersTable() {
             updatedOrder.paymentTermList.length === 0
           ) {
             updatedOrder.paymentTermList = [
-              { bankName: selectedBank.BANK_NAME },
+              {
+                bankName: selectedBank.BANK_NAME,
+                bankCode: selectedBank.BANK_CODE,
+              },
             ];
           } else {
             updatedOrder.paymentTermList = updatedOrder.paymentTermList.map(
               (paymentTerm: any) => ({
                 ...paymentTerm,
                 bankName: selectedBank.BANK_NAME,
+                bankCode: selectedBank.BANK_CODE,
               })
             );
           }

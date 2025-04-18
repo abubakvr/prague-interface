@@ -64,6 +64,7 @@ export const handlePaySingleOrder = async (
   setPayingOrderId: (id: string | null) => void,
   refetch: () => void
 ) => {
+  console.log(order);
   setPayingOrderId(order.id);
   try {
     const response = await paySingleOrder(order);

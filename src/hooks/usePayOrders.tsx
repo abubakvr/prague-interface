@@ -34,7 +34,7 @@ export function usePayOrders<T = PaymentResponse>(): UsePayOrdersResult<T> {
     try {
       const token = localStorage.getItem("accessToken");
       console.log("Orders Length", orders.length);
-      const transformedOrders = transformOrderToPaymentData(orders);
+      const transformedOrders = transformOrderToPaymentData(orders, "");
       const paymentDataArray = transformedOrders
         .map((order) => (order ? validatePaymentData(order) : null))
         .filter((result) => result && result.success)

@@ -1,5 +1,9 @@
 "use client";
-import { useAdminBalance, useAdminDetails } from "@/hooks/useAccount";
+import {
+  useAdminAccountNumber,
+  useAdminBalance,
+  useAdminDetails,
+} from "@/hooks/useAccount";
 import {
   HiUser,
   HiCreditCard,
@@ -26,6 +30,13 @@ export default function Home() {
     error: adminBalanceError,
     refetch: fetchAdminBalance,
   } = useAdminBalance();
+
+  const {
+    data: adminAccountNumber,
+    isLoading: adminAccountNumbeLoading,
+    error: adminAccountNumbeError,
+    refetch: fetchAccountNumbealance,
+  } = useAdminAccountNumber();
 
   const refetchPageData = () => {
     fetchAdminBalance();
@@ -155,6 +166,14 @@ export default function Home() {
                 <HiMail className="text-gray-500 mr-1 flex-shrink-0" />
                 <p className="text-gray-800 truncate">
                   {adminDetails?.email || "N/A"}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <p className="font-medium text-gray-600 w-20 sm:w-24">Acc NO:</p>
+              <div className="flex items-center overflow-hidden">
+                <p className="text-gray-800 truncate">
+                  {adminAccountNumber || "N/A"}
                 </p>
               </div>
             </div>

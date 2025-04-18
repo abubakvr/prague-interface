@@ -60,6 +60,7 @@ interface PaymentTerm {
   realName: string;
   paymentType: number;
   bankName?: string;
+  bankCode?: string;
   branchName?: string;
   accountNo?: string;
   qrcode?: string;

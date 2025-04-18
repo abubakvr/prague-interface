@@ -63,44 +63,59 @@ export default function OrdersTable() {
   }, [data]);
 
   const handleBankSelect = (orderId: string, selectedBank: Bank) => {
-    // Implementation unchanged
-    setSelectedBanks((prevSelectedBanks) => ({
-      ...prevSelectedBanks,
+    // Create updated selectedBanks object
+    const updatedSelectedBanks = {
+      ...selectedBanks,
       [orderId]: selectedBank,
-    }));
+    };
+    setSelectedBanks(updatedSelectedBanks);
 
-    setOrders((prevOrders) =>
-      prevOrders.map((order) => {
-        if (order.id === orderId) {
-          const updatedOrder = { ...order };
-          if (
-            !updatedOrder.paymentTermList ||
-            updatedOrder.paymentTermList.length === 0
-          ) {
-            updatedOrder.paymentTermList = updatedOrder.paymentTermList.map(
-              (paymentTerm) => ({
-                ...paymentTerm, // Keep all existing properties
-                bankName: selectedBank.BANK_NAME,
-              })
-            );
-          }
-          return updatedOrder;
-        }
-        return order;
-      })
-    );
+    // Create updated orders array
+    const updatedOrders = orders.map((order) => {
+      if (order.id === orderId) {
+        // Create a deep copy of the order with new bank properties
+        const updatedOrder = {
+          ...order,
+          selectedBankName: selectedBank.BANK_NAME,
+          selectedBankCode: selectedBank.BANK_CODE,
+        };
 
-    setExportableOrders((prevExportableOrders) =>
-      prevExportableOrders.map((order) => {
-        if (order.id === orderId) {
-          return {
-            ...order,
-            bankCode: selectedBank.BANK_CODE,
-          };
+        // Update payment term list if it exists
+        if (
+          updatedOrder.paymentTermList &&
+          updatedOrder.paymentTermList.length > 0
+        ) {
+          updatedOrder.paymentTermList = updatedOrder.paymentTermList.map(
+            (paymentTerm) => ({
+              ...paymentTerm,
+              bankName: selectedBank.BANK_NAME,
+              bankCode: selectedBank.BANK_CODE,
+            })
+          );
         }
-        return order;
-      })
-    );
+
+        return updatedOrder;
+      }
+      return order;
+    });
+    setOrders(updatedOrders);
+
+    // Create updated exportable orders array
+    const updatedExportableOrders = exportableOrders.map((order) => {
+      if (order.id === orderId) {
+        return {
+          ...order,
+          bankName: selectedBank.BANK_NAME,
+          bankCode: selectedBank.BANK_CODE,
+        };
+      }
+      return order;
+    });
+    setExportableOrders(updatedExportableOrders);
+
+    // You can work with the updated data right away
+    console.log("Updated orders:", updatedOrders);
+    console.log("Updated exportable orders:", updatedExportableOrders);
   };
 
   if (isLoading) {

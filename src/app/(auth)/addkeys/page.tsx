@@ -9,6 +9,7 @@ interface FormData {
   api_key: string;
   api_secret: string;
   bank_api_key: string;
+  bank_account: string;
 }
 
 const AddApiKey = () => {
@@ -16,6 +17,7 @@ const AddApiKey = () => {
     api_key: "",
     api_secret: "",
     bank_api_key: "",
+    bank_account: "",
   });
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
@@ -58,6 +60,7 @@ const AddApiKey = () => {
           api_key: formData.api_key,
           api_secret: formData.api_secret,
           bank_api_key: formData.bank_api_key,
+          bank_account: formData.bank_account,
         }),
       });
 
@@ -68,7 +71,12 @@ const AddApiKey = () => {
       }
 
       setSuccess("API key added successfully!");
-      setFormData({ api_key: "", api_secret: "", bank_api_key: "" });
+      setFormData({
+        api_key: "",
+        api_secret: "",
+        bank_api_key: "",
+        bank_account: "",
+      });
 
       // Redirect to dashboard after a short delay
       setTimeout(() => {
@@ -91,15 +99,13 @@ const AddApiKey = () => {
   };
 
   const toggleShowBankApiKey = () => {
-    setShowBankApiKey(!showApiSecret);
+    setShowBankApiKey(!showBankApiKey);
   };
-
-  setShowBankApiKey;
 
   return (
     <div className="min-h-screen flex pt-6 md:pt-16 justify-center bg-gray-100">
       <div className="max-w-md w-full h-fit p-6 bg-white rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold text-center mb-6">Add API Key</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">Add API Keys</h1>
 
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
@@ -189,12 +195,28 @@ const AddApiKey = () => {
             </div>
           </div>
 
+          <div className="mb-6">
+            <label className="block text-gray-700 mb-2" htmlFor="bank_account">
+              Bank Account Number
+            </label>
+            <input
+              id="bank_account"
+              type="text"
+              name="bank_account"
+              value={formData.bank_account}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+              placeholder="Enter your Bank Account Number"
+              required
+            />
+          </div>
+
           <button
             type="submit"
             disabled={isSubmitting}
             className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50"
           >
-            {isSubmitting ? "Adding..." : "Add API Key"}
+            {isSubmitting ? "Adding..." : "Add API Keys"}
           </button>
         </form>
 
