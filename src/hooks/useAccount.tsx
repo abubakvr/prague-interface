@@ -36,7 +36,7 @@ export const useAdminBalance = () => {
 
 export async function fetchAdminAccountNumber(): Promise<string | null> {
   const token = localStorage.getItem("accessToken");
-  const url = "http://localhost:5005/api/keys/bank_account";
+  const url = `${BASE_URL}/api/keys/bank_account`;
 
   try {
     const response = await fetch(url, {
