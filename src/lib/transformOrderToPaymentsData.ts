@@ -17,7 +17,9 @@ export const transformSingleOrderToPaymentData = (
     return; // Skip this order if no matching bank code is found
   }
 
-  const parsedAmount = Math.ceil(Number(order?.amount) * 100);
+  const amountInKobo = Math.round(Number(order?.amount) * 100);
+  const remainder = amountInKobo % 100;
+  const parsedAmount = amountInKobo + (remainder > 0 ? 100 - remainder : 0);
 
   const paymentData: IPaymentData = {
     orderInfo: {
