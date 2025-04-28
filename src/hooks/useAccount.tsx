@@ -25,10 +25,25 @@ const fetchAdminBalance = async () => {
   return data.result.balance[0];
 };
 
+const fetchAdminBankBalance = async () => {
+  const token = localStorage.getItem("accessToken");
+  const response = await fetch(`${BASE_URL}/api/payment/bank-balance`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.json();
+  return data.data.availableBalance;
+};
+
 export const useAdminBalance = () => {
   const query = useQuery({
     queryKey: ["adminBalance"],
     queryFn: fetchAdminBalance,
+    refetchInterval: 20000,
   });
 
   return { ...query };
@@ -82,6 +97,16 @@ export const useAdminAccountNumber = () => {
   const query = useQuery({
     queryKey: ["accountNumber"],
     queryFn: fetchAdminAccountNumber,
+  });
+
+  return { ...query };
+};
+
+export const useAdminBankBalance = () => {
+  const query = useQuery({
+    queryKey: ["bankbalance"],
+    queryFn: fetchAdminBankBalance,
+    refetchInterval: 20000,
   });
 
   return { ...query };

@@ -2,8 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   env: {
-    NEXT_PUBLIC_BASE_URL:
-      process.env.NEXT_PUBLIC_BASE_URL || "https://novafund.abubakar.life",
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
   },
   async redirects() {
     return [

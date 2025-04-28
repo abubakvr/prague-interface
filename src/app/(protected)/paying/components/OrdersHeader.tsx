@@ -7,6 +7,7 @@ interface OrdersHeaderProps {
   refetch: () => void;
   handlePayAllOrders: () => void;
   payAllLoading: boolean;
+  isRefetching: boolean;
 }
 
 export function OrdersHeader({
@@ -14,6 +15,7 @@ export function OrdersHeader({
   refetch,
   handlePayAllOrders,
   payAllLoading,
+  isRefetching,
 }: OrdersHeaderProps) {
   return (
     <div className="flex justify-between items-center mb-4">
@@ -52,6 +54,7 @@ export function OrdersHeader({
           <FaDownload className="w-4 h-4" />
           Download CSV
         </a>
+        <p>{isRefetching && "Refetching"}</p>
       </div>
 
       <button

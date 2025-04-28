@@ -1,5 +1,10 @@
 "use client";
-import { useAdminBalance, useAdminDetails } from "@/hooks/useAccount";
+import {
+  useAdminBalance,
+  useAdminBankBalance,
+  useAdminDetails,
+} from "@/hooks/useAccount";
+import { useGetOrders } from "@/hooks/useGetBuyDetails";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 
@@ -8,6 +13,12 @@ export const TopBar = () => {
   const router = useRouter();
   const { data: adminDetails } = useAdminDetails();
   const { data: adminBalance } = useAdminBalance();
+  const { data: adminBankBalance } = useAdminBankBalance();
+  const { data: pendingOrders } = useGetOrders({
+    page: 1,
+    size: 30,
+  });
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -60,13 +71,31 @@ export const TopBar = () => {
                 pathname.split("/")[1].slice(1)}
           </h1>
         </div>
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-3">
           <div className="text-blue-800">
-            Balance:{" "}
+            Pending Orders:{" "}
+            <span className="font-semibold">{pendingOrders?.length}</span>
+          </div>
+          <div>|</div>
+          <div className="text-blue-800">
+            Bank Banlance:{" "}
             <span className="font-semibold text-blue-900">
-              {adminBalance?.walletBalance || "0.00"} {adminBalance?.coin}
+              {new Intl.NumberFormat("en-NG", {
+                style: "currency",
+                currency: "NGN",
+                minimumFractionDigits: 0, // Adjust if kobo is needed
+                maximumFractionDigits: 2,
+              }).format(Number(adminBankBalance || 0) / 100)}
             </span>
           </div>
+          <div>|</div>
+          <div className="text-blue-800">
+            {adminBalance?.coin} Balance:{" "}
+            <span className="font-semibold text-blue-900">
+              {adminBalance?.walletBalance || "0.00"}
+            </span>
+          </div>
+          <div>|</div>
           <div
             className="flex items-center font-semibold relative"
             ref={dropdownRef}

@@ -15,6 +15,7 @@ import { findBankCode } from "@/lib/findBankCode";
 import { OrderDetails } from "@/types/order";
 import { Bank } from "@/lib/bankCodes";
 import { handlePayAllOrders } from "./components/OrderActions";
+import { useAdminBalance, useAdminBankBalance } from "@/hooks/useAccount";
 
 interface ModalState {
   open: boolean;
@@ -23,10 +24,12 @@ interface ModalState {
 }
 
 export default function OrdersTable() {
-  const { data, isLoading, error, refetch } = useGetOrders({
+  const { data, isLoading, error, isRefetching, refetch } = useGetOrders({
     page: 1,
     size: 30,
   });
+  const { refetch: refetchAdminBalance } = useAdminBalance();
+  const { refetch: refetchAdminBankBalance } = useAdminBankBalance();
 
   const [modal, setModal] = useState<ModalState>({
     open: false,
@@ -61,6 +64,12 @@ export default function OrdersTable() {
       );
     }
   }, [data]);
+
+  const refetchAllPageData = () => {
+    refetch();
+    refetchAdminBalance();
+    refetchAdminBankBalance();
+  };
 
   const handleBankSelect = (orderId: string, selectedBank: Bank) => {
     // Create updated selectedBanks object
@@ -144,9 +153,14 @@ export default function OrdersTable() {
             ordersCount={orders.length}
             refetch={refetch}
             handlePayAllOrders={() =>
-              handlePayAllOrders(exportableOrders, setPayAllLoading, refetch)
+              handlePayAllOrders(
+                exportableOrders,
+                setPayAllLoading,
+                refetchAllPageData
+              )
             }
             payAllLoading={payAllLoading}
+            isRefetching={isRefetching}
           />
 
           <OrdersTableUI

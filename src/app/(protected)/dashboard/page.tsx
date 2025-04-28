@@ -2,6 +2,7 @@
 import {
   useAdminAccountNumber,
   useAdminBalance,
+  useAdminBankBalance,
   useAdminDetails,
 } from "@/hooks/useAccount";
 import {
@@ -33,17 +34,29 @@ export default function Home() {
 
   const {
     data: adminAccountNumber,
-    isLoading: adminAccountNumbeLoading,
-    error: adminAccountNumbeError,
-    refetch: fetchAccountNumbealance,
+    isLoading: adminAccountNumberLoading,
+    refetch: fetchAccountNumber,
   } = useAdminAccountNumber();
+
+  const {
+    data: adminBankBalance,
+    isLoading: adminBankBalanceLoading,
+    refetch: fetchAdminBankBalance,
+  } = useAdminBankBalance();
 
   const refetchPageData = () => {
     fetchAdminBalance();
     fetchAdminDetails();
+    fetchAccountNumber();
+    fetchAdminBankBalance();
   };
 
-  if (adminDetailLoading || adminBalanceLoading) {
+  if (
+    adminDetailLoading ||
+    adminBalanceLoading ||
+    adminAccountNumberLoading ||
+    adminBankBalanceLoading
+  ) {
     return (
       <div className="w-full flex flex-col gap-y-5 h-screen items-center text-center  mt-16 p-4">
         <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-t-4 border-b-4 border-blue-600"></div>
@@ -86,7 +99,7 @@ export default function Home() {
         <div className="bg-gradient-to-br from-emerald-50 to-teal-100 p-4 sm:p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border border-emerald-200">
           <div className="flex justify-between items-center mb-3 sm:mb-4">
             <h2 className="text-lg sm:text-xl font-semibold text-emerald-800">
-              Balance
+              Bybit Balance
             </h2>
             <div className="p-2 sm:p-3 bg-emerald-200 rounded-full">
               <HiCurrencyDollar className="text-emerald-700 text-lg sm:text-xl" />
@@ -99,24 +112,29 @@ export default function Home() {
             </span>
           </p>
           <p className="text-emerald-700 mt-2 text-xs sm:text-sm">
-            Available for trading
+            P2P Balance
           </p>
         </div>
 
         <div className="bg-gradient-to-br from-blue-50 to-indigo-100 p-4 sm:p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border border-blue-200">
           <div className="flex justify-between items-center mb-3 sm:mb-4">
             <h2 className="text-lg sm:text-xl font-semibold text-blue-800">
-              Orders
+              Bank Balance
             </h2>
             <div className="p-2 sm:p-3 bg-blue-200 rounded-full">
-              <HiChartBar className="text-blue-700 text-lg sm:text-xl" />
+              <HiCurrencyDollar className="text-blue-700 text-lg sm:text-xl" />
             </div>
           </div>
           <p className="text-2xl sm:text-3xl font-bold text-blue-900">
-            {adminDetails?.totalFinishCount || "0"}
+            {new Intl.NumberFormat("en-NG", {
+              style: "currency",
+              currency: "NGN",
+              minimumFractionDigits: 0, // Adjust if kobo is needed
+              maximumFractionDigits: 2,
+            }).format(Number(adminBankBalance || 0) / 100)}
           </p>
           <p className="text-blue-700 mt-2 text-xs sm:text-sm">
-            Total completed orders
+            Kuda Bank Balance
           </p>
         </div>
 
