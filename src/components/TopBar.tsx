@@ -78,7 +78,7 @@ export const TopBar = () => {
           </div>
           <div>|</div>
           <div className="text-blue-800">
-            Bank Banlance:{" "}
+            Bank Balance:{" "}
             <span className="font-semibold text-blue-900">
               {new Intl.NumberFormat("en-NG", {
                 style: "currency",
