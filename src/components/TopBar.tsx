@@ -22,6 +22,24 @@ export const TopBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Effect to update document title with pending order count
+  useEffect(() => {
+    const baseTitle =
+      pathname === "/"
+        ? "Dashboard"
+        : pathname.split("/")[1].charAt(0).toUpperCase() +
+          pathname.split("/")[1].slice(1);
+
+    const orderCount = pendingOrders?.length;
+
+    if (orderCount !== undefined) {
+      document.title = `(${orderCount}) ${baseTitle}`;
+    }
+
+    // Optional: Cleanup function to reset title on unmount if desired
+    // return () => { document.title = "Admin Panel"; };
+  }, [pathname, pendingOrders]); // Dependencies: update when path or orders change
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -60,21 +78,25 @@ export const TopBar = () => {
     }
   };
 
+  // Calculate page title separately for clarity
+  const pageTitle =
+    pathname === "/"
+      ? "Dashboard"
+      : pathname.split("/")[1].charAt(0).toUpperCase() +
+        pathname.split("/")[1].slice(1);
+
   return (
     <header className="fixed top-0 right-0 left-64 bg-white border-b border-blue-100 p-4 z-10 shadow-sm">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl font-semibold text-blue-900">
-            {pathname === "/"
-              ? "Dashboard"
-              : pathname.split("/")[1].charAt(0).toUpperCase() +
-                pathname.split("/")[1].slice(1)}
-          </h1>
+          <h1 className="text-xl font-semibold text-blue-900">{pageTitle}</h1>
         </div>
         <div className="flex items-center space-x-3">
           <div className="text-blue-800">
             Pending Orders:{" "}
-            <span className="font-semibold">{pendingOrders?.length}</span>
+            <span className="font-semibold">
+              {pendingOrders?.length ?? "..."}
+            </span>
           </div>
           <div>|</div>
           <div className="text-blue-800">
