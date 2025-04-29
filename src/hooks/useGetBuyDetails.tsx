@@ -82,6 +82,7 @@ export const useGetOrders = ({
       }
     },
     refetchInterval: 30000, // Refetch every 0.5 minutes (30000 milliseconds)
+    refetchIntervalInBackground: true,
   });
 
   return query;
