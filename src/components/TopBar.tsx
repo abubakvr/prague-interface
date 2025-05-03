@@ -112,13 +112,13 @@ export const TopBar = () => {
         pathname.split("/")[1].slice(1);
 
   return (
-    <header className="fixed top-0 right-0 left-0 md:left-64 bg-white border-b border-blue-100 p-4 z-10 shadow-sm">
+    <header className="fixed top-0 right-0 left-0 lg:left-64 bg-white border-b border-blue-100 p-4 z-10 shadow-sm">
       <div className="flex justify-between items-center">
         <div className="flex items-center justify-between">
           {/* Mobile menu button */}
           <div className="flex items-center">
             <button
-              className="md:hidden mr-3 text-blue-900"
+              className="lg:hidden mr-3 text-blue-900"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               <svg
