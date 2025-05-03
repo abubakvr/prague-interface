@@ -1,7 +1,3 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { SideBar } from "@/components/SideBar";
 import { TopBar } from "@/components/TopBar";
 import "../globals.css";
