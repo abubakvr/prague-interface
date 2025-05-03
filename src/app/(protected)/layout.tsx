@@ -15,7 +15,7 @@ export default function ProtectedLayout({
   return (
     <div className="flex min-h-screen">
       <SideBar />
-      <div className="flex-1 flex flex-col ml-64">
+      <div className="flex-1 flex flex-col lg:ml-64">
         {/* Top Navigation */}
         <TopBar />
         {/* Main Content */}

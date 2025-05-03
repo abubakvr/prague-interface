@@ -20,7 +20,7 @@ const navigationLinks = [
 export const SideBar = () => {
   const pathname = usePathname();
   return (
-    <nav className="fixed top-0 left-0 h-screen w-64 bg-blue-900 p-4 text-white shadow-lg">
+    <nav className="hidden md:block fixed top-0 left-0 h-screen w-64 bg-blue-900 p-4 text-white shadow-lg">
       <div className="flex items-center space-x-1 mt-3">
         <div className="w-8 h-8 relative">
           <Image
