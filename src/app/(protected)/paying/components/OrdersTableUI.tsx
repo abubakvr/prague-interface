@@ -36,7 +36,7 @@ export function OrdersTableUI({
   };
 
   return (
-    <div className="overflow-hidden rounded-xl shadow-md lg:bg-white/80 backdrop-blur-sm border">
+    <div className="overflow-hidden rounded-xl shadow-md lg:bg-white/80 lg:backdrop-blur-sm border">
       {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
@@ -177,7 +177,7 @@ export function OrdersTableUI({
             </div>
 
             {expandedMobileOrder === order.id && (
-              <div className="p-4 border-t border-blue-100">
+              <div className="p-4 border-t border-blue-200">
                 <div className="bg-blue-50 rounded-lg p-3 mb-4">
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="flex flex-col">
