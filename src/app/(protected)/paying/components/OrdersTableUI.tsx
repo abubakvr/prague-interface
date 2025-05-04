@@ -36,7 +36,7 @@ export function OrdersTableUI({
   };
 
   return (
-    <div className="overflow-hidden rounded-xl shadow-md bg-white/80 backdrop-blur-sm border">
+    <div className="overflow-hidden rounded-xl shadow-md lg:bg-white/80 backdrop-blur-sm border">
       {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
@@ -193,7 +193,11 @@ export function OrdersTableUI({
                         Bank Code
                       </span>
                       <span className="font-medium">
-                        {selectedBanks[order.id]?.BANK_CODE || "N/A"}
+                        {selectedBanks[order.id]?.BANK_CODE ||
+                          findBankCode(
+                            order.paymentTermList?.[0]?.bankName || "Null"
+                          )?.BANK_CODE ||
+                          "N/A"}
                       </span>
                     </div>
                     <div className="flex flex-col">
