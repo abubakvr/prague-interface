@@ -193,7 +193,11 @@ export function OrdersTableUI({
                         Bank Code
                       </span>
                       <span className="font-medium">
-                        {selectedBanks[order.id]?.BANK_CODE || "N/A"}
+                        {selectedBanks[order.id]?.BANK_CODE ||
+                          findBankCode(
+                            order.paymentTermList?.[0]?.bankName || "Null"
+                          )?.BANK_CODE ||
+                          "N/A"}
                       </span>
                     </div>
                     <div className="flex flex-col">
