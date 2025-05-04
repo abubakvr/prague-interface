@@ -36,7 +36,7 @@ export function OrdersTableUI({
   };
 
   return (
-    <div className="overflow-hidden rounded-xl shadow-md bg-white/80 backdrop-blur-sm border">
+    <div className="overflow-hidden rounded-xl shadow-md lg:bg-white/80 backdrop-blur-sm border">
       {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
