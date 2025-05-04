@@ -136,7 +136,7 @@ export default function OrdersTable() {
   }
 
   return (
-    <div className="rounded-xl shadow-lg">
+    <div className="rounded-xl">
       <Toaster />
 
       {modal.open && (
