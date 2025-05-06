@@ -55,7 +55,7 @@ export function OrderRow({
     let isActive = true;
 
     async function fetchUserProfileForOrder() {
-      if (!order.userId || !order.id) {
+      if (!order.targetUserId || !order.id) {
         if (isActive) {
           setProfile(undefined); // Clear profile if essential IDs are missing
         }
@@ -69,13 +69,16 @@ export function OrderRow({
       }
 
       try {
-        const userProfileData = await getUserProfile(order.id, order.userId);
+        const userProfileData = await getUserProfile(
+          order.id,
+          order.targetUserId
+        );
         if (isActive) {
           setProfile(userProfileData);
         }
       } catch (error) {
         console.error(
-          `Error fetching user profile for order ${order.id}, user ${order.userId}:`,
+          `Error fetching user profile for order ${order.id}, user ${order.targetUserId}:`,
           error
         );
         if (isActive) {
@@ -89,7 +92,7 @@ export function OrderRow({
     return () => {
       isActive = false; // Cleanup function to prevent state updates on unmounted component or if dependencies change
     };
-  }, [order.id, order.userId]); // Depend on specific identifiers for fetching the profile
+  }, [order.id, order.targetUserId]); // Depend on specific identifiers for fetching the profile
 
   return (
     <>
