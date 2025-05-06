@@ -102,7 +102,7 @@ export function OrderRow({
           {amount}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-lg font-semibold text-blue-900">
-          {profile.averageReleaseTime}
+          {profile?.averageReleaseTime}
         </td>
         <td className="px-4 py-4 whitespace-nowrap">
           <div className="relative">
