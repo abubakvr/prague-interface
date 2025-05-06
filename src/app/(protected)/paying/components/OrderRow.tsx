@@ -2,7 +2,8 @@ import { truncateText } from "@/lib/helpers";
 import { findBankCode } from "@/lib/findBankCode";
 import { Bank, banks } from "@/lib/bankCodes";
 import { OrderDetails } from "@/types/order";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getUserProfile } from "@/hooks/useOrders";
 
 interface OrderRowProps {
   order: OrderDetails;
@@ -28,6 +29,7 @@ export function OrderRow({
   handlePaySingleOrder,
 }: OrderRowProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [profile, setProfile] = useState<any>();
 
   // Safely access payment term data with null checks
   const paymentList = order.paymentTermList || [];
@@ -42,6 +44,22 @@ export function OrderRow({
     style: "currency",
     currency: "NGN",
   });
+
+  useEffect(() => {
+    async function fetchUserProfile() {
+      if (order.userId && order.id) {
+        try {
+          const userProfile = await getUserProfile(order.id, order.userId);
+          setProfile(userProfile);
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+          // Handle error appropriately, maybe set an error state
+        }
+      }
+    }
+
+    fetchUserProfile();
+  }, [order]);
 
   return (
     <>
@@ -82,6 +100,9 @@ export function OrderRow({
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-lg font-semibold text-blue-900">
           {amount}
+        </td>
+        <td className="px-4 py-4 whitespace-nowrap text-lg font-semibold text-blue-900">
+          {profile.averageReleaseTime}
         </td>
         <td className="px-4 py-4 whitespace-nowrap">
           <div className="relative">

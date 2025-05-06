@@ -61,6 +61,9 @@ export function OrdersTableUI({
                 Amount
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                Avg. Release
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Select Bank
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
