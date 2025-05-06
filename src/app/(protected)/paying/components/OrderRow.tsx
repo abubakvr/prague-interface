@@ -5,6 +5,12 @@ import { OrderDetails } from "@/types/order";
 import { useEffect, useState } from "react";
 import { getUserProfile } from "@/hooks/useOrders";
 
+interface UserProfile {
+  averageReleaseTime?: string;
+  // Add other expected profile properties here if known
+  [key: string]: any; // Allows for other properties if profile structure is dynamic
+}
+
 interface OrderRowProps {
   order: OrderDetails;
   selectedBank: Bank | undefined;
@@ -29,7 +35,7 @@ export function OrderRow({
   handlePaySingleOrder,
 }: OrderRowProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [profile, setProfile] = useState<any>();
+  const [profile, setProfile] = useState<UserProfile | undefined>();
 
   // Safely access payment term data with null checks
   const paymentList = order.paymentTermList || [];
@@ -46,20 +52,44 @@ export function OrderRow({
   });
 
   useEffect(() => {
-    async function fetchUserProfile() {
-      if (order.userId && order.id) {
-        try {
-          const userProfile = await getUserProfile(order.id, order.userId);
-          setProfile(userProfile);
-        } catch (error) {
-          console.error("Error fetching user profile:", error);
-          // Handle error appropriately, maybe set an error state
+    let isActive = true;
+
+    async function fetchUserProfileForOrder() {
+      if (!order.userId || !order.id) {
+        if (isActive) {
+          setProfile(undefined); // Clear profile if essential IDs are missing
+        }
+        return;
+      }
+
+      // Clear previous profile data when starting a new fetch for new order details.
+      // This prevents showing stale data from a previous order while loading.
+      if (isActive) {
+        setProfile(undefined);
+      }
+
+      try {
+        const userProfileData = await getUserProfile(order.id, order.userId);
+        if (isActive) {
+          setProfile(userProfileData);
+        }
+      } catch (error) {
+        console.error(
+          `Error fetching user profile for order ${order.id}, user ${order.userId}:`,
+          error
+        );
+        if (isActive) {
+          setProfile(undefined); // Ensure profile is undefined on error
         }
       }
     }
 
-    fetchUserProfile();
-  }, [order]);
+    fetchUserProfileForOrder();
+
+    return () => {
+      isActive = false; // Cleanup function to prevent state updates on unmounted component or if dependencies change
+    };
+  }, [order.id, order.userId]); // Depend on specific identifiers for fetching the profile
 
   return (
     <>
@@ -102,18 +132,16 @@ export function OrderRow({
           {amount}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-lg font-semibold text-blue-900">
-          {profile?.averageReleaseTime}
+          {profile?.averageReleaseTime || "N/A"}
         </td>
         <td className="px-4 py-4 whitespace-nowrap">
           <div className="relative">
             <select
               value={selectedBank ? selectedBank.BANK_NAME : ""}
               onChange={(e) => {
-                const selectedBank = banks.find(
-                  (bank) => bank.BANK_NAME === e.target.value
-                );
-                if (selectedBank) {
-                  handleBankSelect(order.id, selectedBank);
+                const bank = banks.find((b) => b.BANK_NAME === e.target.value);
+                if (bank) {
+                  handleBankSelect(order.id, bank);
                 }
               }}
               className="block appearance-none w-full bg-white border border-blue-300 hover:border-blue-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -234,6 +262,9 @@ export function OrderRow({
               </div>
               <div>Code: {truncateText(bankCode || "N/A", 8)}</div>
             </div>
+            <div className="text-sm text-blue-800">
+              Avg. Release: {profile?.averageReleaseTime || "N/A"}
+            </div>
 
             <div className="flex justify-between text-sm text-blue-800">
               <div>
@@ -256,11 +287,11 @@ export function OrderRow({
                   <select
                     value={selectedBank ? selectedBank.BANK_NAME : ""}
                     onChange={(e) => {
-                      const selectedBank = banks.find(
-                        (bank) => bank.BANK_NAME === e.target.value
+                      const bank = banks.find(
+                        (b) => b.BANK_NAME === e.target.value
                       );
-                      if (selectedBank) {
-                        handleBankSelect(order.id, selectedBank);
+                      if (bank) {
+                        handleBankSelect(order.id, bank);
                       }
                     }}
                     className="block appearance-none w-full bg-white border border-blue-300 hover:border-blue-500 px-3 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline text-sm"
