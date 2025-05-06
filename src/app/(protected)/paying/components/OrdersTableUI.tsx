@@ -58,10 +58,10 @@ export function OrdersTableUI({
                 Account No
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                Amount
+                Avg. Release
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                Avg. Release
+                Amount
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Select Bank
