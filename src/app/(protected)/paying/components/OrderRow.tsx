@@ -131,11 +131,11 @@ export function OrderRow({
         >
           {truncateText(paymentTerm?.accountNo, 11)}
         </td>
-        <td className="px-4 py-4 whitespace-nowrap text-lg font-semibold text-blue-900">
-          {amount}
+        <td className="px-4 py-4 whitespace-nowrap font-semibold text-blue-900">
+          {profile?.averageReleaseTime + " mins" || "N/A"}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-lg font-semibold text-blue-900">
-          {profile?.averageReleaseTime || "N/A"}
+          {amount}
         </td>
         <td className="px-4 py-4 whitespace-nowrap">
           <div className="relative">
@@ -266,7 +266,7 @@ export function OrderRow({
               <div>Code: {truncateText(bankCode || "N/A", 8)}</div>
             </div>
             <div className="text-sm text-blue-800">
-              Avg. Release: {profile?.averageReleaseTime || "N/A"}
+              Avg. Release: {profile?.averageReleaseTime + " mins" || "N/A"}
             </div>
 
             <div className="flex justify-between text-sm text-blue-800">
