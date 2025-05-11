@@ -129,10 +129,21 @@ export function OrderRow({
           className="px-4 py-4 whitespace-nowrap text-blue-800"
           title={paymentTerm?.accountNo || "N/A"}
         >
-          {truncateText(paymentTerm?.accountNo, 11)}
+          {truncateText(
+            paymentTerm?.accountNo
+              ? paymentTerm.accountNo.trim().replace(/\s+/g, "")
+              : "N/A",
+            11
+          )}
         </td>
         <td className="px-4 py-4 whitespace-nowrap font-semibold text-blue-900">
           {profile?.averageReleaseTime + " mins" || "N/A"}
+        </td>
+        <td className="px-4 py-4 whitespace-nowrap font-semibold text-blue-900">
+          {truncateText(
+            paymentTerm?.paymentType ? String(paymentTerm.paymentType) : "N/A",
+            11
+          )}
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-lg font-semibold text-blue-900">
           {amount}

@@ -28,7 +28,7 @@ export const transformSingleOrderToPaymentData = (
       paymentId: `${term?.id}`,
     },
     paymentData: {
-      BeneficiaryAccount: (term?.accountNo || "").trim(),
+      BeneficiaryAccount: (term?.accountNo || "").trim().replace(/\s+/g, ""),
       beneficiaryBankCode: bankCodeInfo?.trim(),
       amount: `${parsedAmount}`,
       ClientAccountNumber: accountNumber,
