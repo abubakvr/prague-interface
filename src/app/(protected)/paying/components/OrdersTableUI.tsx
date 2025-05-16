@@ -218,7 +218,7 @@ export function OrdersTableUI({
                     {profiles[order.id]?.averageReleaseTime +
                       "mins" +
                       " /" +
-                      profiles[order.id]?.averageReleaseTime}
+                      profiles[order.id]?.badAppraiseCount}
                   </span>
                 </div>
               </div>
