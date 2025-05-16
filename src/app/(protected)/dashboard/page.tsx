@@ -300,10 +300,10 @@ export default function Home() {
               <p className="text-xl sm:text-2xl font-bold text-amber-700 break-words">
                 {adminDetails?.recentTradeAmount
                   ? parseFloat(adminDetails.recentTradeAmount).toLocaleString(
-                      "en-NG",
+                      "en-US",
                       {
                         style: "currency",
-                        currency: "NGN",
+                        currency: "USD",
                       }
                     )
                   : "N/A"}

@@ -242,7 +242,7 @@ export function OrderRow({
               Avg. Release: {profile?.averageReleaseTime + " mins" || "N/A"}
             </div>
             <div className="text-sm text-blue-800">
-              Avg. Bad Reviews: {profile?.badAppraiseCount || "N/A"}
+              Avg. Bad Reviews: {profile?.badAppraiseCount?.toString() || "N/A"}
             </div>
             <div className="flex justify-between text-sm text-blue-800">
               <div>
