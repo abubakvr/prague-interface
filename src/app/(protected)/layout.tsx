@@ -15,7 +15,7 @@ export default function ProtectedLayout({
         {/* Top Navigation */}
         <TopBar />
         {/* Main Content */}
-        <main className="flex-1 p-8 mt-16">{children}</main>
+        <main className="flex-1 p-4 md:p-8 mt-16">{children}</main>
       </div>
     </div>
   );
