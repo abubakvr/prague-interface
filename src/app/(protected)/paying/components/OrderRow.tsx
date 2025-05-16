@@ -7,6 +7,7 @@ import { getUserProfile } from "@/hooks/useOrders";
 
 interface UserProfile {
   averageReleaseTime?: string;
+  badAppraiseCount?: string;
   // Add other expected profile properties here if known
   [key: string]: any; // Allows for other properties if profile structure is dynamic
 }
@@ -23,6 +24,7 @@ interface OrderRowProps {
   ) => void;
   isPaying: boolean;
   handlePaySingleOrder: (order: OrderDetails) => void;
+  profile: UserProfile;
 }
 
 export function OrderRow({
@@ -33,9 +35,9 @@ export function OrderRow({
   markOrderAsPaid,
   isPaying,
   handlePaySingleOrder,
+  profile,
 }: OrderRowProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [profile, setProfile] = useState<UserProfile | undefined>();
 
   // Safely access payment term data with null checks
   const paymentList = order.paymentTermList || [];
@@ -50,49 +52,6 @@ export function OrderRow({
     style: "currency",
     currency: "NGN",
   });
-
-  useEffect(() => {
-    let isActive = true;
-
-    async function fetchUserProfileForOrder() {
-      if (!order.targetUserId || !order.id) {
-        if (isActive) {
-          setProfile(undefined); // Clear profile if essential IDs are missing
-        }
-        return;
-      }
-
-      // Clear previous profile data when starting a new fetch for new order details.
-      // This prevents showing stale data from a previous order while loading.
-      if (isActive) {
-        setProfile(undefined);
-      }
-
-      try {
-        const userProfileData = await getUserProfile(
-          order.id,
-          order.targetUserId
-        );
-        if (isActive) {
-          setProfile(userProfileData);
-        }
-      } catch (error) {
-        console.error(
-          `Error fetching user profile for order ${order.id}, user ${order.targetUserId}:`,
-          error
-        );
-        if (isActive) {
-          setProfile(undefined); // Ensure profile is undefined on error
-        }
-      }
-    }
-
-    fetchUserProfileForOrder();
-
-    return () => {
-      isActive = false; // Cleanup function to prevent state updates on unmounted component or if dependencies change
-    };
-  }, [order.id, order.targetUserId]); // Depend on specific identifiers for fetching the profile
 
   return (
     <>
@@ -138,6 +97,9 @@ export function OrderRow({
         </td>
         <td className="px-4 py-4 whitespace-nowrap font-semibold text-blue-900">
           {profile?.averageReleaseTime + " mins" || "N/A"}
+        </td>
+        <td className="px-4 py-4 whitespace-nowrap font-semibold text-blue-900">
+          {profile?.badAppraiseCount || "N/A"}
         </td>
         <td className="px-4 py-4 whitespace-nowrap font-semibold text-blue-900">
           {truncateText(
@@ -279,7 +241,9 @@ export function OrderRow({
             <div className="text-sm text-blue-800">
               Avg. Release: {profile?.averageReleaseTime + " mins" || "N/A"}
             </div>
-
+            <div className="text-sm text-blue-800">
+              Avg. Bad Reviews: {profile?.badAppraiseCount || "N/A"}
+            </div>
             <div className="flex justify-between text-sm text-blue-800">
               <div>
                 Account: {truncateText(paymentTerm?.accountNo || "N/A", 12)}

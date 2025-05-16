@@ -3,6 +3,7 @@
 import { useGetOrders } from "@/hooks/useGetBuyDetails";
 import { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
+import { Bank } from "@/lib/bankCodes";
 import {
   LoadingState,
   ErrorState,
@@ -13,7 +14,6 @@ import { OrdersHeader } from "./components/OrdersHeader";
 import { OrdersTableUI } from "./components/OrdersTableUI";
 import { findBankCode } from "@/lib/findBankCode";
 import { OrderDetails } from "@/types/order";
-import { Bank } from "@/lib/bankCodes";
 import { handlePayAllOrders } from "./components/OrderActions";
 import { useAdminBalance, useAdminBankBalance } from "@/hooks/useAccount";
 

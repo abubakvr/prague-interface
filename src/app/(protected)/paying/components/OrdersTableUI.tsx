@@ -3,8 +3,15 @@ import { OrderDetails } from "@/types/order";
 import { OrderRow } from "./OrderRow";
 import { Bank, banks } from "@/lib/bankCodes";
 import { handlePaySingleOrder, markOrderAsPaid } from "./OrderActions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { findBankCode } from "@/lib/findBankCode";
+import { getUserProfile } from "@/hooks/useOrders";
+
+interface UserProfile {
+  averageReleaseTime?: string;
+  badAppraiseCount?: string;
+  [key: string]: any;
+}
 
 interface OrdersTableUIProps {
   orders: OrderDetails[];
@@ -27,9 +34,57 @@ export function OrdersTableUI({
   setPayingOrderId,
   refetch,
 }: OrdersTableUIProps) {
+  const [profiles, setProfiles] = useState<{ [orderId: string]: UserProfile }>(
+    {}
+  );
+
   const [expandedMobileOrder, setExpandedMobileOrder] = useState<string | null>(
     null
   );
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function fetchUserProfiles() {
+      // Create a new profiles object
+      const newProfiles: { [orderId: string]: UserProfile } = {};
+
+      // Fetch profile for each order
+      const profilePromises = orders.map(async (order) => {
+        if (!order.targetUserId || !order.id) {
+          return;
+        }
+
+        try {
+          const userProfileData = await getUserProfile(
+            order.id,
+            order.targetUserId
+          );
+          if (isActive) {
+            newProfiles[order.id] = userProfileData;
+          }
+        } catch (error) {
+          console.error(
+            `Error fetching user profile for order ${order.id}, user ${order.targetUserId}:`,
+            error
+          );
+        }
+      });
+
+      // Wait for all profile fetches to complete
+      await Promise.all(profilePromises);
+
+      if (isActive) {
+        setProfiles(newProfiles);
+      }
+    }
+
+    fetchUserProfiles();
+
+    return () => {
+      isActive = false; // Cleanup function to prevent state updates on unmounted component
+    };
+  }, [orders]); // Depend on orders array to refetch when orders change
 
   const toggleMobileOrderExpand = (orderId: string) => {
     setExpandedMobileOrder(expandedMobileOrder === orderId ? null : orderId);
@@ -59,6 +114,9 @@ export function OrdersTableUI({
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Avg. Release
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                Bad Reviews
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Payment Type
@@ -99,6 +157,7 @@ export function OrdersTableUI({
                 handlePaySingleOrder={(order: OrderDetails) =>
                   handlePaySingleOrder(order, setPayingOrderId, refetch)
                 }
+                profile={profiles[order.id]}
               />
             ))}
           </tbody>
@@ -154,6 +213,13 @@ export function OrdersTableUI({
                     </svg>
                     {order.paymentTermList?.[0]?.bankName || "N/A"}
                   </span>
+                  <div className="h-4 w-px bg-blue-200"></div>
+                  <span className="flex items-center">
+                    {profiles[order.id]?.averageReleaseTime +
+                      "mins" +
+                      " /" +
+                      profiles[order.id]?.averageReleaseTime}
+                  </span>
                 </div>
               </div>
               <div className="flex items-center">
@@ -183,7 +249,7 @@ export function OrdersTableUI({
             </div>
 
             {expandedMobileOrder === order.id && (
-              <div className="p-4 border-t border-blue-200">
+              <div className="p-2 border-t border-blue-200">
                 <div className="bg-blue-50 rounded-lg p-3 mb-4">
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="flex flex-col">
@@ -220,6 +286,23 @@ export function OrdersTableUI({
                       </span>
                       <span className="font-medium">
                         {order.paymentTermList?.[0]?.accountNo || "N/A"}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-blue-500 text-xs font-medium mb-1">
+                        Avg. Release Time
+                      </span>
+                      <span className="font-medium">
+                        {profiles[order.id]?.averageReleaseTime + " mins" ||
+                          "N/A"}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-blue-500 text-xs font-medium mb-1">
+                        Bad Reviews
+                      </span>
+                      <span className="font-medium">
+                        {profiles[order.id]?.badAppraiseCount || "N/A"}
                       </span>
                     </div>
                   </div>
