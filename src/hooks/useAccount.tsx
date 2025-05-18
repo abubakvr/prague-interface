@@ -93,6 +93,50 @@ export async function fetchAdminAccountNumber(): Promise<string | null> {
   }
 }
 
+export async function fetchAdminAccountName(): Promise<string | null> {
+  const token = localStorage.getItem("accessToken");
+  const url = `${BASE_URL}/api/auth/get-username`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", // It's good practice to include this
+      },
+    });
+
+    if (response.ok) {
+      // Status code is 2xx
+      const data = await response.json();
+      // Check if the expected property exists in the response
+      if (data && typeof data.name === "string") {
+        return data.name;
+      } else {
+        console.error(
+          "API returned success status, but accountNumber is missing or not a string:",
+          data
+        );
+        return null; // Or throw an error indicating unexpected response format
+      }
+    } else if (response.status === 404) {
+      console.warn("Bank account not found (404).");
+      return null; // Return null to indicate not found
+    } else {
+      // Handle other error statuses (e.g., 500 Internal Server Error)
+      const errorBody = await response.text(); // Get error details if available
+      console.error(
+        `Failed to fetch bank account. Status: ${response.status} ${response.statusText}. Body: ${errorBody}`
+      );
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Network or other error fetching bank account:", error);
+    // Re-throw the error or return null depending on how you want to handle network issues
+    throw error; // Or return null;
+  }
+}
+
 export const useAdminAccountNumber = () => {
   const query = useQuery({
     queryKey: ["accountNumber"],
@@ -107,6 +151,15 @@ export const useAdminBankBalance = () => {
     queryKey: ["bankbalance"],
     queryFn: fetchAdminBankBalance,
     refetchInterval: 20000,
+  });
+
+  return { ...query };
+};
+
+export const useAdminAccountName = () => {
+  const query = useQuery({
+    queryKey: ["accountName"],
+    queryFn: fetchAdminAccountName,
   });
 
   return { ...query };
