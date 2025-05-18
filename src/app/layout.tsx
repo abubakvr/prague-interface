@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 // Metadata
 export const metadata: Metadata = {
-  title: "Prague",
+  title: "Boskify",
   description: "Simplify your trading experience",
 };
 

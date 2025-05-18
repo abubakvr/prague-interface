@@ -25,13 +25,13 @@ export const SideBar = () => {
       <div className="flex items-center space-x-1 mt-3">
         <div className="w-8 h-8 relative">
           <Image
-            src="/assets/logos/apex-logo@2x.png"
+            src="/assets/logos/apex-logo.svg"
             alt="App Logo"
             fill
             className="object-contain"
           />
         </div>
-        <h1 className="text-xl font-bold text-gray-00">Prague</h1>
+        <h1 className="text-xl font-bold text-gray-00">Boskify</h1>
       </div>
       <ul className="space-y-2 mt-8">
         {navigationLinks.map((link) => (

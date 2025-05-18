@@ -1,5 +1,5 @@
-import { truncateText } from "@/lib/helpers";
-import { findBankCode } from "@/lib/findBankCode";
+import { formatBankAccountNumber, truncateText } from "@/lib/helpers";
+import { findBankCode, findPaymentMethodByType } from "@/lib/findBankCode";
 import { Bank, banks } from "@/lib/bankCodes";
 import { OrderDetails } from "@/types/order";
 import { useEffect, useState } from "react";
@@ -43,7 +43,9 @@ export function OrderRow({
   const paymentList = order.paymentTermList || [];
   const paymentTerm = paymentList.length > 0 ? paymentList[0] : null;
   const bankCode =
-    selectedBank?.BANK_CODE || findBankCode(paymentTerm?.bankName)?.BANK_CODE;
+    selectedBank?.BANK_CODE ||
+    findBankCode(paymentTerm?.bankName)?.BANK_CODE ||
+    findPaymentMethodByType(paymentTerm?.paymentType)?.BANK_CODE;
 
   // Calculate amount
   const amount = parseFloat(

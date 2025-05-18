@@ -1,4 +1,4 @@
-import { banks, Bank } from "./bankCodes";
+import { banks, Bank, paymentMethods } from "./bankCodes";
 
 function findBanksStartingWith(userInput: string): Bank[] {
   const normalizedInput = normalize(userInput);
@@ -84,3 +84,10 @@ export function findBankCode(userInput: string | undefined): Bank | null {
 
   return null;
 }
+
+export const findPaymentMethodByType = (paymentType: number | undefined) => {
+  if (!paymentType) {
+    return;
+  }
+  return paymentMethods.find((method) => method.PAYMENT_TYPE === paymentType);
+};

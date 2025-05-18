@@ -83,39 +83,79 @@ const Login = () => {
     <div className="min-h-screen flex bg-gray-100">
       <div className="flex w-full h-screen">
         {/* Left side - Platform Info */}
-        <div className="hidden md:flex md:w-1/2 bg-blue-900 text-white flex-col p-8">
-          <div className="">
-            <div className="flex items-center space-x-1">
-              <div className="w-8 h-8 relative">
+        <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white flex-col p-8 relative overflow-hidden">
+          {/* Background image with overlay */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="https://images.unsplash.com/photo-1567427018141-0584cfcbf1b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80"
+              alt="Payment Processing Background"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-blue-800/90 to-indigo-900/90"></div>
+          </div>
+
+          {/* Glossy overlay effect */}
+          <div className="absolute inset-0 bg-white opacity-5 rounded-full blur-3xl transform -translate-x-1/4 -translate-y-1/4 w-3/4 h-3/4"></div>
+          <div className="absolute bottom-0 right-0 bg-blue-500 opacity-10 rounded-full blur-3xl w-96 h-96"></div>
+
+          <div className="relative z-10">
+            <div className="flex items-center space-x-2">
+              <div className="w-10 h-10 relative">
                 <Image
-                  src="/assets/logos/apex-logo@2x.png"
+                  src="/assets/logos/apex-logo.svg"
                   alt="App Logo"
                   fill
-                  className="object-contain"
+                  className="object-contain drop-shadow-lg"
                 />
               </div>
-              <h1 className="text-xl font-bold text-gray-00">Prague</h1>
+              <h1 className="text-2xl font-bold text-white tracking-tight">
+                Boskify
+              </h1>
             </div>
-            <div className="w-full h-full mt-10 flex items-center justify-center">
-              <div className="max-w-md">
-                <h2 className="text-3xl font-bold mb-6 text-center">
-                  Welcome to Prague
+
+            <div className="w-full h-full mt-6 flex items-center justify-center">
+              <div className="max-w-lg">
+                <h2 className="text-6xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-white">
+                  Streamline Your Payments
                 </h2>
-                <p className="text-xl mb-6 text-center">
-                  Access real-time market data, advanced trading tools, and
-                  comprehensive analytics to make informed investment decisions.
+                <p className="text-xl mb-8 text-center text-blue-100 leading-relaxed">
+                  Join our platform to manage orders, process payments
+                  efficiently, and track transactions in real-time with our
+                  secure payment processing system.
                 </p>
-                <div className="bg-blue-800 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold mb-4">
+
+                <div className="backdrop-blur-sm bg-white/10 p-8 rounded-2xl shadow-xl border border-white/20">
+                  <h3 className="text-2xl font-semibold mb-6 text-center bg-gradient-to-r from-blue-200 to-indigo-100 bg-clip-text text-transparent">
                     Platform Features
                   </h3>
-                  <ul className="list-disc pl-6 space-y-3">
-                    <li>Real-time market data and insights</li>
-                    <li>Advanced trading tools and indicators</li>
-                    <li>Secure and reliable platform</li>
-                    <li>24/7 customer support</li>
-                    <li>Customizable dashboards and alerts</li>
-                    <li>Mobile trading capabilities</li>
+                  <ul className="space-y-4">
+                    {[
+                      "Fast and secure payment processing",
+                      "Real-time transaction tracking",
+                      "Comprehensive order management",
+                      "Multiple bank integration",
+                      "Detailed financial reporting",
+                      "Mobile-friendly dashboard",
+                    ].map((item, index) => (
+                      <li key={index} className="flex items-center space-x-3">
+                        <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-blue-500/30">
+                          <svg
+                            className="w-4 h-4 text-blue-200"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                        <span className="text-blue-50">{item}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -126,6 +166,20 @@ const Login = () => {
         {/* Right side - Login Form */}
         <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8">
           <div className="w-full max-w-md">
+            {/* Logo and name for mobile and tablet */}
+            <div className="flex items-center justify-center space-x-2 mb-6 md:hidden">
+              <div className="w-10 h-10 relative">
+                <Image
+                  src="/assets/logos/apex-logo.svg"
+                  alt="App Logo"
+                  fill
+                  className="object-contain drop-shadow-lg"
+                />
+              </div>
+              <h1 className="text-2xl font-bold text-blue-600 tracking-tight">
+                Boskify
+              </h1>
+            </div>
             <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
               Login to Your Account
             </h1>
