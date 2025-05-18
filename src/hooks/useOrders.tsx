@@ -8,7 +8,7 @@ import { validatePaymentData } from "@/lib/validatePaymentInfo";
 import { OrderDetails, OrderSide, OrderStatus } from "@/types/order";
 import { IPaymentData } from "@/types/payment";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAdminAccountNumber } from "./useAccount";
+import { fetchAdminAccountName, fetchAdminAccountNumber } from "./useAccount";
 
 export const getOrders = async ({
   page,
@@ -104,8 +104,10 @@ export const payAllOrders = async (orders: OrderDetails[]): Promise<any> => {
   try {
     const token = localStorage.getItem("accessToken");
     const accountNumber = (await fetchAdminAccountNumber()) ?? "";
+    const accountName = (await fetchAdminAccountName()) ?? "";
     const transformedOrders = transformOrderToPaymentData(
       orders,
+      accountName,
       accountNumber
     );
     const paymentDataArray = transformedOrders
@@ -130,8 +132,10 @@ export const paySingleOrder = async (order: OrderDetails): Promise<any> => {
   try {
     const token = localStorage.getItem("accessToken");
     const accountNumber = (await fetchAdminAccountNumber()) ?? "";
+    const accountName = (await fetchAdminAccountName()) ?? "";
     const transformedOrder = transformSingleOrderToPaymentData(
       order,
+      accountName,
       accountNumber
     ) as IPaymentData;
 

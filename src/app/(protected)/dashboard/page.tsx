@@ -1,5 +1,6 @@
 "use client";
 import {
+  useAdminAccountName,
   useAdminAccountNumber,
   useAdminBalance,
   useAdminBankBalance,
@@ -39,6 +40,12 @@ export default function Home() {
   } = useAdminAccountNumber();
 
   const {
+    data: adminAccountName,
+    isLoading: adminAccountNameLoading,
+    refetch: fetchAccountName,
+  } = useAdminAccountName();
+
+  const {
     data: adminBankBalance,
     isLoading: adminBankBalanceLoading,
     refetch: fetchAdminBankBalance,
@@ -49,13 +56,15 @@ export default function Home() {
     fetchAdminDetails();
     fetchAccountNumber();
     fetchAdminBankBalance();
+    fetchAccountName();
   };
 
   if (
     adminDetailLoading ||
     adminBalanceLoading ||
     adminAccountNumberLoading ||
-    adminBankBalanceLoading
+    adminBankBalanceLoading ||
+    adminAccountNameLoading
   ) {
     return (
       <div className="w-full flex flex-col gap-y-5 h-screen items-center text-center  mt-16 p-4">
@@ -188,10 +197,20 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center">
-              <p className="font-medium text-gray-600 w-20 sm:w-24">Acc NO:</p>
+              <p className="font-medium text-gray-600 w-20 sm:w-24">Acc N0:</p>
               <div className="flex items-center overflow-hidden">
                 <p className="text-gray-800 truncate">
                   {adminAccountNumber || "N/A"}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <p className="font-medium text-gray-600 w-20 sm:w-24">
+                Acc Name:
+              </p>
+              <div className="flex items-center overflow-hidden">
+                <p className="text-gray-800 truncate">
+                  {adminAccountName || "N/A"}
                 </p>
               </div>
             </div>

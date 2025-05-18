@@ -5,6 +5,7 @@ import { formatBankAccountNumber } from "./helpers";
 
 export const transformSingleOrderToPaymentData = (
   order: OrderDetails,
+  accountName: string,
   accountNumber: string
 ): IPaymentData | undefined => {
   const term = order?.paymentTermList?.[0] || {};
@@ -45,7 +46,7 @@ export const transformSingleOrderToPaymentData = (
         }
       )}`,
       ClientFeeCharge: "0", //  hardcoded value
-      SenderName: "Abubakar Ibrahim", //  hardcoded value
+      SenderName: accountName,
     },
   };
   return paymentData;
@@ -53,9 +54,12 @@ export const transformSingleOrderToPaymentData = (
 
 export const transformOrderToPaymentData = (
   orders: OrderDetails[],
+  accountName: string,
   accountNumber: string
 ): IPaymentData[] => {
   return orders
-    .map((order) => transformSingleOrderToPaymentData(order, accountNumber))
+    .map((order) =>
+      transformSingleOrderToPaymentData(order, accountName, accountNumber)
+    )
     .filter(Boolean) as IPaymentData[];
 };

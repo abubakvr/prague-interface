@@ -1,9 +1,8 @@
-import { formatBankAccountNumber, truncateText } from "@/lib/helpers";
+import { truncateText } from "@/lib/helpers";
 import { findBankCode, findPaymentMethodByType } from "@/lib/findBankCode";
 import { Bank, banks } from "@/lib/bankCodes";
 import { OrderDetails } from "@/types/order";
-import { useEffect, useState } from "react";
-import { getUserProfile } from "@/hooks/useOrders";
+import { useState } from "react";
 
 interface UserProfile {
   averageReleaseTime?: string;
