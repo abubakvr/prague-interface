@@ -9,7 +9,7 @@ const Header: React.FC = () => {
         {/* Logo */}
         <div className="w-8 h-8 relative">
           <Image
-            src="/assets/logos/apex-logo@2x.png"
+            src="/assets/logos/apex-logo.svg"
             alt="App Logo"
             fill
             className="object-contain"
@@ -17,7 +17,7 @@ const Header: React.FC = () => {
         </div>
 
         {/* App Name */}
-        <h1 className="text-xl font-bold text-gray-800">Prague</h1>
+        <h1 className="text-xl font-bold text-gray-800">Boskify</h1>
       </div>
 
       {/* Contact Button */}

@@ -1,0 +1,38 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 436 373" width="200" height="171">
+	<title>6475227</title>
+	<defs>
+		<linearGradient id="g1" x2="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-307.269,217.483,-84.727,-119.706,522.149,181.412)">
+			<stop offset="0" stop-color="#16ecfd"/>
+			<stop offset="1" stop-color="#124ae8"/>
+		</linearGradient>
+		<linearGradient id="g2" x2="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(319.335,-223.738,75.137,107.242,-63.878,193.286)">
+			<stop offset="0" stop-color="#16ecfd"/>
+			<stop offset="1" stop-color="#124ae8"/>
+		</linearGradient>
+	</defs>
+	<style>
+		tspan { white-space:pre } 
+		.t0 { font-size: 22px;line-height: 40px;fill: #2f373e;font-weight: 400;font-family: "OpenSans", "Open Sans" } 
+		.s1 { fill: url(#g1) } 
+		.s2 { fill: url(#g2) } 
+		.t3 { font-size: 40px;line-height: 112px;fill: #2e383d;font-weight: 700;font-family: "Montserrat-Bold", "Montserrat" } 
+	</style>
+	<g id="OBJECTS">
+		<g id="&lt;Group&gt;">
+			<text id="Tagline Here
+" style="transform: matrix(2,0,0,2,218.001,551.817)" >
+				<tspan x="-62.2" y="0" class="t0">Tagline Here
+</tspan>
+			</text>
+			<g id="&lt;Group&gt;">
+				<path id="&lt;Path&gt;" class="s1" d="m230.7 167.3h-18.4l22.1-77.9h18.8q24.5 0 24.5 21.7 0 7.9-2.9 17.1c-1.6 5.8-3.5 10.9-5.6 15.4l168.3-129.1-140.6 37.5h0.1c-1.2 0-2.3-0.1-3.4-0.1h-188.2c0 0 20.4 28.6 21.3 30.6q1.5 3.2 1.5 7.8 0 5-1.7 10.4l-53 191.2q-0.4 1.3-0.8 2.5l166.3-127.6q-4 0.5-8.3 0.5z"/>
+				<path id="&lt;Path&gt;" class="s2" d="m211 209.8h10.5q25.8 0 25.8 22.5 0 8.3-2.9 18.3-6.7 23.4-17.5 32.3-10.8 9-28.7 9h-21.3l20.8-71.9-189.4 145.4 149.3-36h80.6q50.8 0 78.5-15.7 27.7-15.6 36.9-48.1 3.3-12.5 3.3-21.6 0-20-11.7-33.6-11.6-13.5-31.6-19.3 57.4-11.3 69.5-53.4 2.9-9.1 2.9-20 0-19.1-10.9-33.8z"/>
+			</g>
+			<text id="LogoName
+" style="transform: matrix(2,0,0,2,218.001,493.554)" >
+				<tspan x="-114.4" y="0" class="t3">LogoName
+</tspan>
+			</text>
+		</g>
+	</g>
+</svg>

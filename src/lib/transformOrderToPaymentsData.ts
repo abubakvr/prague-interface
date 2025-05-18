@@ -1,25 +1,28 @@
 import { IPaymentData } from "@/types/payment";
-import { findBankCode } from "./findBankCode";
+import { findBankCode, findPaymentMethodByType } from "./findBankCode";
 import { OrderDetails } from "@/types/order";
+import { formatBankAccountNumber } from "./helpers";
 
 export const transformSingleOrderToPaymentData = (
   order: OrderDetails,
   accountNumber: string
 ): IPaymentData | undefined => {
   const term = order?.paymentTermList?.[0] || {};
-  console.log(order?.bankCode);
+  const paymentTypeFromTerm = term?.paymentType;
 
+  const bankCodeEntry = findPaymentMethodByType(paymentTypeFromTerm);
   const bankCodeInfo =
-    order?.bankCode || findBankCode(term?.bankName)?.BANK_CODE;
+    order?.bankCode ||
+    findBankCode(term?.bankName)?.BANK_CODE ||
+    bankCodeEntry?.BANK_CODE;
 
   if (!bankCodeInfo) {
     console.log("skipping", term.bankName);
     return; // Skip this order if no matching bank code is found
   }
 
-  const amountInKobo = Math.round(Number(order?.amount) * 100);
-  const remainder = amountInKobo % 100;
-  const parsedAmount = amountInKobo + (remainder > 0 ? 100 - remainder : 0);
+  const amountInKobo = Math.floor(Number(order?.amount) * 100);
+  const parsedAmount = amountInKobo - (amountInKobo % 100);
 
   const paymentData: IPaymentData = {
     orderInfo: {
@@ -28,7 +31,7 @@ export const transformSingleOrderToPaymentData = (
       paymentId: `${term?.id}`,
     },
     paymentData: {
-      BeneficiaryAccount: (term?.accountNo || "").trim().replace(/\s+/g, ""),
+      BeneficiaryAccount: formatBankAccountNumber(term?.accountNo),
       beneficiaryBankCode: bankCodeInfo?.trim(),
       amount: `${parsedAmount}`,
       ClientAccountNumber: accountNumber,

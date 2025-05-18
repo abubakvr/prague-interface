@@ -79,3 +79,16 @@ export const truncateText = (text: string | undefined, maxLength: number) => {
   }
   return text;
 };
+
+export const formatBankAccountNumber = (accountNo: string = ""): string => {
+  // First remove all whitespace
+  const trimmedAccount = accountNo.trim().replace(/\s+/g, "");
+
+  // Check if it's 11 digits and starts with '0'
+  if (trimmedAccount.length === 11 && trimmedAccount.startsWith("0")) {
+    return trimmedAccount.substring(1); // Remove the leading zero
+  }
+
+  // Otherwise return as is
+  return trimmedAccount;
+};

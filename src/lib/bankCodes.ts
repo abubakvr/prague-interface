@@ -17,6 +17,26 @@ export const banks: Bank[] = [
     BANK_CODE: "090267",
   },
   {
+    BANK_NAME: "Opay Digital Services Limited",
+    BANK_CODE: "100004",
+  },
+  {
+    BANK_NAME: "Access Bank",
+    BANK_CODE: "000014",
+  },
+  {
+    BANK_NAME: "PALMPAY",
+    BANK_CODE: "100033",
+  },
+  {
+    BANK_NAME: "GTBank Plc",
+    BANK_CODE: "000013",
+  },
+  {
+    BANK_NAME: "UBA",
+    BANK_CODE: "000004",
+  },
+  {
     BANK_NAME: "78 Finance Company Limited",
     BANK_CODE: "110072",
   },
@@ -36,10 +56,7 @@ export const banks: Bank[] = [
     BANK_NAME: "ABSU MFB",
     BANK_CODE: "090640",
   },
-  {
-    BANK_NAME: "Access Bank",
-    BANK_CODE: "000014",
-  },
+
   {
     BANK_NAME: "Access Bank PLC (Diamond)",
     BANK_CODE: "000005",
@@ -540,10 +557,7 @@ export const banks: Bank[] = [
     BANK_NAME: "Grooming MFB ",
     BANK_CODE: "090195",
   },
-  {
-    BANK_NAME: "GTBank Plc",
-    BANK_CODE: "000013",
-  },
+
   {
     BANK_NAME: "Guaranty Trust Bank",
     BANK_CODE: "000013",
@@ -949,10 +963,6 @@ export const banks: Bank[] = [
     BANK_CODE: "090700",
   },
   {
-    BANK_NAME: "Opay Digital Services Limited",
-    BANK_CODE: "100004",
-  },
-  {
     BANK_NAME: "Opey Digital Services Limited",
     BANK_CODE: "100004",
   },
@@ -992,10 +1002,7 @@ export const banks: Bank[] = [
     BANK_NAME: "Paga",
     BANK_CODE: "100002",
   },
-  {
-    BANK_NAME: "PALMPAY",
-    BANK_CODE: "100033",
-  },
+
   {
     BANK_NAME: "Parallex Bank",
     BANK_CODE: "000030",
@@ -1316,10 +1323,7 @@ export const banks: Bank[] = [
     BANK_NAME: "U And C MFB",
     BANK_CODE: "090315",
   },
-  {
-    BANK_NAME: "UBA",
-    BANK_CODE: "000004",
-  },
+
   {
     BANK_NAME: "UBJ MFB",
     BANK_CODE: "090762",
@@ -1443,6 +1447,29 @@ export const banks: Bank[] = [
   {
     BANK_NAME: "Zitra MFB",
     BANK_CODE: "090718",
+  },
+];
+
+export const paymentMethods = [
+  {
+    BANK_NAME: "KUDA",
+    PAYMENT_TYPE: 500,
+    BANK_CODE: "090267",
+  },
+  {
+    BANK_NAME: "OPAY",
+    PAYMENT_TYPE: 520,
+    BANK_CODE: "100004",
+  },
+  {
+    BANK_NAME: "PALMPAY",
+    PAYMENT_TYPE: 470,
+    BANK_CODE: "100033",
+  },
+  {
+    BANK_NAME: "ACCESS BANK",
+    PAYMENT_TYPE: 530,
+    BANK_CODE: "000014",
   },
 ];
 
