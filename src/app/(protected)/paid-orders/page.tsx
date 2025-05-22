@@ -47,7 +47,7 @@ function PaidOrdersContent() {
       try {
         setLoading(true);
         const response = await fetch(
-          `${BASE_URL}/api/all-paid-orders?page=${page}&limit=${limit}`
+          `${BASE_URL}/api/payment/all-paid-orders?page=${page}&limit=${limit}`
         );
 
         // Check if response is OK before parsing JSON
