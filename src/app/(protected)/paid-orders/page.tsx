@@ -6,12 +6,12 @@ import { format } from "date-fns";
 import { BASE_URL } from "@/lib/constants";
 
 interface PaidOrder {
-  id: string;
+  id: number;
   order_id: string;
   user_id: string;
-  amount: number;
+  amount: string | number;
   seller_name: string;
-  status: string;
+  status: boolean | string;
   payment_time: string;
   updated_at: string;
   user_email: string;
@@ -50,7 +50,24 @@ function PaidOrdersContent() {
           `${BASE_URL}/api/all-paid-orders?page=${page}&limit=${limit}`
         );
 
-        const data = await response.json();
+        // Check if response is OK before parsing JSON
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(
+            `Server responded with ${response.status}: ${errorText}`
+          );
+        }
+
+        // Try to parse the JSON safely
+        let data;
+        try {
+          data = await response.json();
+        } catch (parseError) {
+          console.error("JSON parsing error:", parseError);
+          throw new Error(
+            "Failed to parse server response as JSON. The server might have returned HTML instead of JSON."
+          );
+        }
 
         if (data.success) {
           setPaidOrders(data.data);
@@ -81,11 +98,15 @@ function PaidOrdersContent() {
     }
   };
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: string | number) => {
+    // Convert string to number if needed
+    const numericAmount =
+      typeof amount === "string" ? parseFloat(amount) : amount;
+
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
-    }).format(amount);
+    }).format(numericAmount);
   };
 
   if (loading) {
@@ -152,12 +173,13 @@ function PaidOrdersContent() {
                         <td className="p-3">
                           <span
                             className={`px-2 py-1 rounded-full text-xs ${
+                              order.status === true ||
                               order.status === "completed"
                                 ? "bg-green-100 text-green-800"
                                 : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
-                            {order.status}
+                            {order.status === true ? "completed" : order.status}
                           </span>
                         </td>
                         <td className="p-3">
