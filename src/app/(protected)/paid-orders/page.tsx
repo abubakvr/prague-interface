@@ -105,14 +105,15 @@ function PaidOrdersContent() {
   };
 
   const formatCurrency = (amount: string | number) => {
-    // Convert string to number if needed
+    // Convert string to number if needed and convert from kobo to naira
     const numericAmount =
       typeof amount === "string" ? parseFloat(amount) : amount;
+    const amountInNaira = numericAmount / 100; // Convert kobo to naira
 
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("en-NG", {
       style: "currency",
-      currency: "USD",
-    }).format(numericAmount);
+      currency: "NGN",
+    }).format(amountInNaira);
   };
 
   if (loading) {
@@ -156,7 +157,6 @@ function PaidOrdersContent() {
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left p-3">Order ID</th>
                       <th className="text-left p-3">User</th>
                       <th className="text-left p-3">Amount</th>
                       <th className="text-left p-3">Seller</th>
@@ -167,12 +167,8 @@ function PaidOrdersContent() {
                   <tbody>
                     {paidOrders.map((order) => (
                       <tr key={order.id} className="border-b hover:bg-gray-50">
-                        <td className="p-3 font-medium">{order.order_id}</td>
                         <td className="p-3">
                           <div>{order.user_name}</div>
-                          <div className="text-sm text-gray-500">
-                            {order.user_email}
-                          </div>
                         </td>
                         <td className="p-3">{formatCurrency(order.amount)}</td>
                         <td className="p-3">{order.seller_name}</td>
