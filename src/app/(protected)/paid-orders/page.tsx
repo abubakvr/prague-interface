@@ -40,7 +40,7 @@ function PaidOrdersContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1");
-  const limit = parseInt(searchParams.get("limit") || "10");
+  const limit = parseInt(searchParams.get("limit") || "50");
 
   useEffect(() => {
     const fetchPaidOrders = async () => {
