@@ -47,7 +47,7 @@ function PaidOrdersContent() {
         setLoading(true);
         const token = localStorage.getItem("accessToken");
         const response = await fetch(
-          `${BASE_URL}/api/payment/allpaid-orders?page=${page}&limit=${limit}`,
+          `${BASE_URL}/api/payment/all-paid-orders?page=${page}&limit=${limit}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
