@@ -25,7 +25,6 @@ interface PaginationData {
   itemsPerPage: number;
 }
 
-// Component that uses useSearchParams
 function PaidOrdersContent() {
   const [paidOrders, setPaidOrders] = useState<PaidOrder[]>([]);
   const [pagination, setPagination] = useState<PaginationData>({
@@ -48,7 +47,7 @@ function PaidOrdersContent() {
         setLoading(true);
         const token = localStorage.getItem("accessToken");
         const response = await fetch(
-          `${BASE_URL}/api/payment/paid-orders?page=${page}&limit=${limit}`,
+          `${BASE_URL}/api/payment/allpaid-orders?page=${page}&limit=${limit}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

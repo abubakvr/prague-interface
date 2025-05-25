@@ -5,11 +5,10 @@ import { usePathname } from "next/navigation";
 
 const navigationLinks = [
   { href: "/dashboard", label: "Dashboard", routeKey: "/dashboard" },
-  { href: "/orders", label: "Orders", routeKey: "/order" },
   {
-    href: "/pendingpayment",
-    label: "Pending Payments",
-    routeKey: "/pendingpayment",
+    href: "/paid-orders",
+    label: "Paid Orders",
+    routeKey: "/paid-orders",
   },
   { href: "/paying", label: "Pay Orders", routeKey: "/paying" },
   { href: "/selling", label: "Release Coins", routeKey: "/selling" },
