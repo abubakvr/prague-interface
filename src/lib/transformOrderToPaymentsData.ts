@@ -22,6 +22,11 @@ export const transformSingleOrderToPaymentData = (
     return; // Skip this order if no matching bank code is found
   }
 
+  if (term?.realName && !/^[a-zA-Z\s\W]+$/.test(term.realName)) {
+    console.log("skipping unpayable user", term?.realName);
+    return;
+  }
+
   const amountInKobo = Math.floor(Number(order?.amount) * 100);
   const parsedAmount = amountInKobo - (amountInKobo % 100);
 

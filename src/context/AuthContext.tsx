@@ -32,10 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem(TOKEN_KEY);
       if (storedToken) {
-        console.log("JWT token found in localStorage");
         setToken(storedToken);
-      } else {
-        console.log("No JWT token found in localStorage");
       }
     }
   }, []);
