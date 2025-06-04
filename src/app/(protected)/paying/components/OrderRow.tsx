@@ -41,10 +41,10 @@ export function OrderRow({
   // Safely access payment term data with null checks
   const paymentList = order.paymentTermList || [];
   const paymentTerm = paymentList.length > 0 ? paymentList[0] : null;
-  const bankCode =
-    selectedBank?.BANK_CODE ||
-    findBankCode(paymentTerm?.bankName)?.BANK_CODE ||
-    findPaymentMethodByType(paymentTerm?.paymentType)?.BANK_CODE;
+  const userBank =
+    selectedBank ||
+    findBankCode(paymentTerm?.bankName) ||
+    findPaymentMethodByType(paymentTerm?.paymentType);
 
   // Calculate amount
   const amount = parseFloat(
@@ -69,15 +69,15 @@ export function OrderRow({
         </td>
         <td
           className="px-4 py-4 whitespace-nowrap text-blue-800"
-          title={paymentTerm?.bankName || "N/A"}
+          title={userBank?.BANK_NAME || paymentTerm?.bankName || "N/A"}
         >
-          {truncateText(paymentTerm?.bankName, 11)}
+          {truncateText(paymentTerm?.bankName || userBank?.BANK_NAME, 11)}
         </td>
         <td
           className="px-4 py-4 whitespace-nowrap text-blue-800"
-          title={bankCode || "N/A"}
+          title={userBank?.BANK_CODE || "N/A"}
         >
-          {truncateText(bankCode, 11)}
+          {truncateText(userBank?.BANK_CODE, 11)}
         </td>
         <td
           className="px-4 py-4 whitespace-nowrap text-blue-800"
@@ -237,7 +237,7 @@ export function OrderRow({
               <div>
                 Bank: {truncateText(paymentTerm?.bankName || "N/A", 15)}
               </div>
-              <div>Code: {truncateText(bankCode || "N/A", 8)}</div>
+              <div>Code: {truncateText(userBank?.BANK_CODE || "N/A", 8)}</div>
             </div>
             <div className="text-sm text-blue-800">
               Avg. Release: {profile?.averageReleaseTime + " mins" || "N/A"}

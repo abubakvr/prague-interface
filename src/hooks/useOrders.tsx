@@ -1,5 +1,3 @@
-import { BASE_URL } from "@/lib/constants";
-import { fetchData } from "@/lib/helpers";
 import {
   transformOrderToPaymentData,
   transformSingleOrderToPaymentData,
@@ -9,6 +7,7 @@ import { OrderDetails, OrderSide, OrderStatus } from "@/types/order";
 import { IPaymentData } from "@/types/payment";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAdminAccountName, fetchAdminAccountNumber } from "./useAccount";
+import { fetchData } from "@/lib/customFetch";
 
 export const getOrders = async ({
   page,
@@ -22,56 +21,49 @@ export const getOrders = async ({
   side: number;
 }) => {
   try {
-    const token = localStorage.getItem("accessToken");
-    const response = await fetch(`${BASE_URL}/api/p2p/orders`, {
+    const data = await fetchData("/api/p2p/orders", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+      data: {
         page,
         size,
         status,
         side,
-      }),
+      },
     });
-    if (response.ok) {
-      const data = await response.json();
-      return data.result;
-    }
+    return data.result;
   } catch (err) {
     console.error("Error fetching sell orders:", err);
-    throw err; // Re-throw the error to be handled by react-query
+    throw err;
   }
 };
 
 export const getPendingOrders = async () => {
   try {
-    return await fetchData(`${BASE_URL}/api/p2p/orders/pending`);
+    return await fetchData("/api/p2p/orders/pending");
   } catch (err) {
     console.error("Error fetching pending orders:", err);
-    throw err; // Re-throw the error
+    throw err;
   }
 };
 
 export const getUserProfile = async (orderId: string, originalUid: string) => {
   try {
-    return fetchData(
-      `${BASE_URL}/api/p2p/orders/stats/${originalUid}/${orderId}`
+    const data = await fetchData(
+      `/api/p2p/orders/stats/${originalUid}/${orderId}`
     );
+    return data.result;
   } catch (err) {
     console.error("Error fetching user profile:", err);
-    throw err; // Re-throw the error
+    throw err;
   }
 };
 
 export const getOrderDetails = async (id: string) => {
   try {
-    return fetchData(`${BASE_URL}/api/p2p/orders/${id}`);
+    return await fetchData(`/api/p2p/orders/${id}`);
   } catch (err) {
     console.error("Error fetching order details:", err);
-    throw err; // Re-throw the error
+    throw err;
   }
 };
 
@@ -81,28 +73,22 @@ export const markPaidOrder = async (
   paymentId: string
 ) => {
   try {
-    const token = localStorage.getItem("accessToken");
-    return await fetch(`${BASE_URL}/api/p2p/orders/pay`, {
+    return await fetchData("/api/p2p/orders/pay", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+      data: {
         orderId,
         paymentType,
         paymentId,
-      }),
+      },
     });
   } catch (err) {
-    console.error("Error fetching order details:", err);
+    console.error("Error marking order as paid:", err);
     throw err;
   }
 };
 
 export const payAllOrders = async (orders: OrderDetails[]): Promise<any> => {
   try {
-    const token = localStorage.getItem("accessToken");
     const accountNumber = (await fetchAdminAccountNumber()) ?? "";
     const accountName = (await fetchAdminAccountName()) ?? "";
     const transformedOrders = transformOrderToPaymentData(
@@ -115,22 +101,18 @@ export const payAllOrders = async (orders: OrderDetails[]): Promise<any> => {
       .filter((result) => result && result.success)
       .map((result) => result?.data);
 
-    return await fetch(`${BASE_URL}/api/payment/make-bulk-payment`, {
+    return await fetchData("/api/payment/make-bulk-payment", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ paymentDataArray }),
+      data: { paymentDataArray },
     });
   } catch (error: any) {
     console.error("Payment API error:", error);
+    throw error;
   }
 };
 
 export const paySingleOrder = async (order: OrderDetails): Promise<any> => {
   try {
-    const token = localStorage.getItem("accessToken");
     const accountNumber = (await fetchAdminAccountNumber()) ?? "";
     const accountName = (await fetchAdminAccountName()) ?? "";
     const transformedOrder = transformSingleOrderToPaymentData(
@@ -146,16 +128,13 @@ export const paySingleOrder = async (order: OrderDetails): Promise<any> => {
       throw new Error("Payment API error:");
     }
 
-    return await fetch(`${BASE_URL}/api/payment/make-payment`, {
+    return await fetchData("/api/payment/make-payment", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ paymentData: validatedPaymentData.data }),
+      data: { paymentData: validatedPaymentData.data },
     });
   } catch (error: any) {
     console.error("Payment API error:", error);
+    throw error;
   }
 };
 
@@ -179,27 +158,13 @@ export const useOrders = ({
 };
 
 export async function payBulkOrders() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"; // Use your base URL or default to localhost
-  const apiUrl = `${baseUrl}/api/pay-orders`;
-  const token = localStorage.getItem("accessToken");
   try {
-    const response = await fetch(apiUrl, {
+    const data = await fetchData("/api/pay-orders", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ token }),
     });
-
-    if (!response.ok) {
-      console.error("Error calling pay-orders route:", response);
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data; // Or do something else with the response data
+    return data.result;
   } catch (error) {
     console.error("Error calling pay-orders route:", error);
-    throw error; // Re-throw the error to be handled by the caller
+    throw error;
   }
 }

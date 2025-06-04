@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { OrderDetails, OrderStatus } from "@/types/order";
-import { BASE_URL } from "@/lib/constants";
-import { fetchData } from "@/lib/helpers";
+import { fetchData } from "@/lib/customFetch";
+import { fetchData as fetchData2 } from "@/lib/helpers";
 
 const getOrderDetails = async (id: string): Promise<OrderDetails> => {
   try {
-    const data = await fetchData(`${BASE_URL}/api/p2p/orders/${id}`);
+    const data = await fetchData(`/api/p2p/orders/${id}`);
     if (!data) throw new Error("No data returned from API");
-    return data;
+    return data.result;
   } catch (err: any) {
     console.error("Error fetching order details:", err);
     throw err;
@@ -38,28 +38,15 @@ export const useGetOrders = ({
     queryKey: ["orders", page, size, status, side],
     queryFn: async () => {
       try {
-        const token = localStorage.getItem("accessToken");
-        if (!token) throw new Error("No access token found");
-
-        const response = await fetch(`${BASE_URL}/api/p2p/orders`, {
+        const data = await fetchData("/api/p2p/orders", {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+          data: {
             page,
             size,
             status,
             side,
-          }),
+          },
         });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
 
         if (!data?.result?.items || !Array.isArray(data.result.items)) {
           console.warn("API returned unexpected data structure");
@@ -75,6 +62,8 @@ export const useGetOrders = ({
 
         // Fetch order details in optimized batches
         const orderDetails = await getBulkOrderDetailsBatched(orderIds);
+        console.log("orderDetails", orderDetails);
+
         return orderDetails;
       } catch (error: any) {
         console.error("Error in useGetOrders:", error);

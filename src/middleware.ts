@@ -2,6 +2,19 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { BASE_URL } from "./lib/constants";
 
+async function customFetch(url: string, options: RequestInit = {}) {
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Fetch error:", error);
+    throw error;
+  }
+}
+
 export default async function middleware(request: NextRequest) {
   // Get the token from cookies or localStorage (in client components)
   const token = request.cookies.get("accessToken")?.value;
@@ -13,7 +26,7 @@ export default async function middleware(request: NextRequest) {
 
   try {
     // Check if user has verified email
-    const verificationResponse = await fetch(
+    const verificationData = await customFetch(
       `${BASE_URL}/api/auth/verify-status`,
       {
         headers: {
@@ -23,21 +36,17 @@ export default async function middleware(request: NextRequest) {
       }
     );
 
-    const verificationData = await verificationResponse.json();
-
     if (!verificationData.isVerified) {
       return NextResponse.redirect(new URL("/verifyemail", request.url));
     }
 
     // Check if user has API keys
-    const apiKeysResponse = await fetch(`${BASE_URL}/api/keys/api_keys`, {
+    const apiKeysData = await customFetch(`${BASE_URL}/api/keys/api_keys`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
-
-    const apiKeysData = await apiKeysResponse.json();
 
     // If user doesn't have API keys and is trying to access protected routes
     // that require API keys, redirect to add keys page
@@ -63,6 +72,8 @@ export const config = {
     "/orderdetails/:path*",
     "/orders/:path*",
     "/paying/:path*",
+    "/agent/:path*",
+    "/paid-orders/:path*",
     "/pendingpayment/:path*",
     "/selling/:path*",
     "/user/:path*",

@@ -92,7 +92,7 @@ function PaidOrdersContent() {
   }, [page, limit]);
 
   const handlePageChange = (newPage: number) => {
-    router.push(`/paid-orders?page=${newPage}&limit=${limit}`);
+    router.push(`/all-orders?page=${newPage}&limit=${limit}`);
   };
 
   const formatDate = (dateString: string) => {

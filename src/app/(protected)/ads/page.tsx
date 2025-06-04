@@ -1,8 +1,7 @@
 "use client";
-import { usePersonalAds } from "@/hooks/UseAds";
+import { usePersonalAds } from "@/hooks/useAds";
 import { AdsData } from "@/types/ads";
 import { HiPencilAlt, HiRefresh, HiExclamationCircle } from "react-icons/hi";
-import { formatDistanceToNow } from "date-fns";
 
 const page = () => {
   const {
@@ -42,8 +41,6 @@ const page = () => {
 
   return (
     <div className="">
-      {/* Header Section */}
-      {/* Controls Section */}
       <div className="flex justify-between items-center">
         <div className="flex space-x-4 items-center">
           <div className="text-sm text-blue-700 bg-blue-100 px-3 py-1 rounded-full">

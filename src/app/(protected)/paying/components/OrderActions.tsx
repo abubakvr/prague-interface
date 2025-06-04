@@ -11,11 +11,7 @@ export const markOrderAsPaid = async (
 ) => {
   setMarkingPaidOrderId(orderId);
   try {
-    const response = await markPaidOrder(orderId, paymentType, paymentId);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
+    const data = await markPaidOrder(orderId, paymentType, paymentId);
     if (data.ret_msg === "SUCCESS") {
       toast.success("Order marked as paid successfully!");
       refetch();
@@ -37,13 +33,8 @@ export const handlePayAllOrders = async (
 ) => {
   setPayAllLoading(true);
   try {
-    const response = await payAllOrders(exportableOrders);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
+    const data = await payAllOrders(exportableOrders);
+    console.log(data);
     if (data.success === true) {
       toast.success(`Paid all ${data.data.transferCount} orders`);
       refetch();
@@ -64,17 +55,9 @@ export const handlePaySingleOrder = async (
   setPayingOrderId: (id: string | null) => void,
   refetch: () => void
 ) => {
-  console.log(order);
   setPayingOrderId(order.id);
   try {
-    const response = await paySingleOrder(order);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
+    const data = await paySingleOrder(order);
     console.log(data);
     if (data.success === true) {
       toast.success(`Paid ${order.paymentTermList[0].realName}`);

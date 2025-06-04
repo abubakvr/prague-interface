@@ -1,8 +1,6 @@
-// ... existing code ...
-
-import { BASE_URL } from "@/lib/constants";
 import { OrderSide } from "@/types/order";
 import { useQuery } from "@tanstack/react-query";
+import { fetchData } from "@/lib/customFetch";
 
 export const fetchListedAds = async ({
   page = 0,
@@ -17,28 +15,22 @@ export const fetchListedAds = async ({
   currencyId: string;
   side: number;
 }) => {
-  const token = localStorage.getItem("accessToken");
-  const response = await fetch(`${BASE_URL}/api/p2p/ads/listings`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      page: String(page),
-      size: String(size),
-      currencyId,
-      tokenId,
-      side: String(side),
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  try {
+    const data = await fetchData("/api/p2p/ads/listings", {
+      method: "POST",
+      data: {
+        page: String(page),
+        size: String(size),
+        currencyId,
+        tokenId,
+        side: String(side),
+      },
+    });
+    return data.result;
+  } catch (err) {
+    console.error("Error fetching listed ads:", err);
+    throw err;
   }
-
-  const data = await response.json();
-  return data.result;
 };
 
 // New function to fetch multiple pages and apply filters
@@ -198,4 +190,3 @@ export const MIN_AMOUNT_OPTIONS = [
 export const SUCCESS_RATE_OPTIONS = [
   0, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100,
 ];
-// ... existing code ...
