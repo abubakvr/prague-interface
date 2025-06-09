@@ -122,7 +122,7 @@ const AddApiKey = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2" htmlFor="api_key">
-              API Key
+              Bybit API Key
             </label>
             <div className="relative">
               <input
@@ -147,7 +147,7 @@ const AddApiKey = () => {
 
           <div className="mb-6">
             <label className="block text-gray-700 mb-2" htmlFor="api_secret">
-              API Secret
+              Bybit API Secret
             </label>
             <div className="relative">
               <input
@@ -172,7 +172,7 @@ const AddApiKey = () => {
 
           <div className="mb-6">
             <label className="block text-gray-700 mb-2" htmlFor="api_secret">
-              Bank API Key
+              Kuda API Key
             </label>
             <div className="relative">
               <input
