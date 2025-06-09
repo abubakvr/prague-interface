@@ -34,14 +34,13 @@ const fetchAdminBankBalance = async () => {
   ).then((data) => data.data.availableBalance);
 };
 
-export const useAdminBalance = () => {
-  const query = useQuery({
-    queryKey: ["adminBalance"],
-    queryFn: fetchAdminBalance,
-    refetchInterval: 20000,
-  });
-
-  return { ...query };
+const fetchWalletInfo = async () => {
+  return fetchData<{
+    walletBalance: number;
+    accountName: string;
+    accountNumber: string;
+    bankName: string;
+  }>("/api/wallet/wallet-info").then((data) => data);
 };
 
 export async function fetchAdminAccountNumber(): Promise<string | null> {
@@ -66,6 +65,16 @@ export async function fetchAdminAccountName(): Promise<string | null> {
   }
 }
 
+export const useAdminBalance = () => {
+  const query = useQuery({
+    queryKey: ["adminBalance"],
+    queryFn: fetchAdminBalance,
+    refetchInterval: 20000,
+  });
+
+  return { ...query };
+};
+
 export const useAdminAccountNumber = () => {
   const query = useQuery({
     queryKey: ["accountNumber"],
@@ -89,6 +98,15 @@ export const useAdminAccountName = () => {
   const query = useQuery({
     queryKey: ["accountName"],
     queryFn: fetchAdminAccountName,
+  });
+
+  return { ...query };
+};
+
+export const useWalletInfo = () => {
+  const query = useQuery({
+    queryKey: ["walletInfo"],
+    queryFn: fetchWalletInfo,
   });
 
   return { ...query };

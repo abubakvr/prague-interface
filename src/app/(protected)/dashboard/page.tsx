@@ -5,6 +5,7 @@ import {
   useAdminBalance,
   useAdminBankBalance,
   useAdminDetails,
+  useWalletInfo,
 } from "@/hooks/useAccount";
 import {
   HiUser,
@@ -51,12 +52,19 @@ export default function Home() {
     refetch: fetchAdminBankBalance,
   } = useAdminBankBalance();
 
+  const {
+    data: walletInfo,
+    isLoading: walletInfoLoading,
+    refetch: fetchWalletInfo,
+  } = useWalletInfo();
+
   const refetchPageData = () => {
     fetchAdminBalance();
     fetchAdminDetails();
     fetchAccountNumber();
     fetchAdminBankBalance();
     fetchAccountName();
+    fetchWalletInfo();
   };
 
   if (
@@ -64,7 +72,8 @@ export default function Home() {
     adminBalanceLoading ||
     adminAccountNumberLoading ||
     adminBankBalanceLoading ||
-    adminAccountNameLoading
+    adminAccountNameLoading ||
+    walletInfoLoading
   ) {
     return (
       <div className="w-full flex flex-col gap-y-5 h-screen items-center text-center  mt-16 p-4">
@@ -150,17 +159,22 @@ export default function Home() {
         <div className="bg-gradient-to-br from-purple-50 to-violet-100 p-4 sm:p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border border-purple-200 sm:col-span-2 lg:col-span-1">
           <div className="flex justify-between items-center mb-3 sm:mb-4">
             <h2 className="text-lg sm:text-xl font-semibold text-purple-800">
-              Completion Rate
+              Wallet Balance
             </h2>
             <div className="p-2 sm:p-3 bg-purple-200 rounded-full">
               <HiCheckCircle className="text-purple-700 text-lg sm:text-xl" />
             </div>
           </div>
           <p className="text-2xl sm:text-3xl font-bold text-purple-900">
-            {adminDetails?.recentRate || "0"}%
+            {new Intl.NumberFormat("en-NG", {
+              style: "currency",
+              currency: "NGN",
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            }).format(Number(walletInfo?.walletBalance || 0))}
           </p>
           <p className="text-purple-700 mt-2 text-xs sm:text-sm">
-            Recent success rate
+            Wallet Balance
           </p>
         </div>
       </div>
@@ -223,36 +237,33 @@ export default function Home() {
               <HiShieldCheck className="text-green-600 text-lg sm:text-xl" />
             </div>
             <h2 className="text-lg sm:text-xl font-medium text-gray-800">
-              Account Status
+              Wallet Information
             </h2>
           </div>
           <div className="space-y-2 sm:space-y-3 text-sm sm:text-base">
             <div className="flex items-center">
-              <p className="font-medium text-gray-600 w-20 sm:w-24">Status:</p>
-              <span
-                className={`px-2 py-0.5 rounded-full text-xs sm:text-sm ${
-                  adminDetails?.isActive
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                }`}
-              >
-                {adminDetails?.isActive ? "Active" : "Inactive"}
-              </span>
+              <p className="font-medium text-gray-600 w-20 sm:w-24">
+                Account Name:
+              </p>
+              <p className="text-gray-800">
+                {walletInfo?.accountName || "N/A"}
+              </p>
             </div>
             <div className="flex items-center">
               <p className="font-medium text-gray-600 w-20 sm:w-24">
-                Account Age:
+                Account Number:
               </p>
               <div className="flex items-center">
-                <HiClock className="text-gray-500 mr-1" />
                 <p className="text-gray-800">
-                  {adminDetails?.accountCreateDays || "N/A"} days
+                  {walletInfo?.accountNumber || "N/A"}
                 </p>
               </div>
             </div>
             <div className="flex items-center">
-              <p className="font-medium text-gray-600 w-20 sm:w-24">Blocked:</p>
-              <p className="text-gray-800">{adminDetails?.blocked || "N/A"}</p>
+              <p className="font-medium text-gray-600 w-20 sm:w-24">
+                Bank Name:
+              </p>
+              <p className="text-gray-800">{walletInfo?.bankName || "N/A"}</p>
             </div>
           </div>
         </div>
@@ -349,18 +360,16 @@ export default function Home() {
 
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 rounded-xl shadow-lg text-white">
           <div className="flex justify-between items-center mb-3 sm:mb-4">
-            <h2 className="text-xl font-medium">Current Balance</h2>
+            <h2 className="text-xl font-medium">Wallet Balance</h2>
             <div className="p-3 bg-white bg-opacity-20 rounded-full">
               <HiCurrencyDollar className="text-white text-xl" />
             </div>
           </div>
           <p className="text-4xl font-bold">
-            {adminBalance?.walletBalance || "0.00"} {adminBalance?.coin}
+            {walletInfo?.walletBalance || "0.00"}
           </p>
           <div className="mt-4 pt-4 border-t border-white border-opacity-20">
-            <p className="text-sm opacity-80">
-              Available for trading and withdrawals
-            </p>
+            <p className="text-sm opacity-80">Available for trading</p>
           </div>
         </div>
       </div>

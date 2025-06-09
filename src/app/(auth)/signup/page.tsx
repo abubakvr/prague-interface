@@ -7,6 +7,9 @@ import Image from "next/image";
 import { BASE_URL } from "@/lib/constants";
 
 interface FormData {
+  firstName: string;
+  lastName: string;
+  phone: string;
   name: string;
   email: string;
   password: string;
@@ -14,6 +17,9 @@ interface FormData {
 }
 
 interface Errors {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
   name?: string;
   email?: string;
   password?: string;
@@ -22,6 +28,9 @@ interface Errors {
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState<FormData>({
+    firstName: "",
+    lastName: "",
+    phone: "",
     name: "",
     email: "",
     password: "",
@@ -57,6 +66,26 @@ const SignUpPage = () => {
 
   const validateForm = () => {
     const newErrors: Errors = {};
+
+    const sqlInjectionRegex = /['"\\%]/;
+
+    if (!formData.firstName) {
+      newErrors.firstName = "First name is required";
+    } else if (sqlInjectionRegex.test(formData.firstName)) {
+      newErrors.firstName = "First name contains invalid characters";
+    }
+
+    if (!formData.lastName) {
+      newErrors.lastName = "Last name is required";
+    } else if (sqlInjectionRegex.test(formData.lastName)) {
+      newErrors.lastName = "Last name contains invalid characters";
+    }
+
+    if (!formData.phone) {
+      newErrors.phone = "Phone is required";
+    } else if (sqlInjectionRegex.test(formData.phone)) {
+      newErrors.phone = "Phone number contains invalid characters";
+    }
 
     // Email validation
     if (!formData.email) {
@@ -96,6 +125,9 @@ const SignUpPage = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          phone: formData.phone,
           name: formData.name,
           email: formData.email,
           password: formData.password,
@@ -225,20 +257,107 @@ const SignUpPage = () => {
               </h1>
             </div>
 
-            <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+            <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
               Create Your Account
             </h1>
 
             {serverMessage && (
-              <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg border border-red-200">
+              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg border border-red-200">
                 {serverMessage}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    className="block text-gray-700 text-sm font-semibold mb-1"
+                    htmlFor="firstName"
+                  >
+                    First Name
+                  </label>
+                  <input
+                    id="firstName"
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                      errors.firstName
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-gray-300 focus:ring-blue-500"
+                    }`}
+                    placeholder="First name"
+                    required
+                    autoComplete="off"
+                  />
+                  {errors.firstName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.firstName}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    className="block text-gray-700 text-sm font-semibold mb-1"
+                    htmlFor="lastName"
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    id="lastName"
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                      errors.lastName
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-gray-300 focus:ring-blue-500"
+                    }`}
+                    placeholder="Last name"
+                    required
+                    autoComplete="off"
+                  />
+                  {errors.lastName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.lastName}
+                    </p>
+                  )}
+                </div>
+              </div>
+
               <div>
                 <label
-                  className="block text-gray-700 text-sm font-semibold mb-2"
+                  className="block text-gray-700 text-sm font-semibold mb-1"
+                  htmlFor="phone"
+                >
+                  Phone Number
+                </label>
+                <input
+                  id="phone"
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                    errors.phone
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300 focus:ring-blue-500"
+                  }`}
+                  placeholder="Phone number"
+                  required
+                  autoComplete="off"
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                )}
+              </div>
+
+              <div>
+                <label
+                  className="block text-gray-700 text-sm font-semibold mb-1"
                   htmlFor="name"
                 >
                   Business Name
@@ -249,12 +368,12 @@ const SignUpPage = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
                     errors.name
                       ? "border-red-500 focus:ring-red-500"
                       : "border-gray-300 focus:ring-blue-500"
                   }`}
-                  placeholder="Your business name"
+                  placeholder="Business name"
                   required
                   autoComplete="off"
                 />
@@ -265,7 +384,7 @@ const SignUpPage = () => {
 
               <div>
                 <label
-                  className="block text-gray-700 text-sm font-semibold mb-2"
+                  className="block text-gray-700 text-sm font-semibold mb-1"
                   htmlFor="email"
                 >
                   Email
@@ -276,12 +395,12 @@ const SignUpPage = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
                     errors.email
                       ? "border-red-500 focus:ring-red-500"
                       : "border-gray-300 focus:ring-blue-500"
                   }`}
-                  placeholder="Your email"
+                  placeholder="Email"
                   required
                   autoComplete="off"
                 />
@@ -292,7 +411,7 @@ const SignUpPage = () => {
 
               <div>
                 <label
-                  className="block text-gray-700 text-sm font-semibold mb-2"
+                  className="block text-gray-700 text-sm font-semibold mb-1"
                   htmlFor="password"
                 >
                   Password
@@ -304,12 +423,12 @@ const SignUpPage = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
                       errors.password
                         ? "border-red-500 focus:ring-red-500"
                         : "border-gray-300 focus:ring-blue-500"
                     }`}
-                    placeholder="Create a password"
+                    placeholder="Password"
                     required
                     autoComplete="new-password"
                   />
@@ -328,7 +447,7 @@ const SignUpPage = () => {
 
               <div>
                 <label
-                  className="block text-gray-700 text-sm font-semibold mb-2"
+                  className="block text-gray-700 text-sm font-semibold mb-1"
                   htmlFor="confirmPassword"
                 >
                   Confirm Password
@@ -340,12 +459,12 @@ const SignUpPage = () => {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
                       errors.confirmPassword
                         ? "border-red-500 focus:ring-red-500"
                         : "border-gray-300 focus:ring-blue-500"
                     }`}
-                    placeholder="Confirm your password"
+                    placeholder="Confirm password"
                     required
                     autoComplete="new-password"
                   />
@@ -367,13 +486,13 @@ const SignUpPage = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 transition duration-200"
+                className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 transition duration-200"
               >
                 {isSubmitting ? "Creating Account..." : "Sign Up"}
               </button>
             </form>
 
-            <p className="mt-8 text-center text-gray-600">
+            <p className="mt-6 text-center text-gray-600">
               Already have an account?{" "}
               <Link
                 href="/login"
