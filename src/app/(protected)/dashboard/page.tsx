@@ -243,7 +243,7 @@ export default function Home() {
           <div className="space-y-2 sm:space-y-3 text-sm sm:text-base">
             <div className="flex items-center">
               <p className="font-medium text-gray-600 w-20 sm:w-24">
-                Account Name:
+                Acc. Name:
               </p>
               <p className="text-gray-800">
                 {walletInfo?.accountName || "N/A"}
@@ -251,7 +251,7 @@ export default function Home() {
             </div>
             <div className="flex items-center">
               <p className="font-medium text-gray-600 w-20 sm:w-24">
-                Account Number:
+                Acc. Number:
               </p>
               <div className="flex items-center">
                 <p className="text-gray-800">
@@ -366,7 +366,12 @@ export default function Home() {
             </div>
           </div>
           <p className="text-4xl font-bold">
-            {walletInfo?.walletBalance || "0.00"}
+            {new Intl.NumberFormat("en-NG", {
+              style: "currency",
+              currency: "NGN",
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            }).format(Number(walletInfo?.walletBalance || 0))}
           </p>
           <div className="mt-4 pt-4 border-t border-white border-opacity-20">
             <p className="text-sm opacity-80">Available for trading</p>
