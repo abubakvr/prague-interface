@@ -8,8 +8,10 @@ export const useAdminDetails = () => {
     queryKey: ["adminDetails"],
     queryFn: async () => {
       try {
-        const data = await fetchData(`/api/p2p/account`);
-        return data.result;
+        const response = await fetchData<{ data: { result: any } }>(
+          `/api/p2p/account`
+        );
+        return response.data.result;
       } catch (error: any) {
         if (error?.status === 403) {
           router.push("/login");
@@ -23,44 +25,56 @@ export const useAdminDetails = () => {
 };
 
 const fetchAdminBalance = async () => {
-  return fetchData<{ result: { balance: Array<any> } }>(
+  const response = await fetchData<{ data: { balance: Array<any> } }>(
     "/api/p2p/balance"
-  ).then((data) => data.result.balance[0]);
+  );
+  return response.data.balance[0];
 };
 
 const fetchAdminBankBalance = async () => {
-  return fetchData<{ data: { availableBalance: number } }>(
-    "/api/payment/bank-balance"
-  ).then((data) => data.data.availableBalance);
+  return fetchData<{
+    data: { availableBalance: number };
+  }>("/api/payment/bank-balance").then(
+    (response) => response.data.availableBalance
+  );
 };
 
-const fetchWalletInfo = async () => {
-  return fetchData<{
-    walletBalance: number;
-    accountName: string;
-    accountNumber: string;
-    bankName: string;
-  }>("/api/wallet/wallet-info").then((data) => data);
+export const fetchWalletInfo = async () => {
+  try {
+    return await fetchData<{
+      data: {
+        walletBalance: number;
+        accountName: string;
+        accountNumber: string;
+        bankName: string;
+      };
+    }>("/api/wallet/wallet-info").then((response) => response.data);
+  } catch (error: any) {
+    console.error("Error fetching wallet info:", error.message);
+    throw error;
+  }
 };
 
 export async function fetchAdminAccountNumber(): Promise<string | null> {
   try {
-    const data = await fetchData<{ accountNumber: string }>(
+    const response = await fetchData<{ data: { accountNumber: string } }>(
       "/api/keys/bank_account"
     );
-    return data.accountNumber;
-  } catch (error) {
-    console.error("Error fetching bank account number:", error);
+    return response.data.accountNumber;
+  } catch (error: any) {
+    console.error("Error fetching bank account number:", error.message);
     return null;
   }
 }
 
 export async function fetchAdminAccountName(): Promise<string | null> {
   try {
-    const data = await fetchData<{ name: string }>("/api/auth/get-username");
-    return data.name;
-  } catch (error) {
-    console.error("Error fetching account name:", error);
+    const response = await fetchData<{ data: { name: string } }>(
+      "/api/auth/get-username"
+    );
+    return response.data.name;
+  } catch (error: any) {
+    console.error("Error fetching account name:", error.message);
     return null;
   }
 }

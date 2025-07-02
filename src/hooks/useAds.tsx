@@ -4,10 +4,12 @@ import { fetchData } from "@/lib/customFetch";
 
 export const fetchPersonalAds = async () => {
   try {
-    const data = await fetchData("/api/p2p/ads/my");
-    return data.result;
-  } catch (err) {
-    console.error("Error fetching personal ads:", err);
+    const response = await fetchData<{ data: { result: any } }>(
+      "/api/p2p/ads/my"
+    );
+    return response.data.result;
+  } catch (err: any) {
+    console.error("Error fetching personal ads:", err.message);
     throw err;
   }
 };
@@ -35,19 +37,22 @@ export const fetchListedAds = async ({
   side: number;
 }) => {
   try {
-    const data = await fetchData("/api/p2p/ads/listings", {
-      method: "POST",
-      data: {
-        page: String(page),
-        size: String(size),
-        currencyId,
-        tokenId,
-        side: String(side),
-      },
-    });
-    return data.result;
-  } catch (err) {
-    console.error("Error fetching listed ads:", err);
+    const response = await fetchData<{ data: { result: any } }>(
+      "/api/p2p/ads/listings",
+      {
+        method: "POST",
+        data: {
+          page: String(page),
+          size: String(size),
+          currencyId,
+          tokenId,
+          side: String(side),
+        },
+      }
+    );
+    return response.data.result;
+  } catch (err: any) {
+    console.error("Error fetching listed ads:", err.message);
     throw err;
   }
 };

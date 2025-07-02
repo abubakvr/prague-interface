@@ -52,24 +52,24 @@ const Login = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        if (data.error === "Email not verified") {
+        if (data.message === "Email not verified") {
           router.push(
             `/email-sent?email=${encodeURIComponent(formData.email)}`
           );
         } else {
-          throw new Error(data.error || "Invalid credentials");
+          throw new Error(data.message || "Invalid credentials");
         }
       }
 
-      if (data.token) {
-        localStorage.setItem("accessToken", data.token);
+      if (data.data.token) {
+        localStorage.setItem("accessToken", data.data.token);
         // Set token in cookies instead of localStorage
-        document.cookie = `accessToken=${data.token}; path=/; max-age=86400; SameSite=Strict`;
+        document.cookie = `accessToken=${data.data.token}; path=/; max-age=172800; SameSite=Strict`;
 
         setTimeout(() => {
           // Force a refresh of the authentication state before redirecting
           router.push("/dashboard");
-        }, 1000);
+        }, 100);
       }
     } catch (error: any) {
       console.error("Login error:", error);

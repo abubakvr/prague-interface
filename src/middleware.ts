@@ -36,7 +36,7 @@ export default async function middleware(request: NextRequest) {
       }
     );
 
-    if (!verificationData.isVerified) {
+    if (!verificationData.data.isVerified) {
       return NextResponse.redirect(new URL("/verifyemail", request.url));
     }
 
@@ -51,7 +51,7 @@ export default async function middleware(request: NextRequest) {
     // If user doesn't have API keys and is trying to access protected routes
     // that require API keys, redirect to add keys page
     if (
-      !apiKeysData.isKeyAdded &&
+      !apiKeysData.data.isKeyAdded &&
       !request.nextUrl.pathname.includes("/addkeys")
     ) {
       return NextResponse.redirect(new URL("/addkeys", request.url));
