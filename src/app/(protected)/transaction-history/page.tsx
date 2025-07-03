@@ -242,7 +242,7 @@ function TransactionHistoryContent() {
                         {formatCurrency(transaction.amount)}
                       </p>
                       <p className="text-sm text-gray-600 mt-1">
-                        {transaction.narration}
+                        {transaction.beneficiaryName}
                       </p>
                     </div>
                     <span
