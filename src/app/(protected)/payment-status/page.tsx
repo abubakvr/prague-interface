@@ -213,8 +213,8 @@ function PaidOrdersContent() {
                               }`}
                             >
                               {order.status === true
-                                ? "completed"
-                                : "not completed"}
+                                ? "Completed"
+                                : "Not Completed"}
                             </span>
                           </td>
                           <td className="p-4 text-blue-900 text-sm">
