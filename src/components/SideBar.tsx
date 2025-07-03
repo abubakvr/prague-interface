@@ -5,16 +5,21 @@ import { usePathname } from "next/navigation";
 
 const navigationLinks = [
   { href: "/dashboard", label: "Dashboard", routeKey: "/dashboard" },
+  { href: "/pay-orders", label: "Pay Orders", routeKey: "/pay-orders" },
   {
-    href: "/paid-orders",
-    label: "Paid Orders",
-    routeKey: "/paid-orders",
+    href: "/payment-status",
+    label: "Payment Status",
+    routeKey: "/payment-status",
   },
-  { href: "/paying", label: "Pay Orders", routeKey: "/paying" },
-  { href: "/selling", label: "Release Coins", routeKey: "/selling" },
-  { href: "/ads", label: "My Ads", routeKey: "/ads" },
-  { href: "/onlineads", label: "P2P Ads", routeKey: "/onlineads" },
-  { href: "/agent", label: "Agent", routeKey: "/agent" },
+  {
+    href: "/transaction-history",
+    label: "Transaction History",
+    routeKey: "/transaction-history",
+  },
+  // { href: "/selling", label: "Release Coins", routeKey: "/selling" },
+  // { href: "/ads", label: "My Ads", routeKey: "/ads" },
+  // { href: "/onlineads", label: "P2P Ads", routeKey: "/onlineads" },
+  // { href: "/agent", label: "Agent", routeKey: "/agent" },
 ];
 
 export const SideBar = () => {

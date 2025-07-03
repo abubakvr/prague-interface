@@ -34,13 +34,12 @@ export const handlePayAllOrders = async (
   setPayAllLoading(true);
   try {
     const response = await payAllOrders(exportableOrders);
-    console.log(response);
-    if (response.data.success === true) {
+    if (response.success === true) {
       const paidOrders = response.data.transferCount;
       const unpaidOrders = exportableOrders.length - paidOrders;
       toast.success(
-        `${paidOrders} orders paid. ${
-          unpaidOrders > 0 && `${unpaidOrders} orders not paid`
+        `${paidOrders} orders paid successfully. ${
+          unpaidOrders > 0 ? `${unpaidOrders} orders could not be paid` : ""
         }`
       );
       refetch();
@@ -64,8 +63,7 @@ export const handlePaySingleOrder = async (
   setPayingOrderId(order.id);
   try {
     const response = await paySingleOrder(order);
-    console.log(response);
-    if (response.data.success === true) {
+    if (response.success === true) {
       toast.success(`Paid ${order.paymentTermList[0].realName}`);
       refetch();
     } else {

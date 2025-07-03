@@ -178,7 +178,7 @@ export function OrdersTableUI({
           return (
             <div
               key={order.id}
-              className="bg-white rounded-lg shadow-sm border border-blue-100 overflow-hidden"
+              className="rounded-lg shadow-sm border border-blue-100 overflow-hidden"
             >
               <div
                 className="flex justify-between items-center p-4 cursor-pointer bg-blue-50 hover:bg-blue-100 transition-colors"
