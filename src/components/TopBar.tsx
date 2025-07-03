@@ -35,7 +35,11 @@ export const TopBar = () => {
       label: "Payment Status",
       routeKey: "/payment-status",
     },
-    { href: "/history", label: "Transaction History", routeKey: "/history" },
+    {
+      href: "/transaction-history",
+      label: "Transaction History",
+      routeKey: "/transaction-history",
+    },
     // { href: "/selling", label: "Release Coins", routeKey: "/selling" },
     // { href: "/ads", label: "My Ads", routeKey: "/ads" },
     // { href: "/onlineads", label: "P2P Ads", routeKey: "/onlineads" },
