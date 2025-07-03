@@ -91,7 +91,7 @@ export function OrdersTableUI({
   };
 
   return (
-    <div className="overflow-hidden rounded-xl shadow-md lg:bg-white/80 lg:backdrop-blur-sm border">
+    <div className="overflow-hidden rounded-xl bg-none lg:shadow-md lg:bg-white/80 lg:backdrop-blur-sm lg:border">
       {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
@@ -178,7 +178,7 @@ export function OrdersTableUI({
           return (
             <div
               key={order.id}
-              className="rounded-lg shadow-sm border border-blue-100 overflow-hidden"
+              className="rounded-lg shadow-md border border-blue-100 overflow-hidden"
             >
               <div
                 className="flex justify-between items-center p-4 cursor-pointer bg-blue-50 hover:bg-blue-100 transition-colors"
