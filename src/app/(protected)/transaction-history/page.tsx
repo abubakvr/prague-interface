@@ -166,7 +166,7 @@ function TransactionHistoryContent() {
                           Amount
                         </th>
                         <th className="text-left p-4 font-semibold text-sm">
-                          Narration
+                          Beneficiary
                         </th>
                         <th className="text-left p-4 font-semibold text-sm">
                           Reference
@@ -202,9 +202,9 @@ function TransactionHistoryContent() {
                           <td className="p-4 text-blue-900 text-sm">
                             <div
                               className="max-w-xs truncate"
-                              title={transaction.narration}
+                              title={transaction.beneficiaryName}
                             >
-                              {transaction.narration}
+                              {transaction.beneficiaryName}
                             </div>
                           </td>
                           <td className="p-4 text-blue-900 text-sm">
