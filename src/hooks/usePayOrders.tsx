@@ -32,14 +32,13 @@ export function usePayOrders<T = PaymentResponse>(): UsePayOrdersResult<T> {
     setError(null);
 
     try {
-      console.log("Orders Length", orders.length);
       const transformedOrders = transformOrderToPaymentData(orders, "", "");
       const paymentDataArray = transformedOrders
         .map((order) => (order ? validatePaymentData(order) : null))
         .filter((result) => result && result.success)
         .map((result) => result?.data);
 
-      const responseData = await fetchData<T>(
+      const response = await fetchData<{ data: any }>(
         "/api/payment/make-bulk-payment",
         {
           method: "POST",
@@ -47,10 +46,10 @@ export function usePayOrders<T = PaymentResponse>(): UsePayOrdersResult<T> {
         }
       );
 
-      setData(responseData);
+      setData(response.data);
     } catch (error: any) {
-      console.error("Payment API error:", error);
-      setError(error);
+      console.error("Payment API error:", error.message);
+      throw error.message;
     } finally {
       setLoading(false);
     }

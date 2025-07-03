@@ -11,8 +11,8 @@ export const markOrderAsPaid = async (
 ) => {
   setMarkingPaidOrderId(orderId);
   try {
-    const data = await markPaidOrder(orderId, paymentType, paymentId);
-    if (data.ret_msg === "SUCCESS") {
+    const response = await markPaidOrder(orderId, paymentType, paymentId);
+    if (response.data.ret_msg === "SUCCESS") {
       toast.success("Order marked as paid successfully!");
       refetch();
     } else {
@@ -33,18 +33,23 @@ export const handlePayAllOrders = async (
 ) => {
   setPayAllLoading(true);
   try {
-    const data = await payAllOrders(exportableOrders);
-    console.log(data);
-    if (data.success === true) {
-      toast.success(`Paid all ${data.data.transferCount} orders`);
+    const response = await payAllOrders(exportableOrders);
+    if (response.success === true) {
+      const paidOrders = response.data.transferCount;
+      const unpaidOrders = exportableOrders.length - paidOrders;
+      toast.success(
+        `${paidOrders} orders paid successfully. ${
+          unpaidOrders > 0 ? `${unpaidOrders} orders could not be paid` : ""
+        }`
+      );
       refetch();
     } else {
       toast.error(`Payment failed for all orders`);
-      console.error(data.message);
+      console.error(response.data.message);
     }
   } catch (error: any) {
     console.error("Error paying order:", error);
-    toast.error(`Error paying bulk orders: ${error.message}`);
+    toast.error(`Could not pay orders: ${error.message}`);
   } finally {
     setPayAllLoading(false);
   }
@@ -57,18 +62,19 @@ export const handlePaySingleOrder = async (
 ) => {
   setPayingOrderId(order.id);
   try {
-    const data = await paySingleOrder(order);
-    console.log(data);
-    if (data.success === true) {
+    const response = await paySingleOrder(order);
+    if (response.success === true) {
       toast.success(`Paid ${order.paymentTermList[0].realName}`);
       refetch();
     } else {
-      toast.error(`Payment failed for single orders`);
-      console.error(data.message);
+      toast.error(
+        `API Payment failed for ${order.paymentTermList[0].realName}: ${response.data.message}`
+      );
+      console.error(response.data.message);
     }
   } catch (error: any) {
     console.error("Error paying order:", error);
-    toast.error(`Error paying bulk orders: ${error.message}`);
+    toast.error(`Could not pay order: ${error.message}`);
   } finally {
     setPayingOrderId(null);
   }

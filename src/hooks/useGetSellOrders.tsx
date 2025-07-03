@@ -11,16 +11,19 @@ export const useGetSellOrders = () => {
   const query = useQuery({
     queryKey: ["releaseOrders"],
     queryFn: async () => {
-      const data = await fetchData("/api/p2p/orders", {
-        method: "POST",
-        data: {
-          page,
-          size,
-          status,
-          side,
-        },
-      });
-      return data.result.items;
+      const response = await fetchData<{ data: { result: any } }>(
+        "/api/p2p/orders",
+        {
+          method: "POST",
+          data: {
+            page,
+            size,
+            status,
+            side,
+          },
+        }
+      );
+      return response.data.result.items;
     },
   });
 
@@ -37,8 +40,8 @@ export const releaseDigitalAsset = async (order_id: string) => {
         orderId: order_id,
       },
     });
-  } catch (err) {
-    console.error("Error fetching order details:", err);
-    throw err;
+  } catch (err: any) {
+    console.error("Error fetching order details:", err.message);
+    throw err.message;
   }
 };

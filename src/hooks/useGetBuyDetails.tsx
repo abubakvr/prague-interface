@@ -1,16 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { OrderDetails, OrderStatus } from "@/types/order";
 import { fetchData } from "@/lib/customFetch";
-import { fetchData as fetchData2 } from "@/lib/helpers";
 
 const getOrderDetails = async (id: string): Promise<OrderDetails> => {
   try {
-    const data = await fetchData(`/api/p2p/orders/${id}`);
-    if (!data) throw new Error("No data returned from API");
-    return data.result;
+    const response = await fetchData<{ data: { result: any } }>(
+      `/api/p2p/orders/${id}`
+    );
+    if (!response.data.result) throw new Error("No data returned from API");
+    return response.data.result;
   } catch (err: any) {
-    console.error("Error fetching order details:", err);
-    throw err;
+    console.error("Error fetching order details:", err.message);
+    throw err.message;
   }
 };
 
@@ -38,22 +39,28 @@ export const useGetOrders = ({
     queryKey: ["orders", page, size, status, side],
     queryFn: async () => {
       try {
-        const data = await fetchData("/api/p2p/orders", {
-          method: "POST",
-          data: {
-            page,
-            size,
-            status,
-            side,
-          },
-        });
+        const response = await fetchData<{ data: { result: any } }>(
+          "/api/p2p/orders",
+          {
+            method: "POST",
+            data: {
+              page,
+              size,
+              status,
+              side,
+            },
+          }
+        );
 
-        if (!data?.result?.items || !Array.isArray(data.result.items)) {
+        if (
+          !response.data?.result?.items ||
+          !Array.isArray(response.data.result.items)
+        ) {
           console.warn("API returned unexpected data structure");
           return [];
         }
 
-        const dataArray = data.result.items;
+        const dataArray = response.data.result.items;
         const orderIds = dataArray.map((item: any) => item.id).filter(Boolean);
 
         if (orderIds.length === 0) {
@@ -62,8 +69,6 @@ export const useGetOrders = ({
 
         // Fetch order details in optimized batches
         const orderDetails = await getBulkOrderDetailsBatched(orderIds);
-        console.log("orderDetails", orderDetails);
-
         return orderDetails;
       } catch (error: any) {
         console.error("Error in useGetOrders:", error);

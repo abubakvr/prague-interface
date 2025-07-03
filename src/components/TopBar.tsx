@@ -29,15 +29,16 @@ export const TopBar = () => {
   // Navigation links for mobile menu
   const navigationLinks = [
     { href: "/dashboard", label: "Dashboard", routeKey: "/dashboard" },
+    { href: "/pay-orders", label: "Pay Orders", routeKey: "/pay-orders" },
     {
-      href: "/paid-orders",
-      label: "Paid Orders",
-      routeKey: "/paid-orders",
+      href: "/payment-status",
+      label: "Payment Status",
+      routeKey: "/payment-status",
     },
-    { href: "/paying", label: "Pay Orders", routeKey: "/paying" },
-    { href: "/selling", label: "Release Coins", routeKey: "/selling" },
-    { href: "/ads", label: "My Ads", routeKey: "/ads" },
-    { href: "/onlineads", label: "P2P Ads", routeKey: "/onlineads" },
+    { href: "/history", label: "Transaction History", routeKey: "/history" },
+    // { href: "/selling", label: "Release Coins", routeKey: "/selling" },
+    // { href: "/ads", label: "My Ads", routeKey: "/ads" },
+    // { href: "/onlineads", label: "P2P Ads", routeKey: "/onlineads" },
   ];
 
   // Effect to update document title with pending order count
@@ -160,7 +161,7 @@ export const TopBar = () => {
             </span>
           </div>
           <div>|</div>
-          <div className="text-blue-800">
+          <div className="hidden md:block text-blue-800">
             {adminBalance?.coin} Balance:{" "}
             <span className="font-semibold text-blue-900">
               {adminBalance?.walletBalance || "0.00"}
@@ -202,7 +203,7 @@ export const TopBar = () => {
               {pendingOrders?.length ?? "0"}
             </span>
           </div>
-          <div>|</div>
+          <div>-</div>
           <div className="text-blue-800">
             <span className="font-semibold text-blue-900">
               {new Intl.NumberFormat("en-NG", {
@@ -213,8 +214,8 @@ export const TopBar = () => {
               }).format(Number(adminBankBalance || 0) / 100)}
             </span>
           </div>
-          <div>|</div>
-          <div className="text-blue-800">
+          <div className="hidden md:block">|</div>
+          <div className="hidden md:block text-blue-800">
             <span className="font-semibold text-blue-900">
               {adminBalance?.walletBalance || "0.00"}
             </span>

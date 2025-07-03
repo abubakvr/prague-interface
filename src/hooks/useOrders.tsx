@@ -21,7 +21,7 @@ export const getOrders = async ({
   side: number;
 }) => {
   try {
-    const data = await fetchData("/api/p2p/orders", {
+    const response = await fetchData("/api/p2p/orders", {
       method: "POST",
       data: {
         page,
@@ -30,9 +30,9 @@ export const getOrders = async ({
         side,
       },
     });
-    return data.result;
-  } catch (err) {
-    console.error("Error fetching sell orders:", err);
+    return response.data.result;
+  } catch (err: any) {
+    console.error("Error fetching sell orders:", err.message);
     throw err;
   }
 };
@@ -40,18 +40,18 @@ export const getOrders = async ({
 export const getPendingOrders = async () => {
   try {
     return await fetchData("/api/p2p/orders/pending");
-  } catch (err) {
-    console.error("Error fetching pending orders:", err);
+  } catch (err: any) {
+    console.error("Error fetching pending orders:", err.message);
     throw err;
   }
 };
 
 export const getUserProfile = async (orderId: string, originalUid: string) => {
   try {
-    const data = await fetchData(
+    const response = await fetchData(
       `/api/p2p/orders/stats/${originalUid}/${orderId}`
     );
-    return data.result;
+    return response.data.result;
   } catch (err) {
     console.error("Error fetching user profile:", err);
     throw err;
@@ -61,8 +61,8 @@ export const getUserProfile = async (orderId: string, originalUid: string) => {
 export const getOrderDetails = async (id: string) => {
   try {
     return await fetchData(`/api/p2p/orders/${id}`);
-  } catch (err) {
-    console.error("Error fetching order details:", err);
+  } catch (err: any) {
+    console.error("Error fetching order details:", err.message);
     throw err;
   }
 };
@@ -81,8 +81,8 @@ export const markPaidOrder = async (
         paymentId,
       },
     });
-  } catch (err) {
-    console.error("Error marking order as paid:", err);
+  } catch (err: any) {
+    console.error("Error marking order as paid:", err.message);
     throw err;
   }
 };
@@ -101,12 +101,12 @@ export const payAllOrders = async (orders: OrderDetails[]): Promise<any> => {
       .filter((result) => result && result.success)
       .map((result) => result?.data);
 
-    return await fetchData("/api/payment/make-bulk-payment", {
+    return await fetchData<{ data: any }>("/api/payment/make-bulk-payment", {
       method: "POST",
       data: { paymentDataArray },
     });
   } catch (error: any) {
-    console.error("Payment API error:", error);
+    console.error("Payment API error:", error.message);
     throw error;
   }
 };
@@ -124,16 +124,16 @@ export const paySingleOrder = async (order: OrderDetails): Promise<any> => {
     const validatedPaymentData = validatePaymentData(transformedOrder);
 
     if (validatedPaymentData.success !== true) {
-      console.error("Payment API error:", validatedPaymentData.error);
-      throw new Error("Payment API error:");
+      console.error("Validation error:", validatedPaymentData.error);
+      throw new Error(`Validation error: Could not validate user details`);
     }
 
-    return await fetchData("/api/payment/make-payment", {
+    return await fetchData<{ data: any }>("/api/payment/make-payment", {
       method: "POST",
       data: { paymentData: validatedPaymentData.data },
     });
   } catch (error: any) {
-    console.error("Payment API error:", error);
+    console.error("Payment API error:", error.message);
     throw error;
   }
 };
@@ -159,12 +159,12 @@ export const useOrders = ({
 
 export async function payBulkOrders() {
   try {
-    const data = await fetchData("/api/pay-orders", {
+    const response = await fetchData("/api/pay-orders", {
       method: "POST",
     });
-    return data.result;
-  } catch (error) {
-    console.error("Error calling pay-orders route:", error);
+    return response.data.result;
+  } catch (error: any) {
+    console.error("Error calling pay-orders route:", error.message);
     throw error;
   }
 }
