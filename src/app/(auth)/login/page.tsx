@@ -64,7 +64,7 @@ const Login = () => {
       if (data.data.token) {
         localStorage.setItem("accessToken", data.data.token);
         // Set token in cookies instead of localStorage
-        document.cookie = `accessToken=${data.data.token}; path=/; max-age=172800; SameSite=Strict`;
+        document.cookie = `accessToken=${data.data.token}; path=/; max-age=604800; SameSite=Strict`;
 
         setTimeout(() => {
           // Force a refresh of the authentication state before redirecting

@@ -26,7 +26,7 @@ export const transformSingleOrderToPaymentData = (
     if (term?.realName) {
       // Check for non-Latin alphabets (including Cyrillic used in Russian/Ukrainian)
       if (
-        !/^[a-zA-Z\s-]+$/.test(term.realName) ||
+        !/^[a-zA-Z\s-\.]+$/.test(term.realName) ||
         /[\u0400-\u04FF]/.test(term.realName)
       ) {
         console.log(

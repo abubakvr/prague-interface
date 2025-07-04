@@ -6,6 +6,9 @@ async function customFetch(url: string, options: RequestInit = {}) {
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
+      if (response.status === 403) {
+        return NextResponse.redirect(new URL("/login"));
+      }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     return await response.json();

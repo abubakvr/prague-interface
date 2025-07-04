@@ -12,7 +12,7 @@ import {
 } from "./components/LoadingState";
 import { OrdersHeader } from "./components/OrdersHeader";
 import { OrdersTableUI } from "./components/OrdersTableUI";
-import { findBankCode } from "@/lib/findBankCode";
+import { findBankCode, findPaymentMethodByType } from "@/lib/findBankCode";
 import { OrderDetails } from "@/types/order";
 import { handlePayAllOrders } from "./components/OrderActions";
 import { useAdminBalance, useAdminBankBalance } from "@/hooks/useAccount";
@@ -58,7 +58,12 @@ export default function OrdersTable() {
           const paymentTerm = paymentList.length > 0 ? paymentList[0] : null;
           return {
             ...order,
-            bankCode: findBankCode(paymentTerm?.bankName)?.BANK_CODE || "N/A",
+            bankCode:
+              findPaymentMethodByType(paymentTerm?.paymentType)?.BANK_CODE ||
+              findBankCode(paymentTerm?.bankName)?.BANK_CODE ||
+              findBankCode(paymentTerm?.branchName)?.BANK_CODE ||
+              findBankCode(paymentTerm?.realName)?.BANK_CODE ||
+              "N/A",
           };
         })
       );
@@ -121,10 +126,6 @@ export default function OrdersTable() {
       return order;
     });
     setExportableOrders(updatedExportableOrders);
-
-    // You can work with the updated data right away
-    console.log("Updated orders:", updatedOrders);
-    console.log("Updated exportable orders:", updatedExportableOrders);
   };
 
   if (isLoading) {
