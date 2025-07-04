@@ -57,9 +57,12 @@ function PaidOrdersContent() {
 
         // Check if response is OK before parsing JSON
         if (!response.ok) {
+          if (response.status === 403) {
+            router.push("/login");
+          }
           const errorText = await response.text();
           throw new Error(
-            `Server responded with ${response.status}: ${errorText}`
+            `An error occurred while fetching paid orders ${response.status}: ${errorText}`
           );
         }
 
