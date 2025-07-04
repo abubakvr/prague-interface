@@ -38,9 +38,7 @@ export const handlePayAllOrders = async (
       const paidOrders = response.data.transferCount;
       const unpaidOrders = exportableOrders.length - paidOrders;
       toast.success(
-        `${paidOrders} orders paid successfully. ${
-          unpaidOrders > 0 ? `${unpaidOrders} orders could not be paid` : ""
-        }`
+        `${paidOrders} order${paidOrders === 1 ? "" : "s"} paid successfully`
       );
       refetch();
     } else {
