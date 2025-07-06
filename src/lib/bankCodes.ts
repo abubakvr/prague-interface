@@ -33,6 +33,10 @@ export const banks: Bank[] = [
     BANK_CODE: "000013",
   },
   {
+    BANK_NAME: "Moniepoint",
+    BANK_CODE: "090405",
+  },
+  {
     BANK_NAME: "UBA",
     BANK_CODE: "000004",
   },
@@ -446,14 +450,6 @@ export const banks: Bank[] = [
     BANK_CODE: "050009",
   },
   {
-    BANK_NAME: "FCMB",
-    BANK_CODE: "000003",
-  },
-  {
-    BANK_NAME: "First City Monument Bank MFB",
-    BANK_CODE: "090409",
-  },
-  {
     BANK_NAME: "Federal Polytechnic Nekede MFB",
     BANK_CODE: "090398",
   },
@@ -822,8 +818,9 @@ export const banks: Bank[] = [
     BANK_NAME: "Moneymaster PSB",
     BANK_CODE: "120005",
   },
+
   {
-    BANK_NAME: "Moniepoint",
+    BANK_NAME: "Monipoint",
     BANK_CODE: "090405",
   },
   {
