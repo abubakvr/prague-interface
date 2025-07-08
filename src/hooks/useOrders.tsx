@@ -125,7 +125,7 @@ export const paySingleOrder = async (order: OrderDetails): Promise<any> => {
 
     if (validatedPaymentData.success !== true) {
       console.error("Validation error:", validatedPaymentData.error);
-      throw new Error(`Could not validate user bank details`);
+      throw new Error("Unable to validate the user's bank details");
     }
 
     return await fetchData<{ data: any }>("/api/payment/make-payment", {

@@ -47,7 +47,7 @@ export const handlePayAllOrders = async (
     }
   } catch (error: any) {
     console.error("Error paying order:", error);
-    toast.error(`Could not pay orders: ${error.message}`);
+    toast.error(`${error.message}`);
   } finally {
     setPayAllLoading(false);
   }
@@ -72,7 +72,7 @@ export const handlePaySingleOrder = async (
     }
   } catch (error: any) {
     console.error("Error paying order:", error);
-    toast.error(`Could not pay order: ${error.message}`);
+    toast.error(`${error.message}`);
   } finally {
     setPayingOrderId(null);
   }

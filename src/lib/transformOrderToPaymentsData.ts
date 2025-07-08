@@ -12,30 +12,30 @@ export const transformSingleOrderToPaymentData = (
     const term = order?.paymentTermList?.[0] || {};
     const paymentTypeFromTerm = term?.paymentType;
 
-    const bankCodeEntry = findPaymentMethodByType(paymentTypeFromTerm);
     const bankCodeInfo =
-      order?.bankCode ||
+      findPaymentMethodByType(paymentTypeFromTerm)?.BANK_CODE ||
       findBankCode(term?.bankName)?.BANK_CODE ||
-      bankCodeEntry?.BANK_CODE;
+      findBankCode(term?.branchName)?.BANK_CODE ||
+      findBankCode(term.realName)?.BANK_CODE;
 
     if (!bankCodeInfo) {
       console.log("skipping", term.bankName);
       return; // Skip this order if no matching bank code is found
     }
 
-    if (term?.realName) {
-      // Check for non-Latin alphabets (including Cyrillic used in Russian/Ukrainian)
-      if (
-        !/^[a-zA-Z\s-\.]+$/.test(term.realName) ||
-        /[\u0400-\u04FF]/.test(term.realName)
-      ) {
-        console.log(
-          "skipping user with non-English or Cyrillic name",
-          term?.realName
-        );
-        return;
-      }
-    }
+    // if (term?.realName) {
+    //   // Check for non-Latin alphabets (including Cyrillic used in Russian/Ukrainian)
+    //   if (
+    //     !/^[a-zA-Z\s-\.]+$/.test(term.realName) ||
+    //     /[\u0400-\u04FF]/.test(term.realName)
+    //   ) {
+    //     console.log(
+    //       "skipping user with non-English or Cyrillic name",
+    //       term?.realName
+    //     );
+    //     return;
+    //   }
+    // }
 
     const amountInKobo = Math.floor(Number(order?.amount) * 100);
     const parsedAmount = amountInKobo - (amountInKobo % 100);

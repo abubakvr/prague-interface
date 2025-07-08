@@ -44,6 +44,7 @@ export function OrderRow({
   const userBank =
     selectedBank ||
     findBankCode(paymentTerm?.bankName) ||
+    findBankCode(paymentTerm?.branchName) ||
     findPaymentMethodByType(paymentTerm?.paymentType);
 
   // Calculate amount

@@ -156,8 +156,8 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
-      <div className="flex w-full h-screen">
+    <div className="md:min-h-screen flex bg-gray-100">
+      <div className="flex w-full md:h-screen">
         {/* Left side - Platform Info */}
         <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white flex-col p-8 relative overflow-hidden">
           {/* Background image with overlay */}
