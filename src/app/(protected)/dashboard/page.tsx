@@ -335,7 +335,7 @@ export default function Home() {
               <HiShoppingCart className="text-orange-600 text-lg sm:text-xl" />
             </div>
             <h2 className="text-lg sm:text-xl font-medium text-gray-800">
-              Order Statistics
+              API Order Statistics
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
@@ -361,7 +361,10 @@ export default function Home() {
                   <HiCurrencyDollar className="text-orange-600 text-sm" />
                 </div>
                 <p className="text-xl font-bold text-orange-700">
-                  ₦{userDailyStats?.totalVolume?.toLocaleString() || 0}
+                  ₦
+                  {userDailyStats?.totalVolume
+                    ? (userDailyStats.totalVolume / 100).toLocaleString()
+                    : 0}
                 </p>
                 <p className="text-xs text-orange-600 mt-1">Volume</p>
               </div>
@@ -389,7 +392,10 @@ export default function Home() {
                   <HiCurrencyDollar className="text-orange-600 text-sm" />
                 </div>
                 <p className="text-xl font-bold text-orange-700">
-                  ₦{user30DayStats?.totalVolume?.toLocaleString() || 0}
+                  ₦
+                  {user30DayStats?.totalVolume
+                    ? (user30DayStats.totalVolume / 100).toLocaleString()
+                    : 0}
                 </p>
                 <p className="text-xs text-orange-600 mt-1">Volume</p>
               </div>
@@ -417,7 +423,10 @@ export default function Home() {
                   <HiCurrencyDollar className="text-orange-600 text-sm" />
                 </div>
                 <p className="text-xl font-bold text-orange-700">
-                  ₦{userTotalStats?.totalVolume?.toLocaleString() || 0}
+                  ₦
+                  {userTotalStats?.totalVolume
+                    ? (userTotalStats.totalVolume / 100).toLocaleString()
+                    : 0}
                 </p>
                 <p className="text-xs text-orange-600 mt-1">All Time</p>
               </div>
