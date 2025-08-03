@@ -7,6 +7,7 @@ import {
   useAdminDetails,
   useWalletInfo,
 } from "@/hooks/useAccount";
+import { useOrderStats } from "@/hooks/useOrderStats";
 import {
   HiUser,
   HiCreditCard,
@@ -18,6 +19,8 @@ import {
   HiMail,
   HiRefresh,
   HiExclamationCircle,
+  HiShoppingCart,
+  HiTrendingUp,
 } from "react-icons/hi";
 
 export default function Home() {
@@ -58,6 +61,15 @@ export default function Home() {
     refetch: fetchWalletInfo,
   } = useWalletInfo();
 
+  const {
+    userDailyStats,
+    userTotalStats,
+    user30DayStats,
+    isLoading: orderStatsLoading,
+    error: orderStatsError,
+    refetch: fetchOrderStats,
+  } = useOrderStats();
+
   const refetchPageData = () => {
     fetchAdminBalance();
     fetchAdminDetails();
@@ -65,6 +77,7 @@ export default function Home() {
     fetchAdminBankBalance();
     fetchAccountName();
     fetchWalletInfo();
+    fetchOrderStats();
   };
 
   if (
@@ -73,7 +86,8 @@ export default function Home() {
     adminAccountNumberLoading ||
     adminBankBalanceLoading ||
     adminAccountNameLoading ||
-    walletInfoLoading
+    walletInfoLoading ||
+    orderStatsLoading
   ) {
     return (
       <div className="w-full flex flex-col gap-y-5 h-screen items-center text-center  mt-16 p-4">
@@ -83,12 +97,13 @@ export default function Home() {
     );
   }
 
-  if (adminDetailError || adminBalanceError) {
+  if (adminDetailError || adminBalanceError || orderStatsError) {
     return (
       <div className="w-full flex flex-col h-screen items-center text-center gap-4 justify-center p-4">
         <HiExclamationCircle className="text-red-600 text-4xl sm:text-5xl" />
         <p className="text-red-600 text-sm sm:text-base">
-          Error loading dashboard: {adminDetailError?.message}
+          Error loading dashboard:{" "}
+          {adminDetailError?.message || orderStatsError}
         </p>
         <button
           onClick={refetchPageData}
@@ -308,6 +323,103 @@ export default function Home() {
                 <span className="ml-2 text-purple-700 font-medium text-xs sm:text-sm">
                   {adminDetails?.recentRate || "N/A"}%
                 </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* New Order Statistics Card */}
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border-l-4 border-orange-500 sm:col-span-3">
+          <div className="flex items-center mb-3 sm:mb-4">
+            <div className="p-2 sm:p-3 bg-orange-100 rounded-full mr-2 sm:mr-3">
+              <HiShoppingCart className="text-orange-600 text-lg sm:text-xl" />
+            </div>
+            <h2 className="text-lg sm:text-xl font-medium text-gray-800">
+              Order Statistics
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            {/* Today's Statistics */}
+            <div className="space-y-3">
+              <div className="bg-orange-50 p-3 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-medium text-gray-700 text-sm">
+                    Today's Orders
+                  </p>
+                  <HiTrendingUp className="text-orange-600 text-sm" />
+                </div>
+                <p className="text-xl font-bold text-orange-700">
+                  {userDailyStats?.totalOrders || 0}
+                </p>
+                <p className="text-xs text-orange-600 mt-1">Orders</p>
+              </div>
+              <div className="bg-orange-50 p-3 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-medium text-gray-700 text-sm">
+                    Today's Volume
+                  </p>
+                  <HiCurrencyDollar className="text-orange-600 text-sm" />
+                </div>
+                <p className="text-xl font-bold text-orange-700">
+                  ₦{userDailyStats?.totalVolume?.toLocaleString() || 0}
+                </p>
+                <p className="text-xs text-orange-600 mt-1">Volume</p>
+              </div>
+            </div>
+
+            {/* 30-Day Statistics */}
+            <div className="space-y-3">
+              <div className="bg-orange-50 p-3 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-medium text-gray-700 text-sm">
+                    30-Day Orders
+                  </p>
+                  <HiTrendingUp className="text-orange-600 text-sm" />
+                </div>
+                <p className="text-xl font-bold text-orange-700">
+                  {user30DayStats?.totalOrders || 0}
+                </p>
+                <p className="text-xs text-orange-600 mt-1">Orders</p>
+              </div>
+              <div className="bg-orange-50 p-3 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-medium text-gray-700 text-sm">
+                    30-Day Volume
+                  </p>
+                  <HiCurrencyDollar className="text-orange-600 text-sm" />
+                </div>
+                <p className="text-xl font-bold text-orange-700">
+                  ₦{user30DayStats?.totalVolume?.toLocaleString() || 0}
+                </p>
+                <p className="text-xs text-orange-600 mt-1">Volume</p>
+              </div>
+            </div>
+
+            {/* All-Time Statistics */}
+            <div className="space-y-3">
+              <div className="bg-orange-50 p-3 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-medium text-gray-700 text-sm">
+                    Total Orders
+                  </p>
+                  <HiTrendingUp className="text-orange-600 text-sm" />
+                </div>
+                <p className="text-xl font-bold text-orange-700">
+                  {userTotalStats?.totalOrders || 0}
+                </p>
+                <p className="text-xs text-orange-600 mt-1">All Time</p>
+              </div>
+              <div className="bg-orange-50 p-3 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-medium text-gray-700 text-sm">
+                    Total Volume
+                  </p>
+                  <HiCurrencyDollar className="text-orange-600 text-sm" />
+                </div>
+                <p className="text-xl font-bold text-orange-700">
+                  ₦{userTotalStats?.totalVolume?.toLocaleString() || 0}
+                </p>
+                <p className="text-xs text-orange-600 mt-1">All Time</p>
               </div>
             </div>
           </div>
