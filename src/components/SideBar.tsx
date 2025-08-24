@@ -39,7 +39,7 @@ export const SideBar = () => {
 
   return (
     <>
-      <nav className="hidden lg:block fixed top-0 left-0 h-screen w-64 bg-blue-900 p-4 text-white shadow-lg flex-col">
+      <nav className="hidden lg:flex flex-col fixed top-0 left-0 h-screen w-64 bg-blue-900 p-4 text-white shadow-lg">
         <div className="flex items-center space-x-1 mt-3">
           <div className="w-8 h-8 relative">
             <Image
@@ -69,8 +69,8 @@ export const SideBar = () => {
           ))}
         </ul>
 
-        {/* Settings Button at Bottom */}
-        <div className="mt-auto pt-4 border-t border-blue-700">
+        {/* Settings Button at Extreme Bottom */}
+        <div className="w-full absolute bottom-0 left-0 p-4 border-t border-blue-800 bg-blue-900">
           <button
             onClick={openSettings}
             className="w-full flex items-center space-x-3 p-3 rounded transition-colors duration-200 hover:bg-blue-700 text-blue-100 hover:text-white"
