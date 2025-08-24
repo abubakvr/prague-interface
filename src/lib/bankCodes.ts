@@ -820,10 +820,6 @@ export const banks: Bank[] = [
   },
 
   {
-    BANK_NAME: "Monipoint",
-    BANK_CODE: "090405",
-  },
-  {
     BANK_NAME: "Moremonee MFB",
     BANK_CODE: "090685",
   },

@@ -10,6 +10,15 @@ interface FormData {
   api_secret: string;
   bank_api_key: string;
   bank_account: string;
+  bank_email: string;
+}
+
+interface ValidationErrors {
+  api_key?: string;
+  api_secret?: string;
+  bank_api_key?: string;
+  bank_account?: string;
+  bank_email?: string;
 }
 
 const AddApiKey = () => {
@@ -18,6 +27,7 @@ const AddApiKey = () => {
     api_secret: "",
     bank_api_key: "",
     bank_account: "",
+    bank_email: "",
   });
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
@@ -25,19 +35,144 @@ const AddApiKey = () => {
   const [showApiKey, setShowApiKey] = useState<boolean>(false);
   const [showApiSecret, setShowApiSecret] = useState<boolean>(false);
   const [showBankApiKey, setShowBankApiKey] = useState<boolean>(false);
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {}
+  );
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
+
   const router = useRouter();
+
+  // Email validation function
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Bank account validation function
+  const validateBankAccount = (account: string): boolean => {
+    // Nigerian bank account numbers are typically 10 digits
+    const accountRegex = /^\d{10}$/;
+    return accountRegex.test(account);
+  };
+
+  // Validate individual field
+  const validateField = (name: string, value: string): string => {
+    switch (name) {
+      case "bank_email":
+        if (!value.trim()) {
+          return "Bank email is required";
+        }
+        if (!validateEmail(value)) {
+          return "Please enter a valid email address";
+        }
+        return "";
+
+      case "bank_account":
+        if (!value.trim()) {
+          return "Bank account number is required";
+        }
+        if (!validateBankAccount(value)) {
+          return "Bank account number must be 10 digits";
+        }
+        return "";
+
+      case "api_key":
+        if (!value.trim()) {
+          return "API key is required";
+        }
+        if (value.length < 10) {
+          return "API key must be at least 10 characters";
+        }
+        return "";
+
+      case "api_secret":
+        if (!value.trim()) {
+          return "API secret is required";
+        }
+        if (value.length < 10) {
+          return "API secret must be at least 10 characters";
+        }
+        return "";
+
+      case "bank_api_key":
+        if (!value.trim()) {
+          return "Bank API key is required";
+        }
+        if (value.length < 10) {
+          return "Bank API key must be at least 10 characters";
+        }
+        return "";
+
+      default:
+        return "";
+    }
+  };
+
+  // Handle field blur (when user leaves a field)
+  const handleBlur = (name: string) => {
+    setTouchedFields((prev) => new Set(prev).add(name));
+    const value = formData[name as keyof FormData];
+    const fieldError = validateField(name, value as string);
+
+    setValidationErrors((prev) => ({
+      ...prev,
+      [name]: fieldError,
+    }));
+  };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
     // Clear error when user starts typing
     if (error) {
       setError("");
     }
+
+    // Clear validation error for this field when user types
+    if (validationErrors[name as keyof ValidationErrors]) {
+      setValidationErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+
+    // Real-time validation for email field
+    if (name === "bank_email" && touchedFields.has(name)) {
+      const fieldError = validateField(name, value);
+      setValidationErrors((prev) => ({
+        ...prev,
+        [name]: fieldError,
+      }));
+    }
+  };
+
+  // Validate entire form
+  const validateForm = (): boolean => {
+    const errors: ValidationErrors = {};
+    let isValid = true;
+
+    Object.keys(formData).forEach((key) => {
+      const fieldError = validateField(key, formData[key as keyof FormData]);
+      if (fieldError) {
+        errors[key as keyof ValidationErrors] = fieldError;
+        isValid = false;
+      }
+    });
+
+    setValidationErrors(errors);
+    return isValid;
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    // Validate form before submission
+    if (!validateForm()) {
+      setError("Please fix the validation errors before submitting.");
+      return;
+    }
+
     setIsSubmitting(true);
     setError("");
     setSuccess("");
@@ -61,6 +196,7 @@ const AddApiKey = () => {
           api_secret: formData.api_secret,
           bank_api_key: formData.bank_api_key,
           bank_account: formData.bank_account,
+          bank_email: formData.bank_email,
         }),
       });
 
@@ -76,7 +212,10 @@ const AddApiKey = () => {
         api_secret: "",
         bank_api_key: "",
         bank_account: "",
+        bank_email: "",
       });
+      setValidationErrors({});
+      setTouchedFields(new Set());
 
       // Redirect to dashboard after a short delay
       setTimeout(() => {
@@ -100,6 +239,21 @@ const AddApiKey = () => {
 
   const toggleShowBankApiKey = () => {
     setShowBankApiKey(!showBankApiKey);
+  };
+
+  // Helper function to get field error and styling
+  const getFieldError = (name: string) => {
+    const error = validationErrors[name as keyof ValidationErrors];
+    const isTouched = touchedFields.has(name);
+    return {
+      hasError: error && isTouched,
+      errorMessage: error,
+      inputClass: `w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 ${
+        error && isTouched
+          ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+          : "border-gray-300"
+      }`,
+    };
   };
 
   return (
@@ -131,7 +285,8 @@ const AddApiKey = () => {
                 name="api_key"
                 value={formData.api_key}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                onBlur={() => handleBlur("api_key")}
+                className={getFieldError("api_key").inputClass}
                 placeholder="Enter your API key"
                 required
               />
@@ -143,6 +298,11 @@ const AddApiKey = () => {
                 {showApiKey ? "Hide" : "Show"}
               </button>
             </div>
+            {getFieldError("api_key").hasError && (
+              <p className="mt-1 text-sm text-red-600">
+                {getFieldError("api_key").errorMessage}
+              </p>
+            )}
           </div>
 
           <div className="mb-6">
@@ -156,7 +316,8 @@ const AddApiKey = () => {
                 name="api_secret"
                 value={formData.api_secret}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                onBlur={() => handleBlur("api_secret")}
+                className={getFieldError("api_secret").inputClass}
                 placeholder="Enter your API secret"
                 required
               />
@@ -168,10 +329,15 @@ const AddApiKey = () => {
                 {showApiSecret ? "Hide" : "Show"}
               </button>
             </div>
+            {getFieldError("api_secret").hasError && (
+              <p className="mt-1 text-sm text-red-600">
+                {getFieldError("api_secret").errorMessage}
+              </p>
+            )}
           </div>
 
           <div className="mb-6">
-            <label className="block text-gray-700 mb-2" htmlFor="api_secret">
+            <label className="block text-gray-700 mb-2" htmlFor="bank_api_key">
               Kuda API Key
             </label>
             <div className="relative">
@@ -181,7 +347,8 @@ const AddApiKey = () => {
                 name="bank_api_key"
                 value={formData.bank_api_key}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                onBlur={() => handleBlur("bank_api_key")}
+                className={getFieldError("bank_api_key").inputClass}
                 placeholder="Enter your Bank API Key"
                 required
               />
@@ -193,6 +360,11 @@ const AddApiKey = () => {
                 {showBankApiKey ? "Hide" : "Show"}
               </button>
             </div>
+            {getFieldError("bank_api_key").hasError && (
+              <p className="mt-1 text-sm text-red-600">
+                {getFieldError("bank_api_key").errorMessage}
+              </p>
+            )}
           </div>
 
           <div className="mb-6">
@@ -205,10 +377,39 @@ const AddApiKey = () => {
               name="bank_account"
               value={formData.bank_account}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+              onBlur={() => handleBlur("bank_account")}
+              className={getFieldError("bank_account").inputClass}
               placeholder="Enter your Bank Account Number"
+              maxLength={10}
               required
             />
+            {getFieldError("bank_account").hasError && (
+              <p className="mt-1 text-sm text-red-600">
+                {getFieldError("bank_account").errorMessage}
+              </p>
+            )}
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-gray-700 mb-2" htmlFor="bank_email">
+              Bank Email
+            </label>
+            <input
+              id="bank_email"
+              type="email"
+              name="bank_email"
+              value={formData.bank_email}
+              onChange={handleChange}
+              onBlur={() => handleBlur("bank_email")}
+              className={getFieldError("bank_email").inputClass}
+              placeholder="Enter your Bank Email"
+              required
+            />
+            {getFieldError("bank_email").hasError && (
+              <p className="mt-1 text-sm text-red-600">
+                {getFieldError("bank_email").errorMessage}
+              </p>
+            )}
           </div>
 
           <button
