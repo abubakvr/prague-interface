@@ -44,6 +44,7 @@ export const TopBar = () => {
       label: "Transaction History",
       routeKey: "/transaction-history",
     },
+    { href: "/settings", label: "Settings", routeKey: "/settings" },
     // { href: "/selling", label: "Release Coins", routeKey: "/selling" },
     // { href: "/ads", label: "My Ads", routeKey: "/ads" },
     // { href: "/onlineads", label: "P2P Ads", routeKey: "/onlineads" },
@@ -68,36 +69,50 @@ export const TopBar = () => {
   }, [pathname, pendingOrders]); // Dependencies: update when path or orders change
 
   useEffect(() => {
+    // Use 'mousedown' for outside click, but ignore if event.target is inside a dropdown button
     const handleClickOutside = (event: MouseEvent) => {
+      // If the dropdown is not open, do nothing
+      if (!isDropdownOpen) return;
+
+      // If the click is inside the dropdown, do nothing
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        (dropdownRef.current &&
+          dropdownRef.current.contains(event.target as Node)) ||
+        (mobileDropdownRef.current &&
+          mobileDropdownRef.current.contains(event.target as Node))
       ) {
-        setIsDropdownOpen(false);
+        return;
       }
 
-      if (
-        mobileDropdownRef.current &&
-        !mobileDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-
+      // If the click is inside the mobile menu, do nothing
       if (
         mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(event.target as Node)
+        mobileMenuRef.current.contains(event.target as Node)
       ) {
-        setIsMobileMenuOpen(false);
+        return;
       }
+
+      // Otherwise, close dropdowns/menus
+      setIsDropdownOpen(false);
+      setIsMobileMenuOpen(false);
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [isDropdownOpen]);
 
-  const handleLogout = async () => {
+  // Fixed handleLogout function
+  const handleLogout = async (e: React.MouseEvent) => {
+    console.log("handleLogout");
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Close dropdown first
+    setIsDropdownOpen(false);
+
     try {
       // Call the logout API route with the full URL
       await fetch(`${window.location.origin}/api/logout`, {
@@ -119,7 +134,10 @@ export const TopBar = () => {
     }
   };
 
-  const openSettings = () => {
+  // Fixed openSettings function
+  const openSettings = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setIsSettingsOpen(true);
     setIsDropdownOpen(false); // Close dropdown when opening settings
   };
@@ -277,7 +295,14 @@ export const TopBar = () => {
                 </div>
                 <button
                   onClick={openSettings}
-                  className="flex items-center space-x-2 w-full text-left px-4 py-2 text-sm text-blue-800 hover:bg-blue-50 transition-colors duration-200 border-t border-gray-100"
+                  className="hidden md:flex items-center space-x-2 w-full text-left px-4 py-2 text-sm text-blue-800 hover:bg-blue-50 transition-colors duration-200 border-t border-gray-100"
+                >
+                  <HiCog className="h-4 w-4" />
+                  <span>Settings</span>
+                </button>
+                <button
+                  onClick={() => router.push("/settings")}
+                  className="flex md:hidden items-center space-x-2 w-full text-left px-4 py-2 text-sm text-blue-800 hover:bg-blue-50 transition-colors duration-200 border-t border-gray-100"
                 >
                   <HiCog className="h-4 w-4" />
                   <span>Settings</span>
