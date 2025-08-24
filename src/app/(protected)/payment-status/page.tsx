@@ -5,6 +5,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
 import { BASE_URL } from "@/lib/constants";
 import { HiX, HiCheckCircle, HiExclamationCircle } from "react-icons/hi";
+import { banks } from "@/lib/bankCodes";
+
+// Function to find bank name by bank code
+function findBankNameByCode(bankCode: string): string {
+  if (!bankCode) return "N/A";
+
+  const bank = banks.find((bank) => bank.BANK_CODE === bankCode);
+  return bank ? bank.BANK_NAME : bankCode; // Return bank name if found, otherwise return the code
+}
 
 interface PaidOrder {
   id: number;
@@ -103,8 +112,6 @@ function PaidOrdersContent() {
         }
 
         if (data.success) {
-          console.log("Fetched paid orders data:", data.data);
-          console.log("Sample order structure:", data.data[0]);
           setPaidOrders(data.data);
           setPagination(data.pagination);
         } else {
@@ -279,7 +286,6 @@ function PaidOrdersContent() {
                     </thead>
                     <tbody className="bg-slate-50 divide-y divide-blue-50">
                       {paidOrders.map((order, index) => {
-                        console.log(`Rendering order ${index}:`, order);
                         return (
                           <tr
                             key={order.id}
@@ -292,7 +298,7 @@ function PaidOrdersContent() {
                               {order.seller_name}
                             </td>
                             <td className="p-4 text-blue-900 text-sm">
-                              {order.beneficiary_bank || "N/A"}
+                              {findBankNameByCode(order.beneficiary_bank)}
                             </td>
                             <td className="p-4 text-blue-900 text-sm">
                               <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
@@ -336,7 +342,6 @@ function PaidOrdersContent() {
             {/* Mobile Card View */}
             <div className="md:hidden space-y-3">
               {paidOrders.map((order, index) => {
-                console.log(`Rendering mobile order ${index}:`, order);
                 return (
                   <div
                     key={order.id}
@@ -366,7 +371,7 @@ function PaidOrdersContent() {
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-gray-500">Bank:</span>
                         <span className="text-sm text-gray-700 font-medium">
-                          {order.beneficiary_bank || "N/A"}
+                          {findBankNameByCode(order.beneficiary_bank)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
@@ -520,7 +525,9 @@ function PaidOrdersContent() {
                       <div className="flex justify-between">
                         <span className="text-gray-600">Bank:</span>
                         <span className="font-medium">
-                          {selectedTransaction.beneficiary_bank || "N/A"}
+                          {findBankNameByCode(
+                            selectedTransaction.beneficiary_bank
+                          )}
                         </span>
                       </div>
                       <div className="flex justify-between">
