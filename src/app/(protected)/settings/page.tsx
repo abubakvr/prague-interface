@@ -102,7 +102,7 @@ export default function SettingsPage() {
         return;
       }
 
-      const response = await fetch(`${BASE_URL}/api/user/settings`, {
+      const response = await fetch(`${BASE_URL}/api/settings`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -223,34 +223,90 @@ export default function SettingsPage() {
       }
 
       const method = existingSettings ? "PUT" : "POST";
-      const url = existingSettings
-        ? `${BASE_URL}/api/user/settings/${existingSettings.id}`
-        : `${BASE_URL}/api/user/settings`;
+      const url = `${BASE_URL}/api/settings`;
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      let response;
+      let methodUsed = method; // Track which method was used
+
+      try {
+        // Use PUT for updates, POST for new settings
+        response = await fetch(url, {
+          method: methodUsed,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(formData),
+        });
+      } catch (methodError: any) {
+        // Fallback to PATCH (upsert) if the specific method fails
+        try {
+          response = await fetch(url, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(formData),
+          });
+          methodUsed = "PATCH";
+        } catch (patchError: any) {
+          throw new Error(
+            `${methodUsed} failed: ${methodError.message}, PATCH fallback also failed: ${patchError.message}`
+          );
+        }
+      }
 
       if (response.ok) {
         const result: ApiResponse = await response.json();
-        if (result.success) {
-          setSuccess(
-            existingSettings
-              ? "Settings updated successfully!"
-              : "Settings created successfully!"
-          );
+        if (result.success && result.data) {
+          setExistingSettings(result.data);
+          setSuccess(`Settings updated successfully!`);
+
           // Refresh the settings
           await fetchExistingSettings();
         } else {
-          setError(result.error || "Failed to save settings");
+          throw new Error(result.message || "Failed to save settings");
         }
       } else {
+        // Handle specific error cases
         const errorText = await response.text();
+
+        // If PUT fails with 404 and suggests POST, try POST instead
+        if (
+          response.status === 404 &&
+          methodUsed === "PUT" &&
+          errorText.includes("Use POST to create instead")
+        ) {
+          try {
+            const postResponse = await fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(formData),
+            });
+
+            if (postResponse.ok) {
+              const postResult: ApiResponse = await postResponse.json();
+              if (postResult.success && postResult.data) {
+                setExistingSettings(postResult.data);
+                setSuccess("Settings updated successfully!");
+                await fetchExistingSettings();
+                return;
+              }
+            }
+
+            // If POST also fails, throw the original error
+            throw new Error(
+              `POST fallback also failed: ${postResponse.status}`
+            );
+          } catch (postError: any) {
+            throw new Error(`POST fallback failed: ${postError.message}`);
+          }
+        }
+
         throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
     } catch (err: any) {
@@ -293,7 +349,7 @@ export default function SettingsPage() {
           <HiOutlineArrowLeft className="w-4 h-4 text-blue-700" />
         </Link>
         <h1 className="text-xl md:text-3xl font-bold text-blue-900 bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-blue-500 ">
-          {existingSettings ? "Update Settings" : "Update Settings"}
+          {existingSettings ? "Update Settings" : "Add New Settings"}
         </h1>
       </div>
 

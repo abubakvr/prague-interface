@@ -301,7 +301,11 @@ export const TopBar = () => {
                   <span>Settings</span>
                 </button>
                 <button
-                  onClick={() => router.push("/settings")}
+                  onClick={() => {
+                    router.push("/settings");
+                    setIsDropdownOpen(false);
+                    setIsMobileMenuOpen(false);
+                  }}
                   className="flex md:hidden items-center space-x-2 w-full text-left px-4 py-2 text-sm text-blue-800 hover:bg-blue-50 transition-colors duration-200 border-t border-gray-100"
                 >
                   <HiCog className="h-4 w-4" />

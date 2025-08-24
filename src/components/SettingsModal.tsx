@@ -339,10 +339,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
         if (result.success && result.data) {
           setExistingSettings(result.data);
-          const operation = existingSettings ? "updated" : "created";
-          const methodInfo =
-            methodUsed !== "PATCH" ? ` using ${methodUsed} method` : "";
-          setSuccess(`Settings ${operation} successfully!${methodInfo}`);
+          setSuccess(`Settings updated successfully!`);
 
           // Close modal after a short delay
           setTimeout(() => {
@@ -375,9 +372,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               const postResult: ApiResponse = await postResponse.json();
               if (postResult.success && postResult.data) {
                 setExistingSettings(postResult.data);
-                setSuccess(
-                  "Settings created successfully! using POST method (fallback)"
-                );
+                setSuccess("Settings updated successfully!");
                 setTimeout(() => onClose(), 2000);
                 return;
               }
