@@ -366,9 +366,7 @@ export default function SettingsPage() {
         </Link>
         <h1
           className={`text-xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-blue-500 transition-colors duration-200 dark:text-slate-300 ${
-            resolvedTheme === "dark"
-              ? "text-slate-100"
-              : "bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/20 text-slate-100"
+            resolvedTheme === "dark" ? "text-slate-100" : "text-slate-100"
           }`}
         >
           {existingSettings ? "Update Settings" : "Add New Settings"}
