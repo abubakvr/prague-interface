@@ -15,5 +15,14 @@
 
   body {
     @apply bg-background text-foreground transition-colors duration-200;
+    background-color: var(--background) !important;
+    color: var(--foreground) !important;
   }
+
+  /* Ensure html element also gets the background */
+  html {
+    background-color: var(--background);
+  }
+
+
 }

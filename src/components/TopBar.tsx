@@ -13,11 +13,13 @@ import { HiCog } from "react-icons/hi";
 import { SettingsModal } from "./SettingsModal";
 import { useTheme } from "@/context/ThemeContext";
 import { ThemeToggle } from "./ThemeToggle";
+import { useAuth } from "@/context/AuthContext";
 
 export const TopBar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { resolvedTheme } = useTheme();
+  const { logout } = useAuth();
   const { data: adminDetails } = useAdminDetails();
   const { data: adminBalance } = useAdminBalance();
   const { data: adminBankBalance } = useAdminBankBalance();
@@ -106,7 +108,7 @@ export const TopBar = () => {
     };
   }, [isDropdownOpen]);
 
-  // Fixed handleLogout function
+  // Updated handleLogout function to use AuthContext
   const handleLogout = async (e: React.MouseEvent) => {
     console.log("handleLogout");
 
@@ -126,8 +128,8 @@ export const TopBar = () => {
         },
       });
 
-      // Clear localStorage if you're also using that
-      localStorage.removeItem("accessToken");
+      // Use AuthContext logout function which handles theme refresh
+      logout();
 
       // Redirect to login page using router.replace instead of push
       // and use the relative path

@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100 dark:bg-slate-900 h-full transition-colors duration-200`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground h-full transition-colors duration-200`}
         suppressHydrationWarning={true}
       >
         <QueryClientContextProvider>
