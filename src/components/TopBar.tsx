@@ -12,6 +12,7 @@ import Link from "next/link";
 import { HiCog } from "react-icons/hi";
 import { SettingsModal } from "./SettingsModal";
 import { useTheme } from "@/context/ThemeContext";
+import { ThemeToggle } from "./ThemeToggle";
 
 export const TopBar = () => {
   const pathname = usePathname();
@@ -337,118 +338,128 @@ export const TopBar = () => {
           </div>
 
           {/* Mobile user icon */}
-          <div className="md:hidden flex items-center" ref={mobileDropdownRef}>
-            <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-200 ${
-                resolvedTheme === "dark"
-                  ? "bg-slate-600 hover:bg-slate-500"
-                  : "bg-blue-100 hover:bg-blue-200"
-              }`}
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              <span
-                className={`text-sm transition-colors duration-200 ${
-                  resolvedTheme === "dark" ? "text-slate-100" : "text-blue-900"
-                }`}
-              >
-                {adminDetails?.nickName?.charAt(0).toUpperCase() || "U"}
-              </span>
+          <div className="md:hidden flex items-center space-x-2">
+            <div className="md:hidden flex">
+              <ThemeToggle />
             </div>
-
-            {isDropdownOpen && (
+            <div
+              className="md:hidden flex items-center"
+              ref={mobileDropdownRef}
+            >
               <div
-                className={`absolute right-4 top-14 w-48 rounded-md shadow-lg py-1 z-30 border transition-colors duration-200 ${
+                className={`w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-200 ${
                   resolvedTheme === "dark"
-                    ? "bg-slate-700 border-slate-600"
-                    : "bg-white border-blue-100"
+                    ? "bg-slate-600 hover:bg-slate-500"
+                    : "bg-blue-100 hover:bg-blue-200"
                 }`}
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                <div
-                  className={`px-4 py-2 border-b transition-colors duration-200 ${
+                <span
+                  className={`text-sm transition-colors duration-200 ${
                     resolvedTheme === "dark"
-                      ? "border-slate-600"
-                      : "border-gray-100"
+                      ? "text-slate-100"
+                      : "text-blue-900"
                   }`}
                 >
-                  <span
-                    className={`block text-sm font-medium transition-colors duration-200 ${
+                  {adminDetails?.nickName?.charAt(0).toUpperCase() || "U"}
+                </span>
+              </div>
+
+              {isDropdownOpen && (
+                <div
+                  className={`absolute right-4 top-14 w-48 rounded-md shadow-lg py-1 z-30 border transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "bg-slate-700 border-slate-600"
+                      : "bg-white border-blue-100"
+                  }`}
+                >
+                  <div
+                    className={`px-4 py-2 border-b transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "border-slate-600"
+                        : "border-gray-100"
+                    }`}
+                  >
+                    <span
+                      className={`block text-sm font-medium transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "text-slate-300"
+                          : "text-blue-800"
+                      }`}
+                    >
+                      {adminDetails?.nickName || "User"}
+                    </span>
+                  </div>
+                  <div
+                    className={`px-4 py-2 text-xs transition-colors duration-200 ${
                       resolvedTheme === "dark"
                         ? "text-slate-300"
                         : "text-blue-800"
                     }`}
                   >
-                    {adminDetails?.nickName || "User"}
-                  </span>
+                    <div className="mb-1">
+                      Pending Orders:{" "}
+                      <span className="font-semibold">
+                        {pendingOrders?.length ?? "..."}
+                      </span>
+                    </div>
+                    <div className="mb-1">
+                      Bank Balance:{" "}
+                      <span className="font-semibold">
+                        {new Intl.NumberFormat("en-NG", {
+                          style: "currency",
+                          currency: "NGN",
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 2,
+                        }).format(Number(adminBankBalance || 0) / 100)}
+                      </span>
+                    </div>
+                    <div className="mb-1">
+                      {adminBalance?.coin} Balance:{" "}
+                      <span className="font-semibold">
+                        {adminBalance?.walletBalance || "0.00"}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={openSettings}
+                    className={`hidden md:flex items-center space-x-2 w-full text-left px-4 py-2 text-sm transition-colors duration-200 border-t ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-300 hover:bg-slate-600 border-slate-600"
+                        : "text-blue-800 hover:bg-blue-50 border-gray-100"
+                    }`}
+                  >
+                    <HiCog className="h-4 w-4" />
+                    <span>Settings</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      router.push("/settings");
+                      setIsDropdownOpen(false);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`flex md:hidden items-center space-x-2 w-full text-left px-4 py-2 text-sm transition-colors duration-200 border-t ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-300 hover:bg-slate-600 border-slate-600"
+                        : "text-blue-800 hover:bg-blue-50 border-gray-100"
+                    }`}
+                  >
+                    <HiCog className="h-4 w-4" />
+                    <span>Settings</span>
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className={`block w-full text-left px-4 py-2 text-sm transition-colors duration-200 border-t ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-300 hover:bg-slate-600 border-slate-600"
+                        : "text-blue-800 hover:bg-blue-50 border-gray-100"
+                    }`}
+                  >
+                    Logout
+                  </button>
                 </div>
-                <div
-                  className={`px-4 py-2 text-xs transition-colors duration-200 ${
-                    resolvedTheme === "dark"
-                      ? "text-slate-300"
-                      : "text-blue-800"
-                  }`}
-                >
-                  <div className="mb-1">
-                    Pending Orders:{" "}
-                    <span className="font-semibold">
-                      {pendingOrders?.length ?? "..."}
-                    </span>
-                  </div>
-                  <div className="mb-1">
-                    Bank Balance:{" "}
-                    <span className="font-semibold">
-                      {new Intl.NumberFormat("en-NG", {
-                        style: "currency",
-                        currency: "NGN",
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 2,
-                      }).format(Number(adminBankBalance || 0) / 100)}
-                    </span>
-                  </div>
-                  <div className="mb-1">
-                    {adminBalance?.coin} Balance:{" "}
-                    <span className="font-semibold">
-                      {adminBalance?.walletBalance || "0.00"}
-                    </span>
-                  </div>
-                </div>
-                <button
-                  onClick={openSettings}
-                  className={`hidden md:flex items-center space-x-2 w-full text-left px-4 py-2 text-sm transition-colors duration-200 border-t ${
-                    resolvedTheme === "dark"
-                      ? "text-slate-300 hover:bg-slate-600 border-slate-600"
-                      : "text-blue-800 hover:bg-blue-50 border-gray-100"
-                  }`}
-                >
-                  <HiCog className="h-4 w-4" />
-                  <span>Settings</span>
-                </button>
-                <button
-                  onClick={() => {
-                    router.push("/settings");
-                    setIsDropdownOpen(false);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className={`flex md:hidden items-center space-x-2 w-full text-left px-4 py-2 text-sm transition-colors duration-200 border-t ${
-                    resolvedTheme === "dark"
-                      ? "text-slate-300 hover:bg-slate-600 border-slate-600"
-                      : "text-blue-800 hover:bg-blue-50 border-gray-100"
-                  }`}
-                >
-                  <HiCog className="h-4 w-4" />
-                  <span>Settings</span>
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className={`block w-full text-left px-4 py-2 text-sm transition-colors duration-200 border-t ${
-                    resolvedTheme === "dark"
-                      ? "text-slate-300 hover:bg-slate-600 border-slate-600"
-                      : "text-blue-800 hover:bg-blue-50 border-gray-100"
-                  }`}
-                >
-                  Logout
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
 

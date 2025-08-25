@@ -24,8 +24,8 @@ export const ThemeToggle = () => {
         className="w-full flex items-center space-x-2 p-3 rounded-lg hover:bg-sidebar-light-hover dark:hover:bg-sidebar-dark-hover transition-colors duration-200"
         title={`Current theme: ${currentTheme?.label}`}
       >
-        <CurrentIcon className="h-5 w-5 dark:text-sidebar-dark-textSecondary" />
-        <span className="text-sm font-medium text-sidebar-light-textSecondary dark:text-sidebar-dark-textSecondary">
+        <CurrentIcon className="h-5 w-5 text-blue-600 dark:text-sidebar-dark-textSecondary" />
+        <span className="text-sm font-medium text-blue-600 md:text-sidebar-light-textSecondary dark:text-sidebar-dark-textSecondary">
           {currentTheme?.label}
         </span>
       </button>
@@ -39,7 +39,7 @@ export const ThemeToggle = () => {
           />
 
           {/* Dropdown */}
-          <div className="absolute bottom-full left-0 mb-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 z-20">
+          <div className="absolute right-0 md:bottom-full md:left-0 mb-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 z-20">
             {themes.map((themeOption) => {
               const Icon = themeOption.icon;
               const isActive = theme === themeOption.value;
