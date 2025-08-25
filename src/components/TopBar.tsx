@@ -11,10 +11,15 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { HiCog } from "react-icons/hi";
 import { SettingsModal } from "./SettingsModal";
+import { useTheme } from "@/context/ThemeContext";
+import { ThemeToggle } from "./ThemeToggle";
+import { useAuth } from "@/context/AuthContext";
 
 export const TopBar = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const { resolvedTheme } = useTheme();
+  const { logout } = useAuth();
   const { data: adminDetails } = useAdminDetails();
   const { data: adminBalance } = useAdminBalance();
   const { data: adminBankBalance } = useAdminBankBalance();
@@ -103,7 +108,7 @@ export const TopBar = () => {
     };
   }, [isDropdownOpen]);
 
-  // Fixed handleLogout function
+  // Updated handleLogout function to use AuthContext
   const handleLogout = async (e: React.MouseEvent) => {
     console.log("handleLogout");
 
@@ -123,8 +128,8 @@ export const TopBar = () => {
         },
       });
 
-      // Clear localStorage if you're also using that
-      localStorage.removeItem("accessToken");
+      // Use AuthContext logout function which handles theme refresh
+      logout();
 
       // Redirect to login page using router.replace instead of push
       // and use the relative path
@@ -155,13 +160,21 @@ export const TopBar = () => {
 
   return (
     <>
-      <header className="fixed top-0 right-0 left-0 lg:left-64 bg-white border-b border-blue-100 p-4 z-10 shadow-sm">
+      <header
+        className={`fixed top-0 right-0 left-0 lg:left-64 border-b p-4 z-10 shadow-sm transition-colors duration-200 ${
+          resolvedTheme === "dark"
+            ? "bg-slate-800 border-slate-700"
+            : "bg-white border-blue-100"
+        }`}
+      >
         <div className="flex justify-between items-center">
           <div className="flex items-center justify-between">
             {/* Mobile menu button */}
             <div className="flex items-center">
               <button
-                className="lg:hidden mr-3 text-blue-900"
+                className={`lg:hidden mr-3 transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-slate-100" : "text-blue-900"
+                }`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 <svg
@@ -179,7 +192,11 @@ export const TopBar = () => {
                   />
                 </svg>
               </button>
-              <h1 className="text-md font-semibold text-blue-900">
+              <h1
+                className={`text-md font-semibold transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-slate-100" : "text-blue-900"
+                }`}
+              >
                 {pageTitle}
               </h1>
             </div>
@@ -187,16 +204,34 @@ export const TopBar = () => {
 
           {/* Desktop view stats */}
           <div className="hidden md:flex items-center space-x-3">
-            <div className="text-blue-800">
+            <div
+              className={`transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-300" : "text-blue-800"
+              }`}
+            >
               Pending Orders:{" "}
               <span className="font-semibold">
                 {pendingOrders?.length ?? "..."}
               </span>
             </div>
-            <div>|</div>
-            <div className="text-blue-800">
+            <div
+              className={
+                resolvedTheme === "dark" ? "text-slate-500" : "text-blue-800"
+              }
+            >
+              |
+            </div>
+            <div
+              className={`transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-300" : "text-blue-800"
+              }`}
+            >
               Bank Balance:{" "}
-              <span className="font-semibold text-blue-900">
+              <span
+                className={`font-semibold transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-slate-100" : "text-blue-900"
+                }`}
+              >
                 {new Intl.NumberFormat("en-NG", {
                   style: "currency",
                   currency: "NGN",
@@ -205,43 +240,97 @@ export const TopBar = () => {
                 }).format(Number(adminBankBalance || 0) / 100)}
               </span>
             </div>
-            <div>|</div>
-            <div className="hidden md:block text-blue-800">
+            <div
+              className={
+                resolvedTheme === "dark" ? "text-slate-500" : "text-blue-800"
+              }
+            >
+              |
+            </div>
+            <div
+              className={`hidden md:block transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-300" : "text-blue-800"
+              }`}
+            >
               {adminBalance?.coin} Balance:{" "}
-              <span className="font-semibold text-blue-900">
+              <span
+                className={`font-semibold transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-slate-100" : "text-blue-900"
+                }`}
+              >
                 {adminBalance?.walletBalance || "0.00"}
               </span>
             </div>
-            <div>|</div>
+            <div
+              className={
+                resolvedTheme === "dark" ? "text-slate-500" : "text-blue-800"
+              }
+            >
+              |
+            </div>
             <div
               className="flex items-center font-semibold relative"
               ref={dropdownRef}
             >
-              <span className="text-lg text-blue-800 mr-2">
+              <span
+                className={`text-lg mr-2 transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-slate-300" : "text-blue-800"
+                }`}
+              >
                 {adminDetails?.nickName || "User"}
               </span>
               <div
-                className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center cursor-pointer hover:bg-blue-200 transition-colors duration-200"
+                className={`w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "bg-slate-600 hover:bg-slate-500"
+                    : "bg-blue-100 hover:bg-blue-200"
+                }`}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                <span className="text-sm text-blue-900">
+                <span
+                  className={`text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-100"
+                      : "text-blue-900"
+                  }`}
+                >
                   {adminDetails?.nickName?.charAt(0).toUpperCase() || "U"}
                 </span>
               </div>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 border border-blue-100">
+                <div
+                  className={`absolute right-0 top-full mt-2 w-48 rounded-md shadow-lg py-1 z-20 border transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "bg-slate-700 border-slate-600"
+                      : "bg-white border-blue-100"
+                  }`}
+                >
                   <button
                     onClick={openSettings}
-                    className="flex items-center space-x-2 w-full text-left px-4 py-2 text-sm text-blue-800 hover:bg-blue-50 transition-colors duration-200"
+                    className={`flex items-center space-x-2 w-full text-left px-4 py-2 text-sm transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-300 hover:bg-slate-600"
+                        : "text-blue-800 hover:bg-blue-50"
+                    }`}
                   >
                     <HiCog className="h-4 w-4" />
                     <span>Settings</span>
                   </button>
-                  <div className="border-t border-gray-100 my-1"></div>
+                  <div
+                    className={`border-t my-1 transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "border-slate-600"
+                        : "border-gray-100"
+                    }`}
+                  ></div>
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-blue-800 hover:bg-blue-50 transition-colors duration-200"
+                    className={`block w-full text-left px-4 py-2 text-sm transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-300 hover:bg-slate-600"
+                        : "text-blue-800 hover:bg-blue-50"
+                    }`}
                   >
                     Logout
                   </button>
@@ -249,76 +338,152 @@ export const TopBar = () => {
               )}
             </div>
           </div>
-
-          {/* Mobile user icon */}
-          <div className="md:hidden flex items-center" ref={mobileDropdownRef}>
-            <div
-              className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center cursor-pointer hover:bg-blue-200 transition-colors duration-200"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              <span className="text-sm text-blue-900">
-                {adminDetails?.nickName?.charAt(0).toUpperCase() || "U"}
+          <div
+            className={`flex md:hidden space-x-2 items-center text-sm transition-colors duration-200 ${
+              resolvedTheme === "dark" ? "text-slate-300" : "text-blue-800"
+            }`}
+          >
+            <div>
+              <span className="font-semibold">
+                {pendingOrders?.length ?? "..."}
               </span>
             </div>
+            <div>|</div>
+            <div>
+              <span className="font-semibold">
+                {new Intl.NumberFormat("en-NG", {
+                  style: "currency",
+                  currency: "NGN",
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 2,
+                }).format(Number(adminBankBalance || 0) / 100)}
+              </span>
+            </div>
+          </div>
 
-            {isDropdownOpen && (
-              <div className="absolute right-4 top-14 w-48 bg-white rounded-md shadow-lg py-1 z-30 border border-blue-100">
-                <div className="px-4 py-2 border-b border-gray-100">
-                  <span className="block text-sm font-medium text-blue-800">
-                    {adminDetails?.nickName || "User"}
-                  </span>
-                </div>
-                <div className="px-4 py-2 text-xs text-blue-800">
-                  <div className="mb-1">
-                    Pending Orders:{" "}
-                    <span className="font-semibold">
-                      {pendingOrders?.length ?? "..."}
-                    </span>
-                  </div>
-                  <div className="mb-1">
-                    Bank Balance:{" "}
-                    <span className="font-semibold">
-                      {new Intl.NumberFormat("en-NG", {
-                        style: "currency",
-                        currency: "NGN",
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 2,
-                      }).format(Number(adminBankBalance || 0) / 100)}
-                    </span>
-                  </div>
-                  <div className="mb-1">
-                    {adminBalance?.coin} Balance:{" "}
-                    <span className="font-semibold">
-                      {adminBalance?.walletBalance || "0.00"}
-                    </span>
-                  </div>
-                </div>
-                <button
-                  onClick={openSettings}
-                  className="hidden md:flex items-center space-x-2 w-full text-left px-4 py-2 text-sm text-blue-800 hover:bg-blue-50 transition-colors duration-200 border-t border-gray-100"
+          {/* Mobile user icon */}
+          <div className="md:hidden flex items-center space-x-2">
+            <div className="md:hidden flex">
+              <ThemeToggle />
+            </div>
+            <div
+              className="md:hidden flex items-center"
+              ref={mobileDropdownRef}
+            >
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "bg-slate-600 hover:bg-slate-500"
+                    : "bg-blue-100 hover:bg-blue-200"
+                }`}
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                <span
+                  className={`text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-100"
+                      : "text-blue-900"
+                  }`}
                 >
-                  <HiCog className="h-4 w-4" />
-                  <span>Settings</span>
-                </button>
-                <button
-                  onClick={() => {
-                    router.push("/settings");
-                    setIsDropdownOpen(false);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="flex md:hidden items-center space-x-2 w-full text-left px-4 py-2 text-sm text-blue-800 hover:bg-blue-50 transition-colors duration-200 border-t border-gray-100"
-                >
-                  <HiCog className="h-4 w-4" />
-                  <span>Settings</span>
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="block w-full text-left px-4 py-2 text-sm text-blue-800 hover:bg-blue-50 transition-colors duration-200 border-t border-gray-100"
-                >
-                  Logout
-                </button>
+                  {adminDetails?.nickName?.charAt(0).toUpperCase() || "U"}
+                </span>
               </div>
-            )}
+
+              {isDropdownOpen && (
+                <div
+                  className={`absolute right-4 top-14 w-48 rounded-md shadow-lg py-1 z-30 border transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "bg-slate-700 border-slate-600"
+                      : "bg-white border-blue-100"
+                  }`}
+                >
+                  <div
+                    className={`px-4 py-2 border-b transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "border-slate-600"
+                        : "border-gray-100"
+                    }`}
+                  >
+                    <span
+                      className={`block text-sm font-medium transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "text-slate-300"
+                          : "text-blue-800"
+                      }`}
+                    >
+                      {adminDetails?.nickName || "User"}
+                    </span>
+                  </div>
+                  <div
+                    className={`px-4 py-2 text-xs transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-300"
+                        : "text-blue-800"
+                    }`}
+                  >
+                    <div className="mb-1">
+                      Pending Orders:{" "}
+                      <span className="font-semibold">
+                        {pendingOrders?.length ?? "..."}
+                      </span>
+                    </div>
+                    <div className="mb-1">
+                      Bank Balance:{" "}
+                      <span className="font-semibold">
+                        {new Intl.NumberFormat("en-NG", {
+                          style: "currency",
+                          currency: "NGN",
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 2,
+                        }).format(Number(adminBankBalance || 0) / 100)}
+                      </span>
+                    </div>
+                    <div className="mb-1">
+                      {adminBalance?.coin} Balance:{" "}
+                      <span className="font-semibold">
+                        {adminBalance?.walletBalance || "0.00"}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={openSettings}
+                    className={`hidden md:flex items-center space-x-2 w-full text-left px-4 py-2 text-sm transition-colors duration-200 border-t ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-300 hover:bg-slate-600 border-slate-600"
+                        : "text-blue-800 hover:bg-blue-50 border-gray-100"
+                    }`}
+                  >
+                    <HiCog className="h-4 w-4" />
+                    <span>Settings</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      router.push("/settings");
+                      setIsDropdownOpen(false);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`flex md:hidden items-center space-x-2 w-full text-left px-4 py-2 text-sm transition-colors duration-200 border-t ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-300 hover:bg-slate-600 border-slate-600"
+                        : "text-blue-800 hover:bg-blue-50 border-gray-100"
+                    }`}
+                  >
+                    <HiCog className="h-4 w-4" />
+                    <span>Settings</span>
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className={`block w-full text-left px-4 py-2 text-sm transition-colors duration-200 border-t ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-300 hover:bg-slate-600 border-slate-600"
+                        : "text-blue-800 hover:bg-blue-50 border-gray-100"
+                    }`}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -326,17 +491,25 @@ export const TopBar = () => {
         {isMobileMenuOpen && (
           <div
             ref={mobileMenuRef}
-            className="md:hidden fixed top-16 left-0 w-64 h-screen bg-blue-900 p-4 text-white shadow-lg z-20"
+            className={`md:hidden fixed top-16 left-0 w-64 h-screen p-4 shadow-lg z-20 transition-colors duration-200 ${
+              resolvedTheme === "dark"
+                ? "bg-slate-900 text-slate-100"
+                : "bg-blue-900 text-white"
+            }`}
           >
             <ul className="space-y-2 mt-4">
               {navigationLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className={`block p-2 rounded transition-colors duration-200 hover:bg-blue-700 ${
+                    className={`block p-2 rounded transition-colors duration-200 ${
                       pathname.startsWith(link.routeKey)
-                        ? "bg-blue-800 border-l-4 border-blue-300"
-                        : ""
+                        ? resolvedTheme === "dark"
+                          ? "bg-slate-800 border-l-4 border-slate-500"
+                          : "bg-blue-800 border-l-4 border-blue-300"
+                        : resolvedTheme === "dark"
+                        ? "hover:bg-slate-800"
+                        : "hover:bg-blue-700"
                     }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

@@ -1,7 +1,7 @@
 "use client";
 
 import { getUserProfile } from "@/hooks/useOrders";
-import { UserProfile } from "@/types/user";
+import type { UserProfile } from "@/types/user";
 import Link from "next/link";
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
@@ -20,8 +20,10 @@ import {
   HiOutlineBadgeCheck,
   HiOutlineStatusOnline,
 } from "react-icons/hi";
+import { useTheme } from "@/context/ThemeContext";
 
 function UserProfileContent() {
+  const { resolvedTheme } = useTheme();
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
   const orderId = searchParams.get("orderId");
@@ -62,14 +64,24 @@ function UserProfileContent() {
 
   return (
     <div className="container mx-auto max-w-5xl">
-      <div className="flex items-center mb-8 bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-2xl shadow-sm">
+      <div
+        className={`flex items-center mb-8 p-4 rounded-2xl shadow-sm transition-colors duration-200 ${
+          resolvedTheme === "dark"
+            ? "bg-gradient-to-r from-slate-700 to-slate-600"
+            : "bg-gradient-to-r from-blue-50 to-blue-100"
+        }`}
+      >
         <Link
           href="/orders"
           className="p-2 bg-white rounded-full hover:bg-blue-200 transition-all duration-300 shadow-sm hover:shadow-md mr-4"
         >
           <HiOutlineArrowLeft className="w-6 h-6 text-blue-700" />
         </Link>
-        <h1 className="text-2xl font-bold text-blue-900 bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-blue-500">
+        <h1
+          className={`text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-blue-500 transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-100" : "text-blue-900"
+          }`}
+        >
           User Profile
         </h1>
         <div className="ml-auto px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium shadow-lg shadow-blue-200">
@@ -77,7 +89,13 @@ function UserProfileContent() {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-xl border border-blue-100 overflow-hidden transform transition-all duration-300 hover:shadow-2xl mb-8">
+      <div
+        className={`rounded-2xl shadow-xl border overflow-hidden transform transition-all duration-300 hover:shadow-2xl mb-8 ${
+          resolvedTheme === "dark"
+            ? "bg-slate-800 border-slate-600"
+            : "bg-white border-blue-100"
+        }`}
+      >
         {/* Header Section */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-500 p-6">
           <div className="flex items-center">
@@ -143,7 +161,11 @@ function UserProfileContent() {
         </div>
 
         {/* Detailed Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-blue-50">
+        <div
+          className={`grid grid-cols-1 md:grid-cols-2 gap-6 p-6 transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "bg-slate-700" : "bg-blue-50"
+          }`}
+        >
           <InfoSection
             icon={<HiOutlineUser className="w-6 h-6 text-blue-600" />}
             title="User Information"
@@ -227,7 +249,7 @@ function UserProfileContent() {
   );
 }
 
-export default function Page() {
+export default function UserProfile() {
   return (
     <Suspense
       fallback={
@@ -253,13 +275,32 @@ function StatsCard({
   title: string;
   value: string | number;
 }) {
+  const { resolvedTheme } = useTheme();
   return (
-    <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all duration-300 hover:bg-blue-100">
+    <div
+      className={`p-4 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 ${
+        resolvedTheme === "dark"
+          ? "bg-slate-700 border-slate-600 hover:bg-slate-600"
+          : "bg-blue-50 border-blue-100 hover:bg-blue-100"
+      }`}
+    >
       <div className="flex items-center mb-2">
         {icon}
-        <div className="text-sm text-blue-700 font-medium ml-2">{title}</div>
+        <div
+          className={`text-sm font-medium ml-2 transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-blue-300" : "text-blue-700"
+          }`}
+        >
+          {title}
+        </div>
       </div>
-      <div className="text-xl font-semibold text-blue-900">{value}</div>
+      <div
+        className={`text-xl font-semibold transition-colors duration-200 ${
+          resolvedTheme === "dark" ? "text-slate-100" : "text-blue-900"
+        }`}
+      >
+        {value}
+      </div>
     </div>
   );
 }
@@ -273,11 +314,28 @@ function InfoSection({
   title: string;
   children: React.ReactNode;
 }) {
+  const { resolvedTheme } = useTheme();
   return (
-    <div className="bg-white p-5 rounded-xl shadow-md border border-blue-100">
-      <div className="flex items-center mb-4 pb-2 border-b border-blue-100">
+    <div
+      className={`p-5 rounded-xl shadow-md border transition-colors duration-200 ${
+        resolvedTheme === "dark"
+          ? "bg-slate-800 border-slate-600"
+          : "bg-white border-blue-100"
+      }`}
+    >
+      <div
+        className={`flex items-center mb-4 pb-2 border-b transition-colors duration-200 ${
+          resolvedTheme === "dark" ? "border-slate-600" : "border-blue-100"
+        }`}
+      >
         {icon}
-        <h3 className="font-semibold text-blue-800 ml-2">{title}</h3>
+        <h3
+          className={`font-semibold ml-2 transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-blue-300" : "text-blue-800"
+          }`}
+        >
+          {title}
+        </h3>
       </div>
       <div className="space-y-3">{children}</div>
     </div>
@@ -293,13 +351,26 @@ function InfoRow({
   label: string;
   value: string;
 }) {
+  const { resolvedTheme } = useTheme();
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center">
         {icon}
-        <span className="text-gray-600 ml-2">{label}</span>
+        <span
+          className={`ml-2 transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-400" : "text-gray-600"
+          }`}
+        >
+          {label}
+        </span>
       </div>
-      <span className="font-medium text-blue-800">{value}</span>
+      <span
+        className={`font-medium transition-colors duration-200 ${
+          resolvedTheme === "dark" ? "text-blue-300" : "text-blue-800"
+        }`}
+      >
+        {value}
+      </span>
     </div>
   );
 }

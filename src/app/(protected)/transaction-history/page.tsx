@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
 import { useTransactionHistory } from "@/hooks/useTransactionHistory";
+import { useTheme } from "@/context/ThemeContext";
 
 interface PaginationData {
   currentPage: number;
@@ -13,6 +14,7 @@ interface PaginationData {
 }
 
 function TransactionHistoryContent() {
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1");
@@ -45,7 +47,11 @@ function TransactionHistoryContent() {
   const getTransactionTypeColor = (entryCode: string) => {
     console.log(entryCode);
     return entryCode.startsWith("D")
-      ? "bg-red-100 text-red-800"
+      ? resolvedTheme === "dark"
+        ? "bg-red-900/50 text-red-300"
+        : "bg-red-100 text-red-800"
+      : resolvedTheme === "dark"
+      ? "bg-green-900/50 text-green-300"
       : "bg-green-100 text-green-800";
   };
 
@@ -57,7 +63,9 @@ function TransactionHistoryContent() {
     return (
       <div className="flex justify-center items-center min-h-screen p-4">
         <svg
-          className="animate-spin h-8 w-8 text-blue-600"
+          className={`animate-spin h-8 w-8 transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
+          }`}
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -76,7 +84,11 @@ function TransactionHistoryContent() {
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
           ></path>
         </svg>
-        <span className="ml-2 text-blue-600">
+        <span
+          className={`ml-2 transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
+          }`}
+        >
           Loading transaction history...
         </span>
       </div>
@@ -86,17 +98,29 @@ function TransactionHistoryContent() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <h2 className="text-xl md:text-2xl font-bold text-red-600 mb-4">
+        <h2
+          className={`text-xl md:text-2xl font-bold mb-4 transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-red-400" : "text-red-600"
+          }`}
+        >
           Error
         </h2>
-        <p className="text-gray-700 mb-4 text-center">
+        <p
+          className={`mb-4 text-center transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-300" : "text-gray-700"
+          }`}
+        >
           {error instanceof Error
             ? error.message
             : "Failed to load transaction history"}
         </p>
         <button
           onClick={() => refetch()}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className={`px-4 py-2 rounded transition-colors duration-200 ${
+            resolvedTheme === "dark"
+              ? "bg-gradient-to-r from-slate-700 to-slate-700 text-slate-100"
+              : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+          }`}
         >
           Try Again
         </button>
@@ -120,27 +144,69 @@ function TransactionHistoryContent() {
       <div className="space-y-4">
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">
+          <div
+            className={`rounded-lg shadow-md p-4 border transition-colors duration-200 ${
+              resolvedTheme === "dark"
+                ? "bg-slate-800 border-slate-600"
+                : "bg-white border-gray-200"
+            }`}
+          >
+            <h3
+              className={`text-sm font-medium mb-1 transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-400" : "text-gray-500"
+              }`}
+            >
               Total Transactions
             </h3>
-            <p className="text-2xl font-bold text-blue-900">
+            <p
+              className={`text-2xl font-bold transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-100" : "text-blue-900"
+              }`}
+            >
               {totalRecords.toLocaleString()}
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">
+          <div
+            className={`rounded-lg shadow-md p-4 border transition-colors duration-200 ${
+              resolvedTheme === "dark"
+                ? "bg-slate-800 border-slate-600"
+                : "bg-white border-gray-200"
+            }`}
+          >
+            <h3
+              className={`text-sm font-medium mb-1 transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-400" : "text-gray-500"
+              }`}
+            >
               Total Credit
             </h3>
-            <p className="text-2xl font-bold text-green-600">
+            <p
+              className={`text-2xl font-bold transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-green-400" : "text-green-600"
+              }`}
+            >
               {formatCurrency((data?.data?.totalCredit || 0) * 100)}
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">
+          <div
+            className={`rounded-lg shadow-md p-4 border transition-colors duration-200 ${
+              resolvedTheme === "dark"
+                ? "bg-slate-800 border-slate-600"
+                : "bg-white border-gray-200"
+            }`}
+          >
+            <h3
+              className={`text-sm font-medium mb-1 transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-400" : "text-gray-500"
+              }`}
+            >
               Total Debit
             </h3>
-            <p className="text-2xl font-bold text-red-600">
+            <p
+              className={`text-2xl font-bold transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-red-400" : "text-red-600"
+              }`}
+            >
               {formatCurrency((data?.data?.totalDebit || 0) * 100)}
             </p>
           </div>
@@ -148,17 +214,39 @@ function TransactionHistoryContent() {
 
         {transactions.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-500">No transactions found</p>
+            <p
+              className={`transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-400" : "text-gray-500"
+              }`}
+            >
+              No transactions found
+            </p>
           </div>
         ) : (
           <>
             {/* Desktop Table View */}
             <div className="hidden md:block overflow-x-auto">
               <div className="min-w-full inline-block align-middle">
-                <div className="overflow-hidden shadow-lg rounded-lg">
-                  <table className="min-w-full divide-y divide-blue-100">
+                <div
+                  className={`overflow-hidden shadow-lg rounded-lg transition-colors duration-200 ${
+                    resolvedTheme === "dark" ? "bg-slate-800" : "bg-white"
+                  }`}
+                >
+                  <table
+                    className={`min-w-full divide-y transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "divide-slate-700"
+                        : "divide-blue-100"
+                    }`}
+                  >
                     <thead>
-                      <tr className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                      <tr
+                        className={`${
+                          resolvedTheme === "dark"
+                            ? "bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/20 text-slate-100"
+                            : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+                        }`}
+                      >
                         <th className="text-left p-4 font-semibold text-sm">
                           Type
                         </th>
@@ -179,13 +267,23 @@ function TransactionHistoryContent() {
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-slate-50 divide-y divide-blue-50">
+                    <tbody
+                      className={`divide-y transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "bg-slate-800 divide-slate-700"
+                          : "bg-slate-50 divide-blue-50"
+                      }`}
+                    >
                       {transactions.map((transaction) => (
                         <tr
                           key={
                             transaction.referenceNumber + transaction.entryCode
                           }
-                          className="hover:bg-blue-50 transition-colors duration-150"
+                          className={`transition-colors duration-150 ${
+                            resolvedTheme === "dark"
+                              ? "hover:bg-slate-700"
+                              : "hover:bg-blue-50"
+                          }`}
                         >
                           <td className="p-4">
                             <span
@@ -196,10 +294,22 @@ function TransactionHistoryContent() {
                               {getTransactionTypeText(transaction.entryCode)}
                             </span>
                           </td>
-                          <td className="p-4 text-blue-900 text-sm font-semibold">
+                          <td
+                            className={`p-4 text-sm font-semibold transition-colors duration-200 ${
+                              resolvedTheme === "dark"
+                                ? "text-slate-100"
+                                : "text-blue-900"
+                            }`}
+                          >
                             {formatCurrency(transaction.amount)}
                           </td>
-                          <td className="p-4 text-blue-900 text-sm">
+                          <td
+                            className={`p-4 text-sm transition-colors duration-200 ${
+                              resolvedTheme === "dark"
+                                ? "text-slate-200"
+                                : "text-blue-900"
+                            }`}
+                          >
                             <div
                               className="max-w-xs truncate"
                               title={transaction.beneficiaryName}
@@ -207,7 +317,13 @@ function TransactionHistoryContent() {
                               {transaction.beneficiaryName}
                             </div>
                           </td>
-                          <td className="p-4 text-blue-900 text-sm">
+                          <td
+                            className={`p-4 text-sm transition-colors duration-200 ${
+                              resolvedTheme === "dark"
+                                ? "text-slate-200"
+                                : "text-blue-900"
+                            }`}
+                          >
                             <div
                               className="max-w-xs truncate"
                               title={transaction.referenceNumber}
@@ -215,10 +331,22 @@ function TransactionHistoryContent() {
                               {transaction.referenceNumber}
                             </div>
                           </td>
-                          <td className="p-4 text-blue-900 text-sm">
+                          <td
+                            className={`p-4 text-sm transition-colors duration-200 ${
+                              resolvedTheme === "dark"
+                                ? "text-slate-200"
+                                : "text-blue-900"
+                            }`}
+                          >
                             {formatDate(transaction.realDate)}
                           </td>
-                          <td className="p-4 text-blue-900 text-sm">
+                          <td
+                            className={`p-4 text-sm transition-colors duration-200 ${
+                              resolvedTheme === "dark"
+                                ? "text-slate-200"
+                                : "text-blue-900"
+                            }`}
+                          >
                             {formatCurrency(transaction.balanceAfter)}
                           </td>
                         </tr>
@@ -234,14 +362,30 @@ function TransactionHistoryContent() {
               {transactions.map((transaction) => (
                 <div
                   key={transaction.referenceNumber + transaction.entryCode}
-                  className="bg-white rounded-lg shadow-md p-4 border border-gray-200"
+                  className={`rounded-lg shadow-md p-4 border transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "bg-slate-800 border-slate-600"
+                      : "bg-white border-gray-200"
+                  }`}
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
-                      <p className="text-lg font-semibold text-blue-900">
+                      <p
+                        className={`text-lg font-semibold transition-colors duration-200 ${
+                          resolvedTheme === "dark"
+                            ? "text-slate-100"
+                            : "text-blue-900"
+                        }`}
+                      >
                         {formatCurrency(transaction.amount)}
                       </p>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p
+                        className={`text-sm mt-1 transition-colors duration-200 ${
+                          resolvedTheme === "dark"
+                            ? "text-slate-300"
+                            : "text-gray-600"
+                        }`}
+                      >
                         {transaction.beneficiaryName}
                       </p>
                     </div>
@@ -253,7 +397,13 @@ function TransactionHistoryContent() {
                       {getTransactionTypeText(transaction.entryCode)}
                     </span>
                   </div>
-                  <div className="space-y-2 text-xs text-gray-500">
+                  <div
+                    className={`space-y-2 text-xs transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-400"
+                        : "text-gray-500"
+                    }`}
+                  >
                     <div>Ref: {transaction.referenceNumber}</div>
                     <div>{formatDate(transaction.realDate)}</div>
                     <div>
@@ -271,7 +421,15 @@ function TransactionHistoryContent() {
                   <button
                     onClick={() => handlePageChange(page - 1)}
                     disabled={page <= 1}
-                    className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                      page <= 1
+                        ? resolvedTheme === "dark"
+                          ? "bg-slate-700 text-slate-400 cursor-not-allowed"
+                          : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        : resolvedTheme === "dark"
+                        ? "bg-blue-600 hover:bg-blue-700 text-white"
+                        : "bg-blue-600 hover:bg-blue-700 text-white"
+                    }`}
                   >
                     Previous
                   </button>
@@ -292,9 +450,13 @@ function TransactionHistoryContent() {
                       <button
                         key={pageNum}
                         onClick={() => handlePageChange(pageNum)}
-                        className={`px-3 py-2 text-sm font-medium rounded-md ${
+                        className={`px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
                           pageNum === page
-                            ? "bg-blue-600 text-white"
+                            ? resolvedTheme === "dark"
+                              ? "bg-blue-600 text-white"
+                              : "bg-blue-600 text-white"
+                            : resolvedTheme === "dark"
+                            ? "text-slate-300 bg-slate-700 border border-slate-600 hover:bg-slate-600"
                             : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
                         }`}
                       >
@@ -306,7 +468,15 @@ function TransactionHistoryContent() {
                   <button
                     onClick={() => handlePageChange(page + 1)}
                     disabled={page >= totalPages}
-                    className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                      page >= totalPages
+                        ? resolvedTheme === "dark"
+                          ? "bg-slate-700 text-slate-400 cursor-not-allowed"
+                          : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        : resolvedTheme === "dark"
+                        ? "bg-blue-600 hover:bg-blue-700 text-white"
+                        : "bg-blue-600 hover:bg-blue-700 text-white"
+                    }`}
                   >
                     Next
                   </button>
@@ -314,7 +484,11 @@ function TransactionHistoryContent() {
               </div>
             )}
 
-            <div className="text-xs md:text-sm text-blue-600 mt-4 text-center px-2">
+            <div
+              className={`text-xs md:text-sm mt-4 text-center px-2 transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
+              }`}
+            >
               Showing{" "}
               {(pagination.currentPage - 1) * pagination.itemsPerPage + 1} to{" "}
               {Math.min(
@@ -332,10 +506,13 @@ function TransactionHistoryContent() {
 
 // Loading fallback for Suspense
 function TransactionHistoryLoading() {
+  const { resolvedTheme } = useTheme();
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
       <svg
-        className="animate-spin h-8 w-8 text-blue-600"
+        className={`animate-spin h-8 w-8 transition-colors duration-200 ${
+          resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
+        }`}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -354,7 +531,11 @@ function TransactionHistoryLoading() {
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
         ></path>
       </svg>
-      <span className="ml-2 text-blue-600 text-sm md:text-base">
+      <span
+        className={`ml-2 transition-colors duration-200 ${
+          resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
+        } text-sm md:text-base`}
+      >
         Loading transaction history...
       </span>
     </div>

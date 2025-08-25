@@ -6,6 +6,7 @@ import { handlePaySingleOrder, markOrderAsPaid } from "./OrderActions";
 import { useEffect, useState } from "react";
 import { findBankCode, findPaymentMethodByType } from "@/lib/findBankCode";
 import { getUserProfile } from "@/hooks/useOrders";
+import { useTheme } from "@/context/ThemeContext";
 
 interface UserProfile {
   averageReleaseTime?: string;
@@ -34,6 +35,7 @@ export function OrdersTableUI({
   setPayingOrderId,
   refetch,
 }: OrdersTableUIProps) {
+  const { resolvedTheme } = useTheme();
   const [profiles, setProfiles] = useState<{ [orderId: string]: UserProfile }>(
     {}
   );
@@ -91,14 +93,26 @@ export function OrdersTableUI({
   };
 
   return (
-    <div className="overflow-hidden rounded-xl bg-none lg:shadow-md lg:bg-white/80 lg:backdrop-blur-sm lg:border">
+    <div
+      className={`overflow-hidden md:rounded-xl lg:shadow-md lg:backdrop-blur-sm lg:border transition-colors duration-200 ${
+        resolvedTheme === "dark"
+          ? "lg:bg-slate-800/80 lg:border-slate-600"
+          : "lg:bg-white/80 lg:border-blue-100"
+      }`}
+    >
       {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+          <thead
+            className={`${
+              resolvedTheme === "dark"
+                ? "bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/30 text-slate-100"
+                : "bg-gradient-to-r from-blue-600 to-indigo-700 text-white"
+            }`}
+          >
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                Real Name
+                Order Details
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Bank Name
@@ -132,7 +146,11 @@ export function OrdersTableUI({
               </th>
             </tr>
           </thead>
-          <tbody className="text-sm divide-y divide-blue-100">
+          <tbody
+            className={`divide-y transition-colors duration-200 ${
+              resolvedTheme === "dark" ? "divide-slate-700" : "divide-blue-100"
+            }`}
+          >
             {orders.map((order) => (
               <OrderRow
                 key={order.id}
@@ -179,22 +197,48 @@ export function OrdersTableUI({
           return (
             <div
               key={order.id}
-              className="rounded-lg shadow-md border border-blue-100 overflow-hidden"
+              className={`rounded-md shadow-md border overflow-hidden transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "border-slate-600"
+                  : "border-blue-100"
+              }`}
             >
               <div
-                className="flex justify-between items-center p-4 cursor-pointer bg-blue-50 hover:bg-blue-100 transition-colors"
+                className={`flex justify-between items-center p-4 cursor-pointer transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "bg-slate-800 hover:bg-slate-700"
+                    : "bg-blue-50 hover:bg-blue-100"
+                }`}
                 onClick={() => toggleMobileOrderExpand(order.id)}
               >
                 <div className="flex flex-col">
                   <div className="flex items-center gap-x-2 mb-1">
-                    <span className="font-medium text-blue-900 text-base">
+                    <span
+                      className={`font-medium text-base transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "text-slate-200"
+                          : "text-blue-900"
+                      }`}
+                    >
                       {order.side === 1
                         ? order.buyerRealName
                         : order.sellerRealName}
                     </span>
                   </div>
-                  <div className="flex flex-wrap items-center gap-x-3 text-sm text-blue-700">
-                    <span className="font-semibold">
+                  <div
+                    className={`flex flex-wrap items-center gap-x-3 text-sm transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-blue-300"
+                        : "text-blue-700"
+                    }`}
+                  >
+                    <span
+                      className={`font-semibold transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "text-emerald-300"
+                          : "text-emerald-700"
+                      }`}
+                    >
                       {parseFloat(
                         (
                           (Number(order.quantity) || 0) *
@@ -205,10 +249,26 @@ export function OrdersTableUI({
                         currency: "NGN",
                       })}
                     </span>
-                    <div className="h-4 w-px bg-blue-200"></div>
-                    <span className="flex items-center">
+                    <div
+                      className={`h-4 w-px transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "bg-slate-500"
+                          : "bg-blue-200"
+                      }`}
+                    ></div>
+                    <span
+                      className={`flex items-center transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "text-indigo-300"
+                          : "text-indigo-600"
+                      }`}
+                    >
                       <svg
-                        className="w-4 h-4 mr-1 text-blue-500"
+                        className={`w-4 h-4 mr-1 transition-colors duration-200 ${
+                          resolvedTheme === "dark"
+                            ? "text-indigo-400"
+                            : "text-indigo-500"
+                        }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -224,27 +284,46 @@ export function OrdersTableUI({
                       {order.paymentTermList?.[0]?.bankName ||
                         userBank?.BANK_NAME}
                     </span>
-                    <div className="h-4 w-px bg-blue-200"></div>
-                    <span className="flex items-center">
-                      {profiles[order.id]?.averageReleaseTime +
-                        "mins" +
-                        " /" +
-                        profiles[order.id]?.badAppraiseCount}
+                    <div
+                      className={`h-4 w-px transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "bg-slate-500"
+                          : "bg-blue-200"
+                      }`}
+                    ></div>
+                    <span
+                      className={`flex items-center transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "text-slate-300"
+                          : "text-slate-600"
+                      }`}
+                    >
+                      {profiles[order.id]?.averageReleaseTime !== undefined &&
+                      profiles[order.id]?.badAppraiseCount !== undefined
+                        ? profiles[order.id]?.averageReleaseTime +
+                          "mins" +
+                          " /" +
+                          profiles[order.id]?.badAppraiseCount
+                        : ""}
                     </span>
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <span className="mr-2 text-xs font-medium px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
-                    {selectedBanks[order.id]?.BANK_CODE ||
-                      findBankCode(
-                        order.paymentTermList?.[0]?.bankName || "Null"
-                      )?.BANK_CODE ||
-                      "N/A"}
+                  <span
+                    className={`mr-2 text-xs font-medium px-3 py-1.5 rounded-full transition-all duration-300 ${
+                      resolvedTheme === "dark"
+                        ? "bg-gradient-to-r from-blue-900/60 to-indigo-900/60 text-blue-200 border border-blue-700/50 shadow-lg shadow-blue-900/20"
+                        : "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border border-blue-300 shadow-md"
+                    }`}
+                  >
+                    {userBank?.BANK_CODE}
                   </span>
                   <svg
-                    className={`w-5 h-5 text-blue-600 transition-transform ${
-                      expandedMobileOrder === order.id ? "rotate-180" : ""
-                    }`}
+                    className={`w-5 h-5 duration-200 transition-all ${
+                      resolvedTheme === "dark"
+                        ? "text-blue-400"
+                        : "text-blue-600"
+                    } ${expandedMobileOrder === order.id ? "rotate-180" : ""}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -261,55 +340,139 @@ export function OrdersTableUI({
               </div>
 
               {expandedMobileOrder === order.id && (
-                <div className="p-2 border-t border-blue-200">
-                  <div className="bg-blue-50 rounded-lg p-3 mb-4">
-                    <div className="grid grid-cols-2 gap-3 text-sm">
+                <div
+                  className={`p-4 border-t transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "border-slate-600"
+                      : "border-blue-200"
+                  }`}
+                >
+                  <div
+                    className={`rounded-lg p-4 mb-4 transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "bg-slate-700/50 border border-slate-600"
+                        : "bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200"
+                    }`}
+                  >
+                    <div className="grid grid-cols-2 gap-4 text-sm">
                       <div className="flex flex-col">
-                        <span className="text-blue-500 text-xs font-medium mb-1">
+                        <span
+                          className={`text-xs font-medium mb-1 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-blue-300"
+                              : "text-blue-600"
+                          }`}
+                        >
                           Bank Name
                         </span>
-                        <span className="font-medium">
+                        <span
+                          className={`font-medium transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-slate-200"
+                              : "text-blue-900"
+                          }`}
+                        >
                           {userBank?.BANK_NAME || "N/A"}
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-blue-500 text-xs font-medium mb-1">
+                        <span
+                          className={`text-xs font-medium mb-1 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-blue-300"
+                              : "text-blue-600"
+                          }`}
+                        >
                           Bank Code
                         </span>
-                        <span className="font-medium">
+                        <span
+                          className={`font-medium transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-slate-200"
+                              : "text-blue-900"
+                          }`}
+                        >
                           {userBank?.BANK_CODE}
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-blue-500 text-xs font-medium mb-1">
+                        <span
+                          className={`text-xs font-medium mb-1 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-blue-300"
+                              : "text-blue-600"
+                          }`}
+                        >
                           Bank Branch
                         </span>
-                        <span className="font-medium">
+                        <span
+                          className={`font-medium transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-slate-200"
+                              : "text-blue-900"
+                          }`}
+                        >
                           {order.paymentTermList?.[0]?.branchName || "N/A"}
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-blue-500 text-xs font-medium mb-1">
+                        <span
+                          className={`text-xs font-medium mb-1 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-blue-300"
+                              : "text-blue-600"
+                          }`}
+                        >
                           Account No
                         </span>
-                        <span className="font-medium">
+                        <span
+                          className={`font-medium transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-slate-200"
+                              : "text-blue-900"
+                          }`}
+                        >
                           {order.paymentTermList?.[0]?.accountNo || "N/A"}
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-blue-500 text-xs font-medium mb-1">
+                        <span
+                          className={`text-xs font-medium mb-1 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-emerald-300"
+                              : "text-emerald-600"
+                          }`}
+                        >
                           Avg. Release Time
                         </span>
-                        <span className="font-medium">
+                        <span
+                          className={`font-medium transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-emerald-200"
+                              : "text-emerald-800"
+                          }`}
+                        >
                           {profiles[order.id]?.averageReleaseTime + " mins" ||
                             "N/A"}
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-blue-500 text-xs font-medium mb-1">
+                        <span
+                          className={`text-xs font-medium mb-1 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-amber-300"
+                              : "text-amber-600"
+                          }`}
+                        >
                           Bad Reviews
                         </span>
-                        <span className="font-medium">
+                        <span
+                          className={`font-medium transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-amber-200"
+                              : "text-amber-800"
+                          }`}
+                        >
                           {profiles[order.id]?.badAppraiseCount || "N/A"}
                         </span>
                       </div>
@@ -317,7 +480,13 @@ export function OrdersTableUI({
                   </div>
 
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-blue-700 mb-2">
+                    <label
+                      className={`block text-sm font-medium mb-2 transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "text-blue-300"
+                          : "text-blue-700"
+                      }`}
+                    >
                       Select Bank
                     </label>
                     <div className="relative">
@@ -335,7 +504,11 @@ export function OrdersTableUI({
                             handleBankSelect(order.id, selectedBank);
                           }
                         }}
-                        className="block w-full bg-white border border-blue-300 hover:border-blue-500 px-4 py-3 rounded-lg shadow-sm leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                        className={`block w-full border px-4 py-3 rounded-lg shadow-sm leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors duration-200 ${
+                          resolvedTheme === "dark"
+                            ? "bg-slate-700 border-slate-600 text-slate-100 hover:border-slate-500"
+                            : "bg-white border-blue-300 text-gray-900 hover:border-blue-500"
+                        }`}
                       >
                         <option value="">Select Bank</option>
                         {banks.map((bank) => (
@@ -347,7 +520,13 @@ export function OrdersTableUI({
                           </option>
                         ))}
                       </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-blue-700">
+                      <div
+                        className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-200 ${
+                          resolvedTheme === "dark"
+                            ? "text-blue-400"
+                            : "text-blue-700"
+                        }`}
+                      >
                         <svg
                           className="fill-current h-4 w-4"
                           xmlns="http://www.w3.org/2000/svg"
@@ -364,7 +543,11 @@ export function OrdersTableUI({
                       onClick={() =>
                         handlePaySingleOrder(order, setPayingOrderId, refetch)
                       }
-                      className="py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center shadow-sm hover:shadow-md"
+                      className={`py-3 px-4 text-white rounded-lg transition-all duration-300 flex items-center justify-center shadow-sm hover:shadow-md ${
+                        resolvedTheme === "dark"
+                          ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 hover:shadow-blue-300/20"
+                          : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 hover:shadow-blue-300/50"
+                      }`}
                       disabled={payingOrderId === order.id}
                     >
                       {payingOrderId === order.id ? (
@@ -421,7 +604,11 @@ export function OrdersTableUI({
                           refetch
                         )
                       }
-                      className="py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center justify-center shadow-sm hover:shadow-md"
+                      className={`py-3 px-4 text-white rounded-lg transition-all duration-300 flex items-center justify-center shadow-sm hover:shadow-md ${
+                        resolvedTheme === "dark"
+                          ? "bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 hover:shadow-emerald-300/20"
+                          : "bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 hover:shadow-emerald-300/50"
+                      }`}
                       disabled={markingPaidOrderId === order.id}
                     >
                       {markingPaidOrderId === order.id ? (

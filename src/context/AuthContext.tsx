@@ -8,6 +8,7 @@ import {
   ReactNode,
   useCallback,
 } from "react";
+import { useTheme } from "./ThemeContext";
 
 // Define auth context type
 interface AuthContextType {
@@ -25,6 +26,7 @@ const TOKEN_KEY = "accessToken";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
+  const { forceRefresh } = useTheme();
 
   // Initialize auth state from localStorage
   useEffect(() => {
@@ -38,16 +40,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Login function - store token
-  const login = useCallback((newToken: string) => {
-    localStorage.setItem(TOKEN_KEY, newToken);
-    setToken(newToken);
-  }, []);
+  const login = useCallback(
+    (newToken: string) => {
+      console.log("AuthContext: Login called with token");
+      localStorage.setItem(TOKEN_KEY, newToken);
+      setToken(newToken);
+      // Force refresh theme after login to ensure proper application
+      console.log("AuthContext: Scheduling theme refresh after login");
+      setTimeout(() => {
+        console.log("AuthContext: Executing theme refresh after login");
+        forceRefresh();
+      }, 300); // Increased timeout to ensure DOM is ready
+    },
+    [forceRefresh]
+  );
 
   // Logout function - clear token
   const logout = useCallback(() => {
+    console.log("AuthContext: Logout called");
     localStorage.removeItem(TOKEN_KEY);
     setToken(null);
-  }, []);
+    // Force refresh theme after logout to ensure proper application
+    console.log("AuthContext: Scheduling theme refresh after logout");
+    setTimeout(() => {
+      console.log("AuthContext: Executing theme refresh after logout");
+      forceRefresh();
+    }, 300); // Increased timeout to ensure DOM is ready
+  }, [forceRefresh]);
 
   // Create context value
   const value = {
