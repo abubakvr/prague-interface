@@ -145,7 +145,7 @@ export default function Home() {
       <div
         className={`rounded-xl p-4 sm:p-6 shadow-lg text-white ${
           resolvedTheme === "dark"
-            ? "bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/20 text-slate-100"
+            ? "bg-gradient-to-r from-blue-900/50 via-indigo-900/40 to-purple-900/30 text-slate-100"
             : "bg-gradient-to-r from-blue-700 to-indigo-800"
         }`}
       >
