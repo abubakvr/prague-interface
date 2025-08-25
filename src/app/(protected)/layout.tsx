@@ -9,7 +9,7 @@ export default function ProtectedLayout({
 }) {
   // Render the protected layout with navigation components
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-background transition-colors duration-200">
       <SideBar />
       <div className="flex-1 flex flex-col lg:ml-64">
         {/* Top Navigation */}

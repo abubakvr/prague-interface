@@ -1,6 +1,7 @@
 import { PaidOrder } from "@/hooks/usePaidOrders";
 import { useFormatters } from "@/hooks/useFormatters";
 import { useBankMapping } from "@/hooks/useBankMapping";
+import { useTheme } from "@/context/ThemeContext";
 
 interface DesktopTableProps {
   paidOrders: PaidOrder[];
@@ -8,14 +9,23 @@ interface DesktopTableProps {
 }
 
 export function DesktopTable({ paidOrders, onCheckStatus }: DesktopTableProps) {
+  const { resolvedTheme } = useTheme();
   const { formatCurrency, formatDate } = useFormatters();
   const { findBankNameByCode } = useBankMapping();
 
   return (
     <div className="hidden md:block overflow-x-auto">
       <div className="min-w-full inline-block align-middle">
-        <div className="overflow-hidden shadow-lg rounded-lg">
-          <table className="min-w-full divide-y divide-blue-100">
+        <div
+          className={`overflow-hidden shadow-lg rounded-lg transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "bg-slate-800" : "bg-white"
+          }`}
+        >
+          <table
+            className={`min-w-full divide-y transition-colors duration-200 ${
+              resolvedTheme === "dark" ? "divide-slate-700" : "divide-blue-100"
+            }`}
+          >
             <thead>
               <tr className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
                 <th className="text-left p-4 font-semibold text-sm">Amount</th>
@@ -33,43 +43,97 @@ export function DesktopTable({ paidOrders, onCheckStatus }: DesktopTableProps) {
                 <th className="text-left p-4 font-semibold text-sm">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-slate-50 divide-y divide-blue-50">
+            <tbody
+              className={`divide-y transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "bg-slate-800 divide-slate-700"
+                  : "bg-slate-50 divide-blue-50"
+              }`}
+            >
               {paidOrders.map((order) => (
                 <tr
                   key={order.id}
-                  className="hover:bg-blue-50 transition-colors duration-150"
+                  className={`transition-colors duration-150 ${
+                    resolvedTheme === "dark"
+                      ? "hover:bg-slate-700"
+                      : "hover:bg-blue-50"
+                  }`}
                 >
-                  <td className="p-4 text-blue-900 text-sm">
+                  <td
+                    className={`p-4 text-sm transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-200"
+                        : "text-blue-900"
+                    }`}
+                  >
                     {formatCurrency(order.amount)}
                   </td>
-                  <td className="p-4 text-blue-900 text-sm">
+                  <td
+                    className={`p-4 text-sm transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-200"
+                        : "text-blue-900"
+                    }`}
+                  >
                     {order.seller_name}
                   </td>
-                  <td className="p-4 text-blue-900 text-sm">
+                  <td
+                    className={`p-4 text-sm transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-200"
+                        : "text-blue-900"
+                    }`}
+                  >
                     {findBankNameByCode(order.beneficiary_bank)}
                   </td>
-                  <td className="p-4 text-blue-900 text-sm">
-                    <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
+                  <td
+                    className={`p-4 text-sm transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-200"
+                        : "text-blue-900"
+                    }`}
+                  >
+                    <span
+                      className={`font-mono text-xs px-2 py-1 rounded transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "bg-slate-700 text-slate-200"
+                          : "bg-gray-100 text-gray-700"
+                      }`}
+                    >
                       {order.transaction_reference || "N/A"}
                     </span>
                   </td>
                   <td className="p-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
                         order.status === true || order.status === "completed"
-                          ? "bg-green-100 text-green-800"
+                          ? resolvedTheme === "dark"
+                            ? "bg-green-900/50 text-green-300"
+                            : "bg-green-100 text-green-800"
+                          : resolvedTheme === "dark"
+                          ? "bg-yellow-900/50 text-yellow-300"
                           : "bg-yellow-100 text-yellow-800"
                       }`}
                     >
                       {order.status === true ? "Completed" : "Not Completed"}
                     </span>
                   </td>
-                  <td className="p-4 text-blue-900 text-sm">
+                  <td
+                    className={`p-4 text-sm transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-200"
+                        : "text-blue-900"
+                    }`}
+                  >
                     {formatDate(order.payment_time)}
                   </td>
                   <td className="p-4">
                     <button
-                      className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors duration-200"
+                      className={`px-3 py-1 text-xs rounded transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "bg-blue-600 hover:bg-blue-700 text-white"
+                          : "bg-blue-600 hover:bg-blue-700 text-white"
+                      }`}
                       onClick={() => onCheckStatus(order)}
                     >
                       Check Status

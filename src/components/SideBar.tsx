@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { HiCog } from "react-icons/hi";
 import { SettingsModal } from "./SettingsModal";
+import { ThemeToggle } from "./ThemeToggle";
+import { useTheme } from "@/context/ThemeContext";
 
 const navigationLinks = [
   { href: "/dashboard", label: "Dashboard", routeKey: "/dashboard" },
@@ -28,6 +30,7 @@ const navigationLinks = [
 export const SideBar = () => {
   const pathname = usePathname();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { resolvedTheme } = useTheme();
 
   const openSettings = () => {
     setIsSettingsOpen(true);
@@ -39,7 +42,13 @@ export const SideBar = () => {
 
   return (
     <>
-      <nav className="hidden lg:flex flex-col fixed top-0 left-0 h-screen w-64 bg-blue-900 p-4 text-white shadow-lg">
+      <nav
+        className={`hidden lg:flex flex-col fixed top-0 left-0 h-screen w-64 p-4 text-white shadow-lg transition-colors duration-200 ${
+          resolvedTheme === "dark"
+            ? "bg-sidebar-dark-bg border-r border-sidebar-dark-border"
+            : "bg-sidebar-light-bg border-r border-sidebar-light-border"
+        }`}
+      >
         <div className="flex items-center space-x-1 mt-3">
           <div className="w-8 h-8 relative">
             <Image
@@ -49,7 +58,9 @@ export const SideBar = () => {
               className="object-contain"
             />
           </div>
-          <h1 className="text-xl font-bold text-gray-00">Boskify</h1>
+          <h1 className="text-xl font-bold text-sidebar-light-text dark:text-sidebar-dark-text">
+            Boskify
+          </h1>
         </div>
 
         <ul className="space-y-2 mt-8 flex-1">
@@ -57,10 +68,14 @@ export const SideBar = () => {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className={`block p-2 rounded transition-colors duration-200 hover:bg-blue-700 ${
+                className={`block p-2 rounded transition-colors duration-200 ${
                   pathname.startsWith(link.routeKey)
-                    ? "bg-blue-800 border-l-4 border-blue-300"
-                    : ""
+                    ? resolvedTheme === "dark"
+                      ? "bg-sidebar-dark-active border-l-4 border-sidebar-dark-border"
+                      : "bg-sidebar-light-active border-l-4 border-sidebar-light-border"
+                    : resolvedTheme === "dark"
+                    ? "hover:bg-sidebar-dark-hover text-sidebar-dark-textSecondary hover:text-sidebar-dark-text"
+                    : "hover:bg-sidebar-light-hover text-sidebar-light-textSecondary hover:text-sidebar-light-text"
                 }`}
               >
                 {link.label}
@@ -69,11 +84,21 @@ export const SideBar = () => {
           ))}
         </ul>
 
-        {/* Settings Button at Extreme Bottom */}
-        <div className="w-full absolute bottom-0 left-0 p-4 border-t border-blue-800 bg-blue-900">
+        {/* Theme Toggle and Settings */}
+        <div className="space-y-3 pt-4 border-t border-sidebar-light-border dark:border-sidebar-dark-border">
+          {/* Theme Toggle */}
+          <div className="flex justify-center">
+            <ThemeToggle />
+          </div>
+
+          {/* Settings Button */}
           <button
             onClick={openSettings}
-            className="w-full flex items-center space-x-3 p-3 rounded transition-colors duration-200 hover:bg-blue-700 text-blue-100 hover:text-white"
+            className={`w-full flex items-center space-x-3 p-3 rounded transition-colors duration-200 ${
+              resolvedTheme === "dark"
+                ? "hover:bg-sidebar-dark-hover text-sidebar-dark-textSecondary hover:text-sidebar-dark-text"
+                : "hover:bg-sidebar-light-hover text-sidebar-light-textSecondary hover:text-sidebar-light-text"
+            }`}
           >
             <HiCog className="h-5 w-5" />
             <span className="font-medium">Settings</span>

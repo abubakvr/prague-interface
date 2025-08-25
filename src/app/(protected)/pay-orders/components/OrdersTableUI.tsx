@@ -6,6 +6,7 @@ import { handlePaySingleOrder, markOrderAsPaid } from "./OrderActions";
 import { useEffect, useState } from "react";
 import { findBankCode, findPaymentMethodByType } from "@/lib/findBankCode";
 import { getUserProfile } from "@/hooks/useOrders";
+import { useTheme } from "@/context/ThemeContext";
 
 interface UserProfile {
   averageReleaseTime?: string;
@@ -34,6 +35,7 @@ export function OrdersTableUI({
   setPayingOrderId,
   refetch,
 }: OrdersTableUIProps) {
+  const { resolvedTheme } = useTheme();
   const [profiles, setProfiles] = useState<{ [orderId: string]: UserProfile }>(
     {}
   );
@@ -91,14 +93,20 @@ export function OrdersTableUI({
   };
 
   return (
-    <div className="overflow-hidden rounded-xl bg-none lg:shadow-md lg:bg-white/80 lg:backdrop-blur-sm lg:border">
+    <div
+      className={`overflow-hidden rounded-xl lg:shadow-md lg:backdrop-blur-sm lg:border transition-colors duration-200 ${
+        resolvedTheme === "dark"
+          ? "lg:bg-slate-800/80 lg:border-slate-600"
+          : "lg:bg-white/80 lg:border-blue-100"
+      }`}
+    >
       {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                Real Name
+                Order Details
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Bank Name
@@ -132,7 +140,11 @@ export function OrdersTableUI({
               </th>
             </tr>
           </thead>
-          <tbody className="text-sm divide-y divide-blue-100">
+          <tbody
+            className={`divide-y transition-colors duration-200 ${
+              resolvedTheme === "dark" ? "divide-slate-700" : "divide-blue-100"
+            }`}
+          >
             {orders.map((order) => (
               <OrderRow
                 key={order.id}
@@ -179,21 +191,41 @@ export function OrdersTableUI({
           return (
             <div
               key={order.id}
-              className="rounded-lg shadow-md border border-blue-100 overflow-hidden"
+              className={`rounded-lg shadow-md border overflow-hidden transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "border-slate-600"
+                  : "border-blue-100"
+              }`}
             >
               <div
-                className="flex justify-between items-center p-4 cursor-pointer bg-blue-50 hover:bg-blue-100 transition-colors"
+                className={`flex justify-between items-center p-4 cursor-pointer transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "bg-slate-700 hover:bg-slate-600"
+                    : "bg-blue-50 hover:bg-blue-100"
+                }`}
                 onClick={() => toggleMobileOrderExpand(order.id)}
               >
                 <div className="flex flex-col">
                   <div className="flex items-center gap-x-2 mb-1">
-                    <span className="font-medium text-blue-900 text-base">
+                    <span
+                      className={`font-medium text-base transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "text-blue-300"
+                          : "text-blue-900"
+                      }`}
+                    >
                       {order.side === 1
                         ? order.buyerRealName
                         : order.sellerRealName}
                     </span>
                   </div>
-                  <div className="flex flex-wrap items-center gap-x-3 text-sm text-blue-700">
+                  <div
+                    className={`flex flex-wrap items-center gap-x-3 text-sm transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-blue-300"
+                        : "text-blue-700"
+                    }`}
+                  >
                     <span className="font-semibold">
                       {parseFloat(
                         (
@@ -205,10 +237,20 @@ export function OrdersTableUI({
                         currency: "NGN",
                       })}
                     </span>
-                    <div className="h-4 w-px bg-blue-200"></div>
+                    <div
+                      className={`h-4 w-px transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "bg-slate-500"
+                          : "bg-blue-200"
+                      }`}
+                    ></div>
                     <span className="flex items-center">
                       <svg
-                        className="w-4 h-4 mr-1 text-blue-500"
+                        className={`w-4 h-4 mr-1 transition-colors duration-200 ${
+                          resolvedTheme === "dark"
+                            ? "text-blue-400"
+                            : "text-blue-500"
+                        }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -224,7 +266,13 @@ export function OrdersTableUI({
                       {order.paymentTermList?.[0]?.bankName ||
                         userBank?.BANK_NAME}
                     </span>
-                    <div className="h-4 w-px bg-blue-200"></div>
+                    <div
+                      className={`h-4 w-px transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "bg-slate-500"
+                          : "bg-blue-200"
+                      }`}
+                    ></div>
                     <span className="flex items-center">
                       {profiles[order.id]?.averageReleaseTime +
                         "mins" +
@@ -234,7 +282,13 @@ export function OrdersTableUI({
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <span className="mr-2 text-xs font-medium px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+                  <span
+                    className={`mr-2 text-xs font-medium px-2 py-1 rounded-full transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "bg-blue-900/50 text-blue-300"
+                        : "bg-blue-100 text-blue-800"
+                    }`}
+                  >
                     {selectedBanks[order.id]?.BANK_CODE ||
                       findBankCode(
                         order.paymentTermList?.[0]?.bankName || "Null"
@@ -242,9 +296,11 @@ export function OrdersTableUI({
                       "N/A"}
                   </span>
                   <svg
-                    className={`w-5 h-5 text-blue-600 transition-transform ${
-                      expandedMobileOrder === order.id ? "rotate-180" : ""
-                    }`}
+                    className={`w-5 h-5 duration-200 transition-all ${
+                      resolvedTheme === "dark"
+                        ? "text-blue-400"
+                        : "text-blue-600"
+                    } ${expandedMobileOrder === order.id ? "rotate-180" : ""}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

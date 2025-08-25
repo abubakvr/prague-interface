@@ -3,6 +3,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { QueryClientContextProvider } from "@/components/QueryProvider";
 import { AuthProvider } from "@/context/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import "../globals.css";
 import Header from "@/components/Header";
 import { usePathname } from "next/navigation";
@@ -29,14 +30,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100 h-full`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100 dark:bg-slate-900 h-full transition-colors duration-200`}
         suppressHydrationWarning={true}
       >
         <QueryClientContextProvider>
-          <AuthProvider>
-            {!hideHeader && <Header />}
-            {children}
-          </AuthProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              {!hideHeader && <Header />}
+              {children}
+            </AuthProvider>
+          </ThemeProvider>
         </QueryClientContextProvider>
       </body>
     </html>

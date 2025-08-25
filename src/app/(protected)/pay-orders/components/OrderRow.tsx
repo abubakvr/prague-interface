@@ -3,6 +3,7 @@ import { findBankCode, findPaymentMethodByType } from "@/lib/findBankCode";
 import { Bank, banks } from "@/lib/bankCodes";
 import { OrderDetails } from "@/types/order";
 import { useState } from "react";
+import { useTheme } from "@/context/ThemeContext";
 
 interface UserProfile {
   averageReleaseTime?: string;
@@ -36,6 +37,7 @@ export function OrderRow({
   handlePaySingleOrder,
   profile,
 }: OrderRowProps) {
+  const { resolvedTheme } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Safely access payment term data with null checks
@@ -58,9 +60,15 @@ export function OrderRow({
   return (
     <>
       {/* Desktop view */}
-      <tr className="hidden md:table-row hover:bg-blue-50 transition-colors duration-150">
+      <tr
+        className={`hidden md:table-row transition-colors duration-150 ${
+          resolvedTheme === "dark" ? "hover:bg-slate-700" : "hover:bg-blue-50"
+        }`}
+      >
         <td
-          className="px-4 py-4 whitespace-nowrap font-medium text-blue-900"
+          className={`px-4 py-4 whitespace-nowrap font-medium transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-200" : "text-blue-900"
+          }`}
           title={order.side === 1 ? order.buyerRealName : order.sellerRealName}
         >
           {truncateText(
@@ -69,25 +77,33 @@ export function OrderRow({
           )}
         </td>
         <td
-          className="px-4 py-4 whitespace-nowrap text-blue-800"
+          className={`px-4 py-4 whitespace-nowrap transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-300" : "text-blue-800"
+          }`}
           title={userBank?.BANK_NAME || paymentTerm?.bankName || "N/A"}
         >
           {truncateText(paymentTerm?.bankName || userBank?.BANK_NAME, 11)}
         </td>
         <td
-          className="px-4 py-4 whitespace-nowrap text-blue-800"
+          className={`px-4 py-4 whitespace-nowrap transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-300" : "text-blue-800"
+          }`}
           title={userBank?.BANK_CODE || "N/A"}
         >
           {truncateText(userBank?.BANK_CODE, 11)}
         </td>
         <td
-          className="px-4 py-4 whitespace-nowrap text-blue-800"
+          className={`px-4 py-4 whitespace-nowrap transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-300" : "text-blue-800"
+          }`}
           title={paymentTerm?.branchName || "N/A"}
         >
           {truncateText(paymentTerm?.branchName, 11)}
         </td>
         <td
-          className="px-4 py-4 whitespace-nowrap text-blue-800"
+          className={`px-4 py-4 whitespace-nowrap transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-300" : "text-blue-800"
+          }`}
           title={paymentTerm?.accountNo || "N/A"}
         >
           {truncateText(
@@ -97,19 +113,35 @@ export function OrderRow({
             11
           )}
         </td>
-        <td className="px-4 py-4 whitespace-nowrap font-semibold text-blue-900">
+        <td
+          className={`px-4 py-4 whitespace-nowrap font-semibold transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-200" : "text-blue-900"
+          }`}
+        >
           {profile?.averageReleaseTime + " mins" || "N/A"}
         </td>
-        <td className="px-4 py-4 whitespace-nowrap font-semibold text-blue-900">
+        <td
+          className={`px-4 py-4 whitespace-nowrap font-semibold transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-200" : "text-blue-900"
+          }`}
+        >
           {profile?.badAppraiseCount || "N/A"}
         </td>
-        <td className="px-4 py-4 whitespace-nowrap font-semibold text-blue-900">
+        <td
+          className={`px-4 py-4 whitespace-nowrap font-semibold transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-200" : "text-blue-900"
+          }`}
+        >
           {truncateText(
             paymentTerm?.paymentType ? String(paymentTerm.paymentType) : "N/A",
             11
           )}
         </td>
-        <td className="px-4 py-4 whitespace-nowrap text-lg font-semibold text-blue-900">
+        <td
+          className={`px-4 py-4 whitespace-nowrap text-lg font-semibold transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-200" : "text-blue-900"
+          }`}
+        >
           {amount}
         </td>
         <td className="px-4 py-4 whitespace-nowrap">
@@ -122,7 +154,11 @@ export function OrderRow({
                   handleBankSelect(order.id, bank);
                 }
               }}
-              className="block appearance-none w-full bg-white border border-blue-300 hover:border-blue-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+              className={`block appearance-none w-full border px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "bg-slate-700 border-slate-600 text-slate-100 hover:border-slate-500"
+                  : "bg-white border-blue-300 text-gray-900 hover:border-blue-500"
+              }`}
             >
               <option value="">Select Bank</option>
               {banks.map((bank) => (
@@ -131,7 +167,11 @@ export function OrderRow({
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-blue-700">
+            <div
+              className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-blue-400" : "text-blue-700"
+              }`}
+            >
               <svg
                 className="fill-current h-4 w-4"
                 xmlns="http://www.w3.org/2000/svg"
@@ -145,7 +185,11 @@ export function OrderRow({
         <td className="px-4 py-4 space-x-2 whitespace-nowrap">
           <button
             onClick={() => handlePaySingleOrder(order)}
-            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-md hover:shadow-blue-300/50 transition-all duration-300"
+            className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white shadow-md transition-all duration-300 ${
+              resolvedTheme === "dark"
+                ? "bg-blue-600 hover:bg-blue-700 focus:ring-blue-400 hover:shadow-blue-300/20"
+                : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 hover:shadow-blue-300/50"
+            } focus:outline-none focus:ring-2 focus:ring-offset-2`}
             disabled={isPaying}
           >
             {isPaying ? (
@@ -184,7 +228,11 @@ export function OrderRow({
                 paymentTerm?.id || ""
               )
             }
-            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-md hover:shadow-green-300/50 transition-all duration-300"
+            className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white shadow-md transition-all duration-300 ${
+              resolvedTheme === "dark"
+                ? "bg-green-600 hover:bg-green-700 focus:ring-green-400 hover:shadow-green-300/20"
+                : "bg-green-600 hover:bg-green-700 focus:ring-green-500 hover:shadow-green-300/50"
+            } focus:outline-none focus:ring-2 focus:ring-offset-2`}
             disabled={isMarkingPaid}
           >
             {isMarkingPaid ? (

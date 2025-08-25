@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { BASE_URL } from "@/lib/constants";
 import { banks, Bank } from "@/lib/bankCodes";
+import { useTheme } from "@/context/ThemeContext";
 
 // Get unique banks by bank code (keep first occurrence)
 const getUniqueBanks = (banksList: Bank[]): Bank[] => {
@@ -49,6 +50,7 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
+  const { resolvedTheme } = useTheme();
   const [formData, setFormData] = useState<UserSettingsRequest>({
     max_payment_amount: undefined,
     excluded_banks: [],
@@ -443,18 +445,34 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
+      <div
+        className={`rounded-lg shadow-xl max-w-2xl w-full mx-4 transition-colors duration-200 ${
+          resolvedTheme === "dark" ? "bg-slate-800" : "bg-white"
+        }`}
+      >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div
+          className={`px-6 py-4 border-b transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "border-slate-700" : "border-gray-200"
+          }`}
+        >
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2
+                className={`text-xl font-semibold transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-slate-100" : "text-gray-900"
+                }`}
+              >
                 {existingSettings ? "Update Settings" : "Add New Settings"}
               </h2>
             </div>
             <button
               onClick={handleClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+              className={`transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "text-slate-400 hover:text-slate-300"
+                  : "text-gray-400 hover:text-gray-600"
+              }`}
             >
               <svg
                 className="w-6 h-6"
@@ -476,13 +494,25 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         {/* Modal Content */}
         <div className="p-6">
           {error && (
-            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+            <div
+              className={`mb-4 p-3 rounded-md transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "bg-red-900/20 text-red-400 border border-red-800"
+                  : "bg-red-100 text-red-700"
+              }`}
+            >
               {error}
             </div>
           )}
 
           {success && (
-            <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md">
+            <div
+              className={`mb-4 p-3 rounded-md transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "bg-green-900/20 text-green-400 border border-green-800"
+                  : "bg-green-100 text-green-700"
+              }`}
+            >
               {success}
             </div>
           )}
@@ -491,7 +521,9 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             <div className="flex items-center justify-center py-8">
               <div className="flex flex-col items-center space-y-3">
                 <svg
-                  className="animate-spin h-8 w-8 text-blue-600"
+                  className={`animate-spin h-8 w-8 transition-colors duration-200 ${
+                    resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
+                  }`}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -510,7 +542,15 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                <p className="text-gray-600">Loading settings...</p>
+                <p
+                  className={`transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-400"
+                      : "text-gray-600"
+                  }`}
+                >
+                  Loading settings...
+                </p>
               </div>
             </div>
           ) : (
@@ -519,7 +559,11 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               <div>
                 <label
                   htmlFor="max_payment_amount"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className={`block text-sm font-medium mb-2 transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-300"
+                      : "text-gray-700"
+                  }`}
                 >
                   Max Payment Amount (₦)
                 </label>
@@ -529,12 +573,22 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   name="max_payment_amount"
                   value={formData.max_payment_amount || ""}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "border-slate-600 bg-slate-700 text-slate-100 focus:ring-blue-400 focus:border-blue-400"
+                      : "border-gray-300 bg-white text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                  }`}
                   placeholder="Enter maximum payment amount"
                   min="0"
                   step="100"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p
+                  className={`mt-1 text-xs transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-400"
+                      : "text-gray-500"
+                  }`}
+                >
                   Maximum amount allowed for a single payment transaction (leave
                   blank for no limit)
                 </p>
@@ -544,7 +598,11 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               <div>
                 <label
                   htmlFor="excluded_banks"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className={`block text-sm font-medium mb-2 transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-300"
+                      : "text-gray-700"
+                  }`}
                 >
                   Excluded Banks
                 </label>
@@ -599,7 +657,13 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     </button>
                   </div>
                 ) : (
-                  <div className="mb-3 text-sm text-gray-500 italic">
+                  <div
+                    className={`mb-3 text-sm italic transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-400"
+                        : "text-gray-500"
+                    }`}
+                  >
                     No banks selected for exclusion
                   </div>
                 )}
@@ -623,29 +687,63 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         setBankSearchTerm("");
                       }
                     }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "border-slate-600 bg-slate-700 text-slate-100 focus:ring-blue-400 focus:border-blue-400"
+                        : "border-gray-300 bg-white text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    }`}
                     placeholder="Type bank name or code to search and select banks to exclude..."
                   />
 
                   {/* Bank Dropdown */}
                   {showBankDropdown && bankSearchTerm && (
-                    <div className="bank-dropdown absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                    <div
+                      className={`bank-dropdown absolute z-10 w-full mt-1 border rounded-md shadow-lg max-h-60 overflow-auto transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "bg-slate-700 border-slate-600"
+                          : "bg-white border-gray-300"
+                      }`}
+                    >
                       {filteredBanks.length > 0 ? (
                         filteredBanks.map((bank) => (
                           <button
                             key={`${bank.BANK_CODE}-${bank.BANK_NAME}`}
                             type="button"
                             onClick={() => handleBankSelect(bank)}
-                            className="w-full text-left px-3 py-2 hover:bg-blue-50 focus:bg-blue-50 focus:outline-none"
+                            className={`w-full text-left px-3 py-2 focus:outline-none transition-colors duration-200 ${
+                              resolvedTheme === "dark"
+                                ? "hover:bg-slate-600 focus:bg-slate-600"
+                                : "hover:bg-blue-50 focus:bg-blue-50"
+                            }`}
                           >
-                            <div className="font-medium">{bank.BANK_NAME}</div>
-                            <div className="text-sm text-gray-600">
+                            <div
+                              className={`font-medium transition-colors duration-200 ${
+                                resolvedTheme === "dark"
+                                  ? "text-slate-100"
+                                  : "text-gray-900"
+                              }`}
+                            >
+                              {bank.BANK_NAME}
+                            </div>
+                            <div
+                              className={`text-sm transition-colors duration-200 ${
+                                resolvedTheme === "dark"
+                                  ? "text-slate-400"
+                                  : "text-gray-600"
+                              }`}
+                            >
                               {bank.BANK_CODE}
                             </div>
                           </button>
                         ))
                       ) : (
-                        <div className="px-3 py-2 text-gray-500">
+                        <div
+                          className={`px-3 py-2 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-slate-400"
+                              : "text-gray-500"
+                          }`}
+                        >
                           No banks found
                         </div>
                       )}
@@ -653,7 +751,13 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   )}
                 </div>
 
-                <p className="mt-1 text-xs text-gray-500">
+                <p
+                  className={`mt-1 text-xs transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-400"
+                      : "text-gray-500"
+                  }`}
+                >
                   Search and select banks to exclude from payments. Selected
                   banks will appear as chips above.
                 </p>
@@ -663,7 +767,11 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               <div>
                 <label
                   htmlFor="narration"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className={`block text-sm font-medium mb-2 transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-300"
+                      : "text-gray-700"
+                  }`}
                 >
                   Narration
                 </label>
@@ -673,10 +781,20 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   value={formData.narration || ""}
                   onChange={handleChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "border-slate-600 bg-slate-700 text-slate-100 focus:ring-blue-400 focus:border-blue-400"
+                      : "border-gray-300 bg-white text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                  }`}
                   placeholder="Enter default narration for payments"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p
+                  className={`mt-1 text-xs transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-400"
+                      : "text-gray-500"
+                  }`}
+                >
                   Default narration that will appear on bank statements
                 </p>
               </div>
@@ -685,7 +803,11 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               <div>
                 <label
                   htmlFor="bybit_message"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className={`block text-sm font-medium mb-2 transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-300"
+                      : "text-gray-700"
+                  }`}
                 >
                   Bybit Message
                 </label>
@@ -695,20 +817,40 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   value={formData.bybit_message || ""}
                   onChange={handleChange}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "border-slate-600 bg-slate-700 text-slate-100 focus:ring-blue-400 focus:border-blue-400"
+                      : "border-gray-300 bg-white text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                  }`}
                   placeholder="Enter default message for Bybit orders"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p
+                  className={`mt-1 text-xs transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-400"
+                      : "text-gray-500"
+                  }`}
+                >
                   Default message that will be sent with Bybit orders
                 </p>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+              <div
+                className={`flex justify-end space-x-3 pt-4 border-t transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "border-slate-700"
+                    : "border-gray-200"
+                }`}
+              >
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors duration-200"
+                  className={`px-4 py-2 rounded-md transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-300 bg-slate-700 hover:bg-slate-600"
+                      : "text-gray-700 bg-gray-100 hover:bg-gray-200"
+                  }`}
                 >
                   Cancel
                 </button>

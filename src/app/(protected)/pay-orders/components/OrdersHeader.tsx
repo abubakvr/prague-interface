@@ -1,6 +1,7 @@
 // OrdersHeader.tsx
 import { FaDownload, FaMoneyBillWave, FaMoneyCheck } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
+import { useTheme } from "@/context/ThemeContext";
 
 interface OrdersHeaderProps {
   ordersCount: number;
@@ -17,16 +18,26 @@ export function OrdersHeader({
   payAllLoading,
   isRefetching,
 }: OrdersHeaderProps) {
+  const { resolvedTheme } = useTheme();
+
   return (
     <div className="flex justify-between items-start md:items-center mb-4 gap-4 md:gap-0">
       <div className="w-full flex justify-start gap-2 md:gap-4 items-center">
-        <div className="w-max first:text-sm text-blue-700 py-1 rounded-lg">
+        <div
+          className={`w-max first:text-sm py-1 rounded-lg transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-blue-400" : "text-blue-700"
+          }`}
+        >
           Total Orders: {ordersCount}
         </div>
 
         <button
           onClick={() => refetch()}
-          className="px-3 py-2 md:px-4 md:py-2 bg-blue-600 text-white text-sm md:text-base rounded-md hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-blue-300/50 flex items-center gap-2"
+          className={`px-3 py-2 md:px-4 md:py-2 text-white text-sm md:text-base rounded-md transition-all duration-300 shadow-md flex items-center gap-2 ${
+            resolvedTheme === "dark"
+              ? "bg-blue-600 hover:bg-blue-700 hover:shadow-blue-300/20"
+              : "bg-blue-600 hover:bg-blue-700 hover:shadow-blue-300/50"
+          }`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +59,11 @@ export function OrdersHeader({
       <div className="w-full flex justify-end">
         <button
           onClick={handlePayAllOrders}
-          className="w-fit md:w-auto px-5 py-2 md:px-4 md:py-2 bg-blue-600 text-white text-sm md:text-base rounded-md hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-blue-300/50 flex items-center justify-center gap-2"
+          className={`w-fit md:w-auto px-5 py-2 md:px-4 md:py-2 text-white text-sm md:text-base rounded-md transition-all duration-300 shadow-md flex items-center justify-center gap-2 ${
+            resolvedTheme === "dark"
+              ? "bg-blue-600 hover:bg-blue-700 hover:shadow-blue-300/20"
+              : "bg-blue-600 hover:bg-blue-700 hover:shadow-blue-300/50"
+          }`}
           disabled={payAllLoading}
         >
           {payAllLoading ? (
