@@ -94,7 +94,7 @@ export function OrdersTableUI({
 
   return (
     <div
-      className={`overflow-hidden rounded-xl lg:shadow-md lg:backdrop-blur-sm lg:border transition-colors duration-200 ${
+      className={`overflow-hidden md:rounded-xl lg:shadow-md lg:backdrop-blur-sm lg:border transition-colors duration-200 ${
         resolvedTheme === "dark"
           ? "lg:bg-slate-800/80 lg:border-slate-600"
           : "lg:bg-white/80 lg:border-blue-100"
@@ -197,7 +197,7 @@ export function OrdersTableUI({
           return (
             <div
               key={order.id}
-              className={`rounded-lg shadow-md border overflow-hidden transition-colors duration-200 ${
+              className={`rounded-md shadow-md border overflow-hidden transition-colors duration-200 ${
                 resolvedTheme === "dark"
                   ? "border-slate-600"
                   : "border-blue-100"
@@ -232,7 +232,13 @@ export function OrdersTableUI({
                         : "text-blue-700"
                     }`}
                   >
-                    <span className="font-semibold">
+                    <span
+                      className={`font-semibold transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "text-emerald-300"
+                          : "text-emerald-700"
+                      }`}
+                    >
                       {parseFloat(
                         (
                           (Number(order.quantity) || 0) *
@@ -250,12 +256,18 @@ export function OrdersTableUI({
                           : "bg-blue-200"
                       }`}
                     ></div>
-                    <span className="flex items-center">
+                    <span
+                      className={`flex items-center transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "text-indigo-300"
+                          : "text-indigo-600"
+                      }`}
+                    >
                       <svg
                         className={`w-4 h-4 mr-1 transition-colors duration-200 ${
                           resolvedTheme === "dark"
-                            ? "text-blue-400"
-                            : "text-blue-500"
+                            ? "text-indigo-400"
+                            : "text-indigo-500"
                         }`}
                         fill="none"
                         stroke="currentColor"
@@ -279,7 +291,13 @@ export function OrdersTableUI({
                           : "bg-blue-200"
                       }`}
                     ></div>
-                    <span className="flex items-center">
+                    <span
+                      className={`flex items-center transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "text-amber-300"
+                          : "text-amber-600"
+                      }`}
+                    >
                       {profiles[order.id]?.averageReleaseTime +
                         "mins" +
                         " /" +
