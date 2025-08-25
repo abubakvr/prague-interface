@@ -206,7 +206,7 @@ export function OrdersTableUI({
               <div
                 className={`flex justify-between items-center p-4 cursor-pointer transition-colors duration-200 ${
                   resolvedTheme === "dark"
-                    ? "bg-slate-700 hover:bg-slate-600"
+                    ? "bg-slate-800 hover:bg-slate-700"
                     : "bg-blue-50 hover:bg-blue-100"
                 }`}
                 onClick={() => toggleMobileOrderExpand(order.id)}
@@ -216,7 +216,7 @@ export function OrdersTableUI({
                     <span
                       className={`font-medium text-base transition-colors duration-200 ${
                         resolvedTheme === "dark"
-                          ? "text-blue-300"
+                          ? "text-slate-200"
                           : "text-blue-900"
                       }`}
                     >
@@ -294,14 +294,17 @@ export function OrdersTableUI({
                     <span
                       className={`flex items-center transition-colors duration-200 ${
                         resolvedTheme === "dark"
-                          ? "text-amber-300"
-                          : "text-amber-600"
+                          ? "text-slate-300"
+                          : "text-slate-600"
                       }`}
                     >
-                      {profiles[order.id]?.averageReleaseTime +
-                        "mins" +
-                        " /" +
-                        profiles[order.id]?.badAppraiseCount}
+                      {profiles[order.id]?.averageReleaseTime !== undefined &&
+                      profiles[order.id]?.badAppraiseCount !== undefined
+                        ? profiles[order.id]?.averageReleaseTime +
+                          "mins" +
+                          " /" +
+                          profiles[order.id]?.badAppraiseCount
+                        : ""}
                     </span>
                   </div>
                 </div>
@@ -313,11 +316,7 @@ export function OrdersTableUI({
                         : "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border border-blue-300 shadow-md"
                     }`}
                   >
-                    {selectedBanks[order.id]?.BANK_CODE ||
-                      findBankCode(
-                        order.paymentTermList?.[0]?.bankName || "Null"
-                      )?.BANK_CODE ||
-                      "N/A"}
+                    {userBank?.BANK_CODE}
                   </span>
                   <svg
                     className={`w-5 h-5 duration-200 transition-all ${

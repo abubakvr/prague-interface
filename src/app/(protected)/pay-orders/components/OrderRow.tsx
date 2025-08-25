@@ -57,34 +57,34 @@ export function OrderRow({
     currency: "NGN",
   });
 
-  // Custom button classes for transparent/light blue backgrounds in dark mode
-  const payButtonClass = `inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
+  // Button classes for transparent pop effect in dark mode, light trans blue in light mode, and extra pop
+  const payButtonClass = `inline-flex items-center px-3 py-1.5 border border-blue-400 text-xs font-semibold rounded-md shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
     ${
       resolvedTheme === "dark"
-        ? "bg-blue-500/10 hover:bg-blue-500/20 focus:ring-blue-400 hover:shadow-blue-300/10"
-        : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 hover:shadow-blue-300/50"
+        ? "bg-blue-400/20 hover:bg-blue-400/30 text-blue-200 border-blue-400/60 hover:shadow-blue-400/40 focus:ring-blue-300"
+        : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 text-white"
     }`;
 
-  const markPaidButtonClass = `inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
+  const markPaidButtonClass = `inline-flex items-center px-3 py-1.5 border border-green-400 text-xs font-semibold rounded-md shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
     ${
       resolvedTheme === "dark"
-        ? "bg-green-500/10 hover:bg-green-500/20 focus:ring-green-400 hover:shadow-green-300/10"
-        : "bg-green-600 hover:bg-green-700 focus:ring-green-500 hover:shadow-green-300/50"
+        ? "bg-green-400/20 hover:bg-green-400/30 text-green-200 border-green-400/60 hover:shadow-green-400/40 focus:ring-green-300"
+        : "bg-green-600 hover:bg-green-700 focus:ring-green-500 text-white"
     }`;
 
   // For mobile
-  const payButtonMobileClass = `flex-1 inline-flex justify-center items-center px-3 py-2 border border-transparent text-xs font-medium rounded-md text-white shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
+  const payButtonMobileClass = `flex-1 inline-flex justify-center items-center px-3 py-2 border border-blue-400 text-xs font-semibold rounded-md shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
     ${
       resolvedTheme === "dark"
-        ? "bg-blue-500/10 hover:bg-blue-500/20 focus:ring-blue-400 hover:shadow-blue-300/10"
-        : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 hover:shadow-blue-300/50"
+        ? "bg-blue-400/20 hover:bg-blue-400/30 text-blue-200 border-blue-400/60 hover:shadow-blue-400/40 focus:ring-blue-300"
+        : "bg-blue-100 hover:bg-blue-200 text-blue-800 border-blue-300 hover:shadow-blue-400/40 focus:ring-blue-400"
     }`;
 
-  const markPaidButtonMobileClass = `flex-1 inline-flex justify-center items-center px-3 py-2 border border-transparent text-xs font-medium rounded-md text-white shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
+  const markPaidButtonMobileClass = `flex-1 inline-flex justify-center items-center px-3 py-2 border border-green-400 text-xs font-semibold rounded-md shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
     ${
       resolvedTheme === "dark"
-        ? "bg-green-500/10 hover:bg-green-500/20 focus:ring-green-400 hover:shadow-green-300/10"
-        : "bg-green-600 hover:bg-green-700 focus:ring-green-500 hover:shadow-green-300/50"
+        ? "bg-green-400/20 hover:bg-green-400/30 text-green-200 border-green-400/60 hover:shadow-green-400/40 focus:ring-green-300"
+        : "bg-green-100 hover:bg-green-200 text-green-800 border-green-300 hover:shadow-green-400/40 focus:ring-green-400"
     }`;
 
   return (

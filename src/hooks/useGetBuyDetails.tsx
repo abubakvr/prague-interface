@@ -27,7 +27,7 @@ const chunkArray = <T = any,>(array: T[], chunkSize: number): T[][] => {
 export const useGetOrders = ({
   page,
   size,
-  status = OrderStatus.WAITING_FOR_BUY_PAY,
+  status = OrderStatus.FINISH_ORDER,
   side = 0,
 }: {
   page: number;

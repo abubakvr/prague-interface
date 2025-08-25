@@ -33,10 +33,10 @@ export function OrdersHeader({
       <div className="w-full flex justify-start gap-2 md:gap-4 items-center">
         <div
           className={`w-max first:text-sm py-1 rounded-lg transition-colors duration-200 ${
-            resolvedTheme === "dark" ? "text-blue-400" : "text-blue-700"
+            resolvedTheme === "dark" ? "text-slate-200" : "text-blue-700"
           }`}
         >
-          Total Orders: {ordersCount}
+          Orders: {ordersCount}
         </div>
 
         <button

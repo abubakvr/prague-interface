@@ -336,6 +336,28 @@ export const TopBar = () => {
               )}
             </div>
           </div>
+          <div
+            className={`flex md:hidden space-x-2 items-center text-sm transition-colors duration-200 ${
+              resolvedTheme === "dark" ? "text-slate-300" : "text-blue-800"
+            }`}
+          >
+            <div>
+              <span className="font-semibold">
+                {pendingOrders?.length ?? "..."}
+              </span>
+            </div>
+            <div>|</div>
+            <div>
+              <span className="font-semibold">
+                {new Intl.NumberFormat("en-NG", {
+                  style: "currency",
+                  currency: "NGN",
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 2,
+                }).format(Number(adminBankBalance || 0) / 100)}
+              </span>
+            </div>
+          </div>
 
           {/* Mobile user icon */}
           <div className="md:hidden flex items-center space-x-2">
