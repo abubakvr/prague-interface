@@ -85,9 +85,9 @@ export const SideBar = () => {
         </ul>
 
         {/* Theme Toggle and Settings */}
-        <div className="space-y-3 pt-4 border-t border-sidebar-light-border dark:border-sidebar-dark-border">
+        <div className="space-y-1 pt-3 border-t border-sidebar-light-border dark:border-sidebar-dark-border">
           {/* Theme Toggle */}
-          <div className="flex justify-center">
+          <div className="flex justify-left w-full">
             <ThemeToggle />
           </div>
 

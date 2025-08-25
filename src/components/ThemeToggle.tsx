@@ -18,14 +18,16 @@ export const ThemeToggle = () => {
   const CurrentIcon = currentTheme?.icon || HiComputerDesktop;
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 p-2 rounded-lg hover:bg-sidebar-light-hover dark:hover:bg-sidebar-dark-hover transition-colors duration-200"
+        className="w-full flex items-center space-x-2 p-3 rounded-lg hover:bg-sidebar-light-hover dark:hover:bg-sidebar-dark-hover transition-colors duration-200"
         title={`Current theme: ${currentTheme?.label}`}
       >
-        <CurrentIcon className="h-5 w-5" />
-        <span className="text-sm font-medium">{currentTheme?.label}</span>
+        <CurrentIcon className="h-5 w-5 dark:text-sidebar-dark-textSecondary" />
+        <span className="text-sm font-medium text-sidebar-light-textSecondary dark:text-sidebar-dark-textSecondary">
+          {currentTheme?.label}
+        </span>
       </button>
 
       {isOpen && (
