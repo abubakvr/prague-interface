@@ -57,6 +57,36 @@ export function OrderRow({
     currency: "NGN",
   });
 
+  // Custom button classes for transparent/light blue backgrounds in dark mode
+  const payButtonClass = `inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
+    ${
+      resolvedTheme === "dark"
+        ? "bg-blue-500/10 hover:bg-blue-500/20 focus:ring-blue-400 hover:shadow-blue-300/10"
+        : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 hover:shadow-blue-300/50"
+    }`;
+
+  const markPaidButtonClass = `inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
+    ${
+      resolvedTheme === "dark"
+        ? "bg-green-500/10 hover:bg-green-500/20 focus:ring-green-400 hover:shadow-green-300/10"
+        : "bg-green-600 hover:bg-green-700 focus:ring-green-500 hover:shadow-green-300/50"
+    }`;
+
+  // For mobile
+  const payButtonMobileClass = `flex-1 inline-flex justify-center items-center px-3 py-2 border border-transparent text-xs font-medium rounded-md text-white shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
+    ${
+      resolvedTheme === "dark"
+        ? "bg-blue-500/10 hover:bg-blue-500/20 focus:ring-blue-400 hover:shadow-blue-300/10"
+        : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 hover:shadow-blue-300/50"
+    }`;
+
+  const markPaidButtonMobileClass = `flex-1 inline-flex justify-center items-center px-3 py-2 border border-transparent text-xs font-medium rounded-md text-white shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2
+    ${
+      resolvedTheme === "dark"
+        ? "bg-green-500/10 hover:bg-green-500/20 focus:ring-green-400 hover:shadow-green-300/10"
+        : "bg-green-600 hover:bg-green-700 focus:ring-green-500 hover:shadow-green-300/50"
+    }`;
+
   return (
     <>
       {/* Desktop view */}
@@ -185,11 +215,7 @@ export function OrderRow({
         <td className="px-4 py-4 space-x-2 whitespace-nowrap">
           <button
             onClick={() => handlePaySingleOrder(order)}
-            className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white shadow-md transition-all duration-300 ${
-              resolvedTheme === "dark"
-                ? "bg-blue-600 hover:bg-blue-700 focus:ring-blue-400 hover:shadow-blue-300/20"
-                : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 hover:shadow-blue-300/50"
-            } focus:outline-none focus:ring-2 focus:ring-offset-2`}
+            className={payButtonClass}
             disabled={isPaying}
           >
             {isPaying ? (
@@ -228,11 +254,7 @@ export function OrderRow({
                 paymentTerm?.id || ""
               )
             }
-            className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white shadow-md transition-all duration-300 ${
-              resolvedTheme === "dark"
-                ? "bg-green-600 hover:bg-green-700 focus:ring-green-400 hover:shadow-green-300/20"
-                : "bg-green-600 hover:bg-green-700 focus:ring-green-500 hover:shadow-green-300/50"
-            } focus:outline-none focus:ring-2 focus:ring-offset-2`}
+            className={markPaidButtonClass}
             disabled={isMarkingPaid}
           >
             {isMarkingPaid ? (
@@ -347,7 +369,7 @@ export function OrderRow({
             <div className="flex space-x-2 pt-2">
               <button
                 onClick={() => handlePaySingleOrder(order)}
-                className="flex-1 inline-flex justify-center items-center px-3 py-2 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-md hover:shadow-blue-300/50 transition-all duration-300"
+                className={payButtonMobileClass}
                 disabled={isPaying}
               >
                 {isPaying ? (
@@ -386,7 +408,7 @@ export function OrderRow({
                     paymentTerm?.id || ""
                   )
                 }
-                className="flex-1 inline-flex justify-center items-center px-3 py-2 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-md hover:shadow-green-300/50 transition-all duration-300"
+                className={markPaidButtonMobileClass}
                 disabled={isMarkingPaid}
               >
                 {isMarkingPaid ? (

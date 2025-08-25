@@ -27,7 +27,13 @@ export function DesktopTable({ paidOrders, onCheckStatus }: DesktopTableProps) {
             }`}
           >
             <thead>
-              <tr className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+              <tr
+                className={`${
+                  resolvedTheme === "dark"
+                    ? "bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/20 text-slate-100"
+                    : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+                }`}
+              >
                 <th className="text-left p-4 font-semibold text-sm">Amount</th>
                 <th className="text-left p-4 font-semibold text-sm">Seller</th>
                 <th className="text-left p-4 font-semibold text-sm">

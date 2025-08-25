@@ -21,10 +21,10 @@ export const ThemeToggle = () => {
     <div className="relative w-full">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center space-x-2 p-3 rounded-lg hover:bg-sidebar-light-hover dark:hover:bg-sidebar-dark-hover transition-colors duration-200"
+        className="w-full flex items-center space-x-2 md:p-3 rounded-lg hover:bg-none md:hover:bg-sidebar-light-hover dark:hover:bg-sidebar-dark-hover transition-colors duration-200"
         title={`Current theme: ${currentTheme?.label}`}
       >
-        <CurrentIcon className="h-5 w-5 text-blue-600 dark:text-sidebar-dark-textSecondary" />
+        <CurrentIcon className="h-5 w-5 text-blue-600 md:text-slate-300 dark:text-sidebar-dark-textSecondary" />
         <span className="text-sm font-medium text-blue-600 md:text-sidebar-light-textSecondary dark:text-sidebar-dark-textSecondary">
           {currentTheme?.label}
         </span>

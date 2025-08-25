@@ -20,6 +20,14 @@ export function OrdersHeader({
 }: OrdersHeaderProps) {
   const { resolvedTheme } = useTheme();
 
+  // Button style for blue buttons with light transparent blue bg on dark mode
+  const buttonBase =
+    "px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-md transition-all duration-300 shadow-md flex items-center gap-2 font-medium";
+  const buttonBlue =
+    resolvedTheme === "dark"
+      ? "bg-blue-600/20 text-blue-200 border border-blue-500 hover:bg-blue-600/40 hover:text-blue-100 hover:border-blue-300 shadow-none"
+      : "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-blue-300/50";
+
   return (
     <div className="flex justify-between items-start md:items-center mb-4 gap-4 md:gap-0">
       <div className="w-full flex justify-start gap-2 md:gap-4 items-center">
@@ -33,11 +41,7 @@ export function OrdersHeader({
 
         <button
           onClick={() => refetch()}
-          className={`px-3 py-2 md:px-4 md:py-2 text-white text-sm md:text-base rounded-md transition-all duration-300 shadow-md flex items-center gap-2 ${
-            resolvedTheme === "dark"
-              ? "bg-blue-600 hover:bg-blue-700 hover:shadow-blue-300/20"
-              : "bg-blue-600 hover:bg-blue-700 hover:shadow-blue-300/50"
-          }`}
+          className={`${buttonBase} ${buttonBlue}`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -59,16 +63,16 @@ export function OrdersHeader({
       <div className="w-full flex justify-end">
         <button
           onClick={handlePayAllOrders}
-          className={`w-fit md:w-auto px-5 py-2 md:px-4 md:py-2 text-white text-sm md:text-base rounded-md transition-all duration-300 shadow-md flex items-center justify-center gap-2 ${
+          className={`w-fit md:w-auto px-5 py-2 md:px-4 md:py-2 rounded-md transition-all duration-300 shadow-md flex items-center justify-center gap-2 font-medium ${
             resolvedTheme === "dark"
-              ? "bg-blue-600 hover:bg-blue-700 hover:shadow-blue-300/20"
-              : "bg-blue-600 hover:bg-blue-700 hover:shadow-blue-300/50"
-          }`}
+              ? "bg-blue-600/20 text-blue-200 border border-blue-500 hover:bg-blue-600/40 hover:text-blue-100 hover:border-blue-300 shadow-none"
+              : "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-blue-300/50"
+          } text-sm md:text-base`}
           disabled={payAllLoading}
         >
           {payAllLoading ? (
             <>
-              <FaSpinner className="animate-spin -ml-1 mr-2 h-3 w-3 md:h-4 md:w-4 text-white" />
+              <FaSpinner className="animate-spin -ml-1 mr-2 h-3 w-3 md:h-4 md:w-4 text-inherit" />
               Paying...
             </>
           ) : (

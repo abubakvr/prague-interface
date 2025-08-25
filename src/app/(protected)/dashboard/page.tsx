@@ -142,7 +142,13 @@ export default function Home() {
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Welcome Banner */}
-      <div className="mt-5 md:mt-0 bg-gradient-to-r from-blue-700 to-indigo-800 rounded-xl p-4 sm:p-6 shadow-lg text-white">
+      <div
+        className={`rounded-xl p-4 sm:p-6 shadow-lg text-white ${
+          resolvedTheme === "dark"
+            ? "bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/20 text-slate-100"
+            : "bg-gradient-to-r from-blue-700 to-indigo-800"
+        }`}
+      >
         <h1 className="text-xl sm:text-2xl font-bold mb-2">
           Welcome back, {adminDetails?.nickName || "Trader"}!
         </h1>

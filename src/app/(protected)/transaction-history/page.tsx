@@ -118,8 +118,8 @@ function TransactionHistoryContent() {
           onClick={() => refetch()}
           className={`px-4 py-2 rounded transition-colors duration-200 ${
             resolvedTheme === "dark"
-              ? "bg-blue-500 hover:bg-blue-600 text-white"
-              : "bg-blue-600 hover:bg-blue-700 text-white"
+              ? "bg-gradient-to-r from-slate-700 to-slate-700 text-slate-100"
+              : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
           }`}
         >
           Try Again
@@ -240,7 +240,13 @@ function TransactionHistoryContent() {
                     }`}
                   >
                     <thead>
-                      <tr className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                      <tr
+                        className={`${
+                          resolvedTheme === "dark"
+                            ? "bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/20 text-slate-100"
+                            : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+                        }`}
+                      >
                         <th className="text-left p-4 font-semibold text-sm">
                           Type
                         </th>

@@ -103,7 +103,13 @@ export function OrdersTableUI({
       {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+          <thead
+            className={`${
+              resolvedTheme === "dark"
+                ? "bg-gradient-to-r from-blue-900/30 via-indigo-900/30 to-purple-900/30 text-slate-100"
+                : "bg-gradient-to-r from-blue-600 to-indigo-700 text-white"
+            }`}
+          >
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">
                 Order Details
@@ -283,10 +289,10 @@ export function OrdersTableUI({
                 </div>
                 <div className="flex items-center">
                   <span
-                    className={`mr-2 text-xs font-medium px-2 py-1 rounded-full transition-colors duration-200 ${
+                    className={`mr-2 text-xs font-medium px-3 py-1.5 rounded-full transition-all duration-300 ${
                       resolvedTheme === "dark"
-                        ? "bg-blue-900/50 text-blue-300"
-                        : "bg-blue-100 text-blue-800"
+                        ? "bg-gradient-to-r from-blue-900/60 to-indigo-900/60 text-blue-200 border border-blue-700/50 shadow-lg shadow-blue-900/20"
+                        : "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border border-blue-300 shadow-md"
                     }`}
                   >
                     {selectedBanks[order.id]?.BANK_CODE ||
@@ -317,55 +323,139 @@ export function OrdersTableUI({
               </div>
 
               {expandedMobileOrder === order.id && (
-                <div className="p-2 border-t border-blue-200">
-                  <div className="bg-blue-50 rounded-lg p-3 mb-4">
-                    <div className="grid grid-cols-2 gap-3 text-sm">
+                <div
+                  className={`p-4 border-t transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "border-slate-600"
+                      : "border-blue-200"
+                  }`}
+                >
+                  <div
+                    className={`rounded-lg p-4 mb-4 transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "bg-slate-700/50 border border-slate-600"
+                        : "bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200"
+                    }`}
+                  >
+                    <div className="grid grid-cols-2 gap-4 text-sm">
                       <div className="flex flex-col">
-                        <span className="text-blue-500 text-xs font-medium mb-1">
+                        <span
+                          className={`text-xs font-medium mb-1 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-blue-300"
+                              : "text-blue-600"
+                          }`}
+                        >
                           Bank Name
                         </span>
-                        <span className="font-medium">
+                        <span
+                          className={`font-medium transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-slate-200"
+                              : "text-blue-900"
+                          }`}
+                        >
                           {userBank?.BANK_NAME || "N/A"}
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-blue-500 text-xs font-medium mb-1">
+                        <span
+                          className={`text-xs font-medium mb-1 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-blue-300"
+                              : "text-blue-600"
+                          }`}
+                        >
                           Bank Code
                         </span>
-                        <span className="font-medium">
+                        <span
+                          className={`font-medium transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-slate-200"
+                              : "text-blue-900"
+                          }`}
+                        >
                           {userBank?.BANK_CODE}
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-blue-500 text-xs font-medium mb-1">
+                        <span
+                          className={`text-xs font-medium mb-1 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-blue-300"
+                              : "text-blue-600"
+                          }`}
+                        >
                           Bank Branch
                         </span>
-                        <span className="font-medium">
+                        <span
+                          className={`font-medium transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-slate-200"
+                              : "text-blue-900"
+                          }`}
+                        >
                           {order.paymentTermList?.[0]?.branchName || "N/A"}
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-blue-500 text-xs font-medium mb-1">
+                        <span
+                          className={`text-xs font-medium mb-1 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-blue-300"
+                              : "text-blue-600"
+                          }`}
+                        >
                           Account No
                         </span>
-                        <span className="font-medium">
+                        <span
+                          className={`font-medium transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-slate-200"
+                              : "text-blue-900"
+                          }`}
+                        >
                           {order.paymentTermList?.[0]?.accountNo || "N/A"}
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-blue-500 text-xs font-medium mb-1">
+                        <span
+                          className={`text-xs font-medium mb-1 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-emerald-300"
+                              : "text-emerald-600"
+                          }`}
+                        >
                           Avg. Release Time
                         </span>
-                        <span className="font-medium">
+                        <span
+                          className={`font-medium transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-emerald-200"
+                              : "text-emerald-800"
+                          }`}
+                        >
                           {profiles[order.id]?.averageReleaseTime + " mins" ||
                             "N/A"}
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-blue-500 text-xs font-medium mb-1">
+                        <span
+                          className={`text-xs font-medium mb-1 transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-amber-300"
+                              : "text-amber-600"
+                          }`}
+                        >
                           Bad Reviews
                         </span>
-                        <span className="font-medium">
+                        <span
+                          className={`font-medium transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-amber-200"
+                              : "text-amber-800"
+                          }`}
+                        >
                           {profiles[order.id]?.badAppraiseCount || "N/A"}
                         </span>
                       </div>
@@ -373,7 +463,13 @@ export function OrdersTableUI({
                   </div>
 
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-blue-700 mb-2">
+                    <label
+                      className={`block text-sm font-medium mb-2 transition-colors duration-200 ${
+                        resolvedTheme === "dark"
+                          ? "text-blue-300"
+                          : "text-blue-700"
+                      }`}
+                    >
                       Select Bank
                     </label>
                     <div className="relative">
@@ -391,7 +487,11 @@ export function OrdersTableUI({
                             handleBankSelect(order.id, selectedBank);
                           }
                         }}
-                        className="block w-full bg-white border border-blue-300 hover:border-blue-500 px-4 py-3 rounded-lg shadow-sm leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                        className={`block w-full border px-4 py-3 rounded-lg shadow-sm leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors duration-200 ${
+                          resolvedTheme === "dark"
+                            ? "bg-slate-700 border-slate-600 text-slate-100 hover:border-slate-500"
+                            : "bg-white border-blue-300 text-gray-900 hover:border-blue-500"
+                        }`}
                       >
                         <option value="">Select Bank</option>
                         {banks.map((bank) => (
@@ -403,7 +503,13 @@ export function OrdersTableUI({
                           </option>
                         ))}
                       </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-blue-700">
+                      <div
+                        className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-200 ${
+                          resolvedTheme === "dark"
+                            ? "text-blue-400"
+                            : "text-blue-700"
+                        }`}
+                      >
                         <svg
                           className="fill-current h-4 w-4"
                           xmlns="http://www.w3.org/2000/svg"
@@ -420,7 +526,11 @@ export function OrdersTableUI({
                       onClick={() =>
                         handlePaySingleOrder(order, setPayingOrderId, refetch)
                       }
-                      className="py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center shadow-sm hover:shadow-md"
+                      className={`py-3 px-4 text-white rounded-lg transition-all duration-300 flex items-center justify-center shadow-sm hover:shadow-md ${
+                        resolvedTheme === "dark"
+                          ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 hover:shadow-blue-300/20"
+                          : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 hover:shadow-blue-300/50"
+                      }`}
                       disabled={payingOrderId === order.id}
                     >
                       {payingOrderId === order.id ? (
@@ -477,7 +587,11 @@ export function OrdersTableUI({
                           refetch
                         )
                       }
-                      className="py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center justify-center shadow-sm hover:shadow-md"
+                      className={`py-3 px-4 text-white rounded-lg transition-all duration-300 flex items-center justify-center shadow-sm hover:shadow-md ${
+                        resolvedTheme === "dark"
+                          ? "bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 hover:shadow-emerald-300/20"
+                          : "bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 hover:shadow-emerald-300/50"
+                      }`}
                       disabled={markingPaidOrderId === order.id}
                     >
                       {markingPaidOrderId === order.id ? (
