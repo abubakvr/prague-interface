@@ -9,7 +9,7 @@ import { useGetOrders } from "@/hooks/useGetBuyDetails";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { HiCog } from "react-icons/hi";
+import { HiCog, HiUser } from "react-icons/hi";
 import { SettingsModal } from "./SettingsModal";
 import { useTheme } from "@/context/ThemeContext";
 import { ThemeToggle } from "./ThemeToggle";
@@ -287,15 +287,13 @@ export const TopBar = () => {
                 }`}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                <span
-                  className={`text-sm transition-colors duration-200 ${
+                <HiUser
+                  className={`h-4 w-4 transition-colors duration-200 ${
                     resolvedTheme === "dark"
                       ? "text-slate-100"
                       : "text-blue-900"
                   }`}
-                >
-                  {adminDetails?.nickName?.charAt(0).toUpperCase() || "U"}
-                </span>
+                />
               </div>
 
               {isDropdownOpen && (
@@ -363,7 +361,7 @@ export const TopBar = () => {
 
           {/* Mobile user icon */}
           <div className="md:hidden flex items-center space-x-2">
-            <div className="md:hidden flex">
+            <div className="md:hidden flex mt-1">
               <ThemeToggle />
             </div>
             <div
@@ -378,15 +376,13 @@ export const TopBar = () => {
                 }`}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                <span
-                  className={`text-sm transition-colors duration-200 ${
+                <HiUser
+                  className={`h-4 w-4 transition-colors duration-200 ${
                     resolvedTheme === "dark"
                       ? "text-slate-100"
                       : "text-blue-900"
                   }`}
-                >
-                  {adminDetails?.nickName?.charAt(0).toUpperCase() || "U"}
-                </span>
+                />
               </div>
 
               {isDropdownOpen && (
