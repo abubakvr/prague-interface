@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import { BASE_URL } from "@/lib/constants";
+import { useTheme } from "@/context/ThemeContext";
 
 interface FormValues {
   newPassword?: string;
@@ -21,6 +22,7 @@ interface Errors {
 }
 
 const ResetPasswordContent = () => {
+  const { resolvedTheme } = useTheme();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const [formData, setFormData] = useState<FormValues>({

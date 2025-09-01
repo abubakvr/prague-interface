@@ -26,6 +26,7 @@ interface UserSettings {
   excluded_banks?: string[];
   narration?: string;
   bybit_message?: string;
+  pay_thirdparty?: boolean;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -35,6 +36,7 @@ interface UserSettingsRequest {
   excluded_banks?: string[];
   narration?: string;
   bybit_message?: string;
+  pay_thirdparty?: boolean;
 }
 
 interface ApiResponse {
@@ -56,6 +58,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     excluded_banks: [],
     narration: "",
     bybit_message: "",
+    pay_thirdparty: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -132,6 +135,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             excluded_banks: excludedBanksData,
             narration: result.data.narration || "",
             bybit_message: result.data.bybit_message || "",
+            pay_thirdparty: result.data.pay_thirdparty || false,
           });
         } else {
           setExistingSettings(null);
@@ -140,6 +144,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             excluded_banks: [],
             narration: "",
             bybit_message: "",
+            pay_thirdparty: false,
           });
           setSelectedBanks([]);
         }
@@ -151,6 +156,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           excluded_banks: [],
           narration: "",
           bybit_message: "",
+          pay_thirdparty: false,
         });
         setSelectedBanks([]);
       } else {
@@ -174,7 +180,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
 
     if (name === "max_payment_amount") {
       // Handle max payment amount as number
@@ -182,6 +188,12 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       setFormData((prev) => ({
         ...prev,
         [name]: numValue,
+      }));
+    } else if (type === "checkbox") {
+      // Handle checkbox inputs
+      setFormData((prev) => ({
+        ...prev,
+        [name]: (e.target as HTMLInputElement).checked,
       }));
     } else {
       setFormData((prev) => ({
@@ -294,7 +306,11 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         excluded_banks: formData.excluded_banks,
         narration: formData.narration,
         bybit_message: formData.bybit_message,
+        pay_thirdparty: formData.pay_thirdparty,
       };
+
+      // Debug: Log the form data being sent
+      console.log("SettingsModal form data being sent:", requestData);
 
       // Use appropriate endpoint based on whether settings exist
       const apiUrl = `${BASE_URL}/api/settings`;
@@ -431,6 +447,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       excluded_banks: [],
       narration: "",
       bybit_message: "",
+      pay_thirdparty: false,
     });
     setError("");
     setSuccess("");
@@ -833,6 +850,40 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 >
                   Default message that will be sent with Bybit orders
                 </p>
+              </div>
+
+              {/* Third Party Payments */}
+              <div>
+                <label
+                  htmlFor="pay_thirdparty"
+                  className={`block text-sm font-medium mb-2 transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-300"
+                      : "text-gray-700"
+                  }`}
+                >
+                  Enable Third Party Payments
+                </label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="pay_thirdparty"
+                    name="pay_thirdparty"
+                    checked={formData.pay_thirdparty || false}
+                    onChange={handleChange}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor="pay_thirdparty"
+                    className={`text-sm transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-400"
+                        : "text-gray-600"
+                    }`}
+                  >
+                    Allow users to make payments to third-party accounts.
+                  </label>
+                </div>
               </div>
 
               {/* Action Buttons */}

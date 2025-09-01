@@ -3,6 +3,7 @@
 import { useState, FormEvent, ChangeEvent } from "react";
 import Link from "next/link";
 import { BASE_URL } from "@/lib/constants";
+import { useTheme } from "@/context/ThemeContext";
 
 interface Message {
   text: string;
@@ -10,6 +11,7 @@ interface Message {
 }
 
 const ForgotPassword = () => {
+  const { resolvedTheme } = useTheme();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<Message>({ text: "", type: "" });
