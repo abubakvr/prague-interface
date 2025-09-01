@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { BASE_URL } from "@/lib/constants";
+import { useTheme } from "@/context/ThemeContext";
 import {
   HiChartBar,
   HiTrendingUp,
@@ -26,6 +27,7 @@ interface ApiResponse {
 }
 
 export default function AdminOrderStatsPage() {
+  const { resolvedTheme } = useTheme();
   const [dailyStats, setDailyStats] = useState<OrderStats | null>(null);
   const [totalStats, setTotalStats] = useState<OrderStats | null>(null);
   const [thirtyDayStats, setThirtyDayStats] = useState<OrderStats | null>(null);
@@ -137,8 +139,18 @@ export default function AdminOrderStatsPage() {
   if (isLoading) {
     return (
       <div className="w-full flex flex-col gap-y-5 h-screen items-center text-center mt-16 p-4">
-        <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-t-4 border-b-4 border-blue-600"></div>
-        <p className="text-blue-800 font-medium">Loading order statistics...</p>
+        <div
+          className={`animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-t-4 border-b-4 transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "border-blue-400" : "border-blue-600"
+          }`}
+        ></div>
+        <p
+          className={`font-medium transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-blue-300" : "text-blue-800"
+          }`}
+        >
+          Loading order statistics...
+        </p>
       </div>
     );
   }
@@ -146,13 +158,25 @@ export default function AdminOrderStatsPage() {
   if (error) {
     return (
       <div className="w-full flex flex-col h-screen items-center text-center gap-4 justify-center p-4">
-        <HiExclamationCircle className="text-red-600 text-4xl sm:text-5xl" />
-        <p className="text-red-600 text-sm sm:text-base">
+        <HiExclamationCircle
+          className={`text-4xl sm:text-5xl transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-red-400" : "text-red-600"
+          }`}
+        />
+        <p
+          className={`text-sm sm:text-base transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-red-400" : "text-red-600"
+          }`}
+        >
           Error loading statistics: {error}
         </p>
         <button
           onClick={handleRefresh}
-          className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-300 shadow-lg flex items-center gap-2"
+          className={`px-3 py-2 sm:px-4 sm:py-2 rounded-md transition-all duration-300 shadow-lg flex items-center gap-2 ${
+            resolvedTheme === "dark"
+              ? "bg-blue-600 text-white hover:bg-blue-700"
+              : "bg-blue-600 text-white hover:bg-blue-700"
+          }`}
         >
           <HiRefresh className="text-lg sm:text-xl" /> Retry
         </button>
@@ -163,7 +187,13 @@ export default function AdminOrderStatsPage() {
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-700 to-indigo-800 rounded-xl p-4 sm:p-6 shadow-lg text-white">
+      <div
+        className={`rounded-xl p-4 sm:p-6 shadow-lg text-white transition-colors duration-200 ${
+          resolvedTheme === "dark"
+            ? "bg-gradient-to-r from-slate-800 to-slate-700"
+            : "bg-gradient-to-r from-blue-700 to-indigo-800"
+        }`}
+      >
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-xl sm:text-2xl font-bold mb-2">
@@ -175,7 +205,11 @@ export default function AdminOrderStatsPage() {
           </div>
           <button
             onClick={handleRefresh}
-            className="mt-4 sm:mt-0 px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition-all duration-300 flex items-center gap-2"
+            className={`mt-4 sm:mt-0 px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 ${
+              resolvedTheme === "dark"
+                ? "bg-slate-600 bg-opacity-20 hover:bg-opacity-30"
+                : "bg-white bg-opacity-20 hover:bg-opacity-30"
+            }`}
           >
             <HiRefresh className="text-lg" />
             Refresh
@@ -184,11 +218,24 @@ export default function AdminOrderStatsPage() {
       </div>
 
       {/* Date Filter */}
-      <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md">
+      <div
+        className={`p-4 sm:p-6 rounded-xl shadow-md transition-colors duration-200 ${
+          resolvedTheme === "dark" ? "bg-slate-800" : "bg-white"
+        }`}
+      >
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex items-center gap-2">
-            <HiCalendar className="text-gray-600" />
-            <label htmlFor="date-filter" className="font-medium text-gray-700">
+            <HiCalendar
+              className={`transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-400" : "text-gray-600"
+              }`}
+            />
+            <label
+              htmlFor="date-filter"
+              className={`font-medium transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-300" : "text-gray-700"
+              }`}
+            >
               Select Date (for daily stats):
             </label>
           </div>
@@ -197,9 +244,17 @@ export default function AdminOrderStatsPage() {
             id="date-filter"
             value={selectedDate}
             onChange={handleDateChange}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className={`px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:border-transparent transition-colors duration-200 ${
+              resolvedTheme === "dark"
+                ? "border-slate-600 bg-slate-700 text-slate-100 focus:ring-blue-400"
+                : "border-gray-300 focus:ring-blue-500"
+            }`}
           />
-          <span className="text-sm text-gray-500">
+          <span
+            className={`text-sm transition-colors duration-200 ${
+              resolvedTheme === "dark" ? "text-slate-400" : "text-gray-500"
+            }`}
+          >
             Leave empty for today's stats
           </span>
         </div>
@@ -208,142 +263,426 @@ export default function AdminOrderStatsPage() {
       {/* Statistics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Daily Statistics */}
-        <div className="bg-gradient-to-br from-green-50 to-emerald-100 p-4 sm:p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border border-green-200">
+        <div
+          className={`p-4 sm:p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border ${
+            resolvedTheme === "dark"
+              ? "bg-gradient-to-br from-green-900/20 to-emerald-900/20 border-green-700/30"
+              : "bg-gradient-to-br from-green-50 to-emerald-100 border-green-200"
+          }`}
+        >
           <div className="flex justify-between items-center mb-3 sm:mb-4">
-            <h2 className="text-lg sm:text-xl font-semibold text-green-800">
+            <h2
+              className={`text-lg sm:text-xl font-semibold transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-green-300" : "text-green-800"
+              }`}
+            >
               Daily Statistics
             </h2>
-            <div className="p-2 sm:p-3 bg-green-200 rounded-full">
-              <HiCalendar className="text-green-700 text-lg sm:text-xl" />
+            <div
+              className={`p-2 sm:p-3 rounded-full transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "bg-green-800/50" : "bg-green-200"
+              }`}
+            >
+              <HiCalendar
+                className={`text-lg sm:text-xl transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-green-400" : "text-green-700"
+                }`}
+              />
             </div>
           </div>
           <div className="space-y-3">
-            <div className="bg-white bg-opacity-50 p-3 rounded-lg">
+            <div
+              className={`p-3 rounded-lg transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "bg-slate-800/50"
+                  : "bg-white bg-opacity-50"
+              }`}
+            >
               <div className="flex items-center justify-between mb-2">
-                <p className="font-medium text-green-700 text-sm">Orders</p>
-                <HiTrendingUp className="text-green-600 text-sm" />
+                <p
+                  className={`font-medium text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-green-300"
+                      : "text-green-700"
+                  }`}
+                >
+                  Orders
+                </p>
+                <HiTrendingUp
+                  className={`text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-green-400"
+                      : "text-green-600"
+                  }`}
+                />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-green-900">
+              <p
+                className={`text-2xl sm:text-3xl font-bold transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-green-200" : "text-green-900"
+                }`}
+              >
                 {dailyStats?.totalOrders || 0}
               </p>
-              <p className="text-green-700 mt-1 text-xs">
+              <p
+                className={`mt-1 text-xs transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-green-400" : "text-green-700"
+                }`}
+              >
                 {dailyStats?.date ? `Date: ${dailyStats.date}` : "Today"}
               </p>
             </div>
-            <div className="bg-white bg-opacity-50 p-3 rounded-lg">
+            <div
+              className={`p-3 rounded-lg transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "bg-slate-800/50"
+                  : "bg-white bg-opacity-50"
+              }`}
+            >
               <div className="flex items-center justify-between mb-2">
-                <p className="font-medium text-green-700 text-sm">Volume</p>
-                <HiCurrencyDollar className="text-green-600 text-sm" />
+                <p
+                  className={`font-medium text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-green-300"
+                      : "text-green-700"
+                  }`}
+                >
+                  Volume
+                </p>
+                <HiCurrencyDollar
+                  className={`text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-green-400"
+                      : "text-green-600"
+                  }`}
+                />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-green-900">
+              <p
+                className={`text-2xl sm:text-3xl font-bold transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-green-200" : "text-green-900"
+                }`}
+              >
                 ₦
                 {dailyStats?.totalVolume
                   ? (dailyStats.totalVolume / 100).toLocaleString()
                   : 0}
               </p>
-              <p className="text-green-700 mt-1 text-xs">Total Volume</p>
+              <p
+                className={`mt-1 text-xs transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-green-400" : "text-green-700"
+                }`}
+              >
+                Total Volume
+              </p>
             </div>
           </div>
         </div>
 
         {/* 30-Day Statistics */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 p-4 sm:p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border border-blue-200">
+        <div
+          className={`p-4 sm:p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border ${
+            resolvedTheme === "dark"
+              ? "bg-gradient-to-br from-blue-900/20 to-indigo-900/20 border-blue-700/30"
+              : "bg-gradient-to-br from-blue-50 to-indigo-100 border-blue-200"
+          }`}
+        >
           <div className="flex justify-between items-center mb-3 sm:mb-4">
-            <h2 className="text-lg sm:text-xl font-semibold text-blue-800">
+            <h2
+              className={`text-lg sm:text-xl font-semibold transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-blue-300" : "text-blue-800"
+              }`}
+            >
               30-Day Statistics
             </h2>
-            <div className="p-2 sm:p-3 bg-blue-200 rounded-full">
-              <HiClock className="text-blue-700 text-lg sm:text-xl" />
+            <div
+              className={`p-2 sm:p-3 rounded-full transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "bg-blue-800/50" : "bg-blue-200"
+              }`}
+            >
+              <HiClock
+                className={`text-lg sm:text-xl transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-blue-400" : "text-blue-700"
+                }`}
+              />
             </div>
           </div>
           <div className="space-y-3">
-            <div className="bg-white bg-opacity-50 p-3 rounded-lg">
+            <div
+              className={`p-3 rounded-lg transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "bg-slate-800/50"
+                  : "bg-white bg-opacity-50"
+              }`}
+            >
               <div className="flex items-center justify-between mb-2">
-                <p className="font-medium text-blue-700 text-sm">Orders</p>
-                <HiTrendingUp className="text-blue-600 text-sm" />
+                <p
+                  className={`font-medium text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark" ? "text-blue-300" : "text-blue-700"
+                  }`}
+                >
+                  Orders
+                </p>
+                <HiTrendingUp
+                  className={`text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
+                  }`}
+                />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-blue-900">
+              <p
+                className={`text-2xl sm:text-3xl font-bold transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-blue-200" : "text-blue-900"
+                }`}
+              >
                 {thirtyDayStats?.totalOrders || 0}
               </p>
-              <p className="text-blue-700 mt-1 text-xs">
+              <p
+                className={`mt-1 text-xs transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-blue-400" : "text-blue-700"
+                }`}
+              >
                 {thirtyDayStats?.period || "Last 30 days"}
               </p>
             </div>
-            <div className="bg-white bg-opacity-50 p-3 rounded-lg">
+            <div
+              className={`p-3 rounded-lg transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "bg-slate-800/50"
+                  : "bg-white bg-opacity-50"
+              }`}
+            >
               <div className="flex items-center justify-between mb-2">
-                <p className="font-medium text-blue-700 text-sm">Volume</p>
-                <HiCurrencyDollar className="text-blue-600 text-sm" />
+                <p
+                  className={`font-medium text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark" ? "text-blue-300" : "text-blue-700"
+                  }`}
+                >
+                  Volume
+                </p>
+                <HiCurrencyDollar
+                  className={`text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark" ? "text-blue-400" : "text-blue-600"
+                  }`}
+                />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-blue-900">
+              <p
+                className={`text-2xl sm:text-3xl font-bold transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-blue-200" : "text-blue-900"
+                }`}
+              >
                 ₦
                 {thirtyDayStats?.totalVolume
                   ? (thirtyDayStats.totalVolume / 100).toLocaleString()
                   : 0}
               </p>
-              <p className="text-blue-700 mt-1 text-xs">Total Volume</p>
+              <p
+                className={`mt-1 text-xs transition-colors duration-200 ${
+                  resolvedTheme === "dark" ? "text-blue-400" : "text-blue-700"
+                }`}
+              >
+                Total Volume
+              </p>
             </div>
           </div>
         </div>
 
         {/* All-Time Statistics */}
-        <div className="bg-gradient-to-br from-purple-50 to-violet-100 p-4 sm:p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border border-purple-200">
+        <div
+          className={`p-4 sm:p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border ${
+            resolvedTheme === "dark"
+              ? "bg-gradient-to-br from-purple-900/20 to-violet-900/20 border-purple-700/30"
+              : "bg-gradient-to-br from-purple-50 to-violet-100 border-purple-200"
+          }`}
+        >
           <div className="flex justify-between items-center mb-3 sm:mb-4">
-            <h2 className="text-lg sm:text-xl font-semibold text-purple-800">
+            <h2
+              className={`text-lg sm:text-xl font-semibold transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-purple-300" : "text-purple-800"
+              }`}
+            >
               All-Time Statistics
             </h2>
-            <div className="p-2 sm:p-3 bg-purple-200 rounded-full">
-              <HiChartBar className="text-purple-700 text-lg sm:text-xl" />
+            <div
+              className={`p-2 sm:p-3 rounded-full transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "bg-purple-800/50" : "bg-purple-200"
+              }`}
+            >
+              <HiChartBar
+                className={`text-lg sm:text-xl transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "text-purple-400"
+                    : "text-purple-700"
+                }`}
+              />
             </div>
           </div>
           <div className="space-y-3">
-            <div className="bg-white bg-opacity-50 p-3 rounded-lg">
+            <div
+              className={`p-3 rounded-lg transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "bg-slate-800/50"
+                  : "bg-white bg-opacity-50"
+              }`}
+            >
               <div className="flex items-center justify-between mb-2">
-                <p className="font-medium text-purple-700 text-sm">Orders</p>
-                <HiTrendingUp className="text-purple-600 text-sm" />
+                <p
+                  className={`font-medium text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-purple-300"
+                      : "text-purple-700"
+                  }`}
+                >
+                  Orders
+                </p>
+                <HiTrendingUp
+                  className={`text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-purple-400"
+                      : "text-purple-600"
+                  }`}
+                />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-purple-900">
+              <p
+                className={`text-2xl sm:text-3xl font-bold transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "text-purple-200"
+                    : "text-purple-900"
+                }`}
+              >
                 {totalStats?.totalOrders || 0}
               </p>
-              <p className="text-purple-700 mt-1 text-xs">All Time</p>
+              <p
+                className={`mt-1 text-xs transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "text-purple-400"
+                    : "text-purple-700"
+                }`}
+              >
+                All Time
+              </p>
             </div>
-            <div className="bg-white bg-opacity-50 p-3 rounded-lg">
+            <div
+              className={`p-3 rounded-lg transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "bg-slate-800/50"
+                  : "bg-white bg-opacity-50"
+              }`}
+            >
               <div className="flex items-center justify-between mb-2">
-                <p className="font-medium text-purple-700 text-sm">Volume</p>
-                <HiCurrencyDollar className="text-purple-600 text-sm" />
+                <p
+                  className={`font-medium text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-purple-300"
+                      : "text-purple-700"
+                  }`}
+                >
+                  Volume
+                </p>
+                <HiCurrencyDollar
+                  className={`text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-purple-400"
+                      : "text-purple-600"
+                  }`}
+                />
               </div>
-              <p className="text-2xl sm:text-3xl font-bold text-purple-900">
+              <p
+                className={`text-2xl sm:text-3xl font-bold transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "text-purple-200"
+                    : "text-purple-900"
+                }`}
+              >
                 ₦
                 {totalStats?.totalVolume
                   ? (totalStats.totalVolume / 100).toLocaleString()
                   : 0}
               </p>
-              <p className="text-purple-700 mt-1 text-xs">Total Volume</p>
+              <p
+                className={`mt-1 text-xs transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "text-purple-400"
+                    : "text-purple-700"
+                }`}
+              >
+                Total Volume
+              </p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Summary Card */}
-      <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Summary</h3>
+      <div
+        className={`p-4 sm:p-6 rounded-xl shadow-md transition-colors duration-200 ${
+          resolvedTheme === "dark" ? "bg-slate-800" : "bg-white"
+        }`}
+      >
+        <h3
+          className={`text-lg font-semibold mb-4 transition-colors duration-200 ${
+            resolvedTheme === "dark" ? "text-slate-200" : "text-gray-800"
+          }`}
+        >
+          Summary
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600">Daily Average Orders</p>
-            <p className="text-2xl font-bold text-gray-800">
+          <div
+            className={`text-center p-4 rounded-lg transition-colors duration-200 ${
+              resolvedTheme === "dark" ? "bg-slate-700/50" : "bg-gray-50"
+            }`}
+          >
+            <p
+              className={`text-sm transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-400" : "text-gray-600"
+              }`}
+            >
+              Daily Average Orders
+            </p>
+            <p
+              className={`text-2xl font-bold transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-200" : "text-gray-800"
+              }`}
+            >
               {dailyStats?.totalOrders || 0}
             </p>
           </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600">30-Day Average Orders</p>
-            <p className="text-2xl font-bold text-gray-800">
+          <div
+            className={`text-center p-4 rounded-lg transition-colors duration-200 ${
+              resolvedTheme === "dark" ? "bg-slate-700/50" : "bg-gray-50"
+            }`}
+          >
+            <p
+              className={`text-sm transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-400" : "text-gray-600"
+              }`}
+            >
+              30-Day Average Orders
+            </p>
+            <p
+              className={`text-2xl font-bold transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-200" : "text-gray-800"
+              }`}
+            >
               {thirtyDayStats?.totalOrders
                 ? Math.round(thirtyDayStats.totalOrders / 30)
                 : 0}
             </p>
           </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600">Total Platform Orders</p>
-            <p className="text-2xl font-bold text-gray-800">
+          <div
+            className={`text-center p-4 rounded-lg transition-colors duration-200 ${
+              resolvedTheme === "dark" ? "bg-slate-700/50" : "bg-gray-50"
+            }`}
+          >
+            <p
+              className={`text-sm transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-400" : "text-gray-600"
+              }`}
+            >
+              Total Platform Orders
+            </p>
+            <p
+              className={`text-2xl font-bold transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-200" : "text-gray-800"
+              }`}
+            >
               {totalStats?.totalOrders || 0}
             </p>
           </div>
