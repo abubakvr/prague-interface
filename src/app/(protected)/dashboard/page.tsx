@@ -385,13 +385,6 @@ export default function Home() {
                 Email:
               </p>
               <div className="flex items-center overflow-hidden">
-                <HiMail
-                  className={`mr-1 flex-shrink-0 transition-colors duration-200 ${
-                    resolvedTheme === "dark"
-                      ? "text-slate-500"
-                      : "text-gray-500"
-                  }`}
-                />
                 <p
                   className={`truncate transition-colors duration-200 ${
                     resolvedTheme === "dark"
@@ -409,7 +402,7 @@ export default function Home() {
                   resolvedTheme === "dark" ? "text-slate-400" : "text-gray-600"
                 }`}
               >
-                Acc N0:
+                Acc No:
               </p>
               <div className="flex items-center overflow-hidden">
                 <p

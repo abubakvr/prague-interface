@@ -10,7 +10,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { HiCog, HiUser } from "react-icons/hi";
-import { SettingsModal } from "./SettingsModal";
 import { useTheme } from "@/context/ThemeContext";
 import { ThemeToggle } from "./ThemeToggle";
 import { useAuth } from "@/context/AuthContext";
@@ -30,7 +29,6 @@ export const TopBar = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -137,18 +135,6 @@ export const TopBar = () => {
     } catch (error) {
       console.error("Logout error:", error);
     }
-  };
-
-  // Fixed openSettings function
-  const openSettings = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsSettingsOpen(true);
-    setIsDropdownOpen(false); // Close dropdown when opening settings
-  };
-
-  const closeSettings = () => {
-    setIsSettingsOpen(false);
   };
 
   // Calculate page title separately for clarity
@@ -304,8 +290,9 @@ export const TopBar = () => {
                       : "bg-white border-blue-100"
                   }`}
                 >
-                  <button
-                    onClick={openSettings}
+                  <Link
+                    href="/settings"
+                    onClick={() => setIsDropdownOpen(false)}
                     className={`flex items-center space-x-2 w-full text-left px-4 py-2 text-sm transition-colors duration-200 ${
                       resolvedTheme === "dark"
                         ? "text-slate-300 hover:bg-slate-600"
@@ -314,7 +301,7 @@ export const TopBar = () => {
                   >
                     <HiCog className="h-4 w-4" />
                     <span>Settings</span>
-                  </button>
+                  </Link>
                   <div
                     className={`border-t my-1 transition-colors duration-200 ${
                       resolvedTheme === "dark"
@@ -441,8 +428,12 @@ export const TopBar = () => {
                       </span>
                     </div>
                   </div>
-                  <button
-                    onClick={openSettings}
+                  <Link
+                    href="/settings"
+                    onClick={() => {
+                      setIsDropdownOpen(false);
+                      setIsMobileMenuOpen(false);
+                    }}
                     className={`hidden md:flex items-center space-x-2 w-full text-left px-4 py-2 text-sm transition-colors duration-200 border-t ${
                       resolvedTheme === "dark"
                         ? "text-slate-300 hover:bg-slate-600 border-slate-600"
@@ -451,7 +442,7 @@ export const TopBar = () => {
                   >
                     <HiCog className="h-4 w-4" />
                     <span>Settings</span>
-                  </button>
+                  </Link>
                   <button
                     onClick={() => {
                       router.push("/settings");
@@ -517,9 +508,6 @@ export const TopBar = () => {
           </div>
         )}
       </header>
-
-      {/* Settings Modal */}
-      <SettingsModal isOpen={isSettingsOpen} onClose={closeSettings} />
     </>
   );
 };
