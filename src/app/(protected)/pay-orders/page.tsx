@@ -138,7 +138,12 @@ export default function OrdersTable() {
 
   return (
     <div className="rounded-xl">
-      <Toaster />
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 7000,
+        }}
+      />
 
       {modal.open && (
         <Modal
