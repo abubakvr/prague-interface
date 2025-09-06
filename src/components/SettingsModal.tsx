@@ -58,7 +58,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     excluded_banks: [],
     narration: "",
     bybit_message: "",
-    pay_thirdparty: false,
+    pay_thirdparty: true,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -135,7 +135,10 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             excluded_banks: excludedBanksData,
             narration: result.data.narration || "",
             bybit_message: result.data.bybit_message || "",
-            pay_thirdparty: result.data.pay_thirdparty || false,
+            pay_thirdparty:
+              result.data.pay_thirdparty !== undefined
+                ? result.data.pay_thirdparty
+                : true,
           });
         } else {
           setExistingSettings(null);
@@ -156,7 +159,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           excluded_banks: [],
           narration: "",
           bybit_message: "",
-          pay_thirdparty: false,
+          pay_thirdparty: true,
         });
         setSelectedBanks([]);
       } else {
@@ -447,7 +450,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       excluded_banks: [],
       narration: "",
       bybit_message: "",
-      pay_thirdparty: false,
+      pay_thirdparty: true,
     });
     setError("");
     setSuccess("");
@@ -862,15 +865,21 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       : "text-gray-700"
                   }`}
                 >
-                  Enable Third Party Payments
+                  Disable Third Party Payments
                 </label>
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
                     id="pay_thirdparty"
                     name="pay_thirdparty"
-                    checked={formData.pay_thirdparty || false}
-                    onChange={handleChange}
+                    checked={!formData.pay_thirdparty}
+                    onChange={(e) => {
+                      const newValue = e.target.checked;
+                      setFormData((prev) => ({
+                        ...prev,
+                        pay_thirdparty: newValue,
+                      }));
+                    }}
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <label
@@ -881,7 +890,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         : "text-gray-600"
                     }`}
                   >
-                    Allow users to make payments to third-party accounts.
+                    Disable third-party payments
                   </label>
                 </div>
               </div>

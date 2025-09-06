@@ -55,7 +55,7 @@ export default function SettingsPage() {
     excluded_banks: [],
     narration: "",
     bybit_message: "",
-    pay_thirdparty: false,
+    pay_thirdparty: true,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -124,7 +124,10 @@ export default function SettingsPage() {
             excluded_banks: result.data.excluded_banks || [],
             narration: result.data.narration || "",
             bybit_message: result.data.bybit_message || "",
-            pay_thirdparty: result.data.pay_thirdparty || false,
+            pay_thirdparty:
+              result.data.pay_thirdparty !== undefined
+                ? result.data.pay_thirdparty
+                : true,
           });
 
           // Set selected banks for display
@@ -765,15 +768,21 @@ export default function SettingsPage() {
                       : "text-gray-700"
                   }`}
                 >
-                  Enable Third Party Payments
+                  Disable Third Party Payments
                 </label>
                 <div className="flex items-center space-x-3">
                   <input
                     type="checkbox"
                     id="pay_thirdparty"
                     name="pay_thirdparty"
-                    checked={formData.pay_thirdparty || false}
-                    onChange={handleChange}
+                    checked={!formData.pay_thirdparty}
+                    onChange={(e) => {
+                      const newValue = !e.target.checked;
+                      setFormData((prev) => ({
+                        ...prev,
+                        pay_thirdparty: newValue,
+                      }));
+                    }}
                     className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-200"
                   />
                   <label
@@ -784,7 +793,7 @@ export default function SettingsPage() {
                         : "text-gray-600"
                     }`}
                   >
-                    Allow users to make payments to third-party accounts
+                    Disable third-party payments
                   </label>
                 </div>
                 <p
@@ -794,7 +803,7 @@ export default function SettingsPage() {
                       : "text-gray-500"
                   }`}
                 >
-                  When enabled, users can transfer funds to accounts not
+                  When checked, users cannot transfer funds to accounts not
                   registered in the system
                 </p>
               </div>
