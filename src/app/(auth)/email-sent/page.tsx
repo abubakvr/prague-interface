@@ -5,9 +5,11 @@ import axios from "axios";
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { BASE_URL } from "@/lib/constants";
+import { useTheme } from "@/context/ThemeContext";
 
 // Component that uses useSearchParams
 const EmailContent = () => {
+  const { resolvedTheme } = useTheme();
   const [isResending, setIsResending] = useState(false);
   const [resendMessage, setResendMessage] = useState("");
   const searchParams = useSearchParams();
@@ -37,8 +39,18 @@ const EmailContent = () => {
   };
 
   return (
-    <div className="max-w-md w-full h-fit p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-2xl font-bold text-center mb-6">Verify Your Email</h1>
+    <div
+      className={`md:max-w-md md:w-full h-fit md:p-6 p-4 mx-4 md:mx-0 rounded-lg shadow-lg transition-colors duration-200 ${
+        resolvedTheme === "dark" ? "bg-slate-800" : "bg-white"
+      }`}
+    >
+      <h1
+        className={`text-2xl font-bold text-center mb-6 transition-colors duration-200 ${
+          resolvedTheme === "dark" ? "text-slate-100" : "text-gray-900"
+        }`}
+      >
+        Verify Your Email
+      </h1>
 
       <div className="mb-6 text-center">
         <p className="mb-4">
@@ -84,8 +96,13 @@ const EmailContentLoading = () => (
 
 // Main page component with Suspense boundary
 const EmailSentPage = () => {
+  const { resolvedTheme } = useTheme();
   return (
-    <div className="min-h-screen flex pt-6 md:pt-16 justify-center bg-gray-100">
+    <div
+      className={`min-h-screen flex pt-6 md:pt-16 justify-center transition-colors duration-200 ${
+        resolvedTheme === "dark" ? "bg-slate-900" : "bg-gray-100"
+      }`}
+    >
       <Suspense fallback={<EmailContentLoading />}>
         <EmailContent />
       </Suspense>

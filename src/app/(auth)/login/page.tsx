@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { BASE_URL } from "@/lib/constants";
+import { useTheme } from "@/context/ThemeContext";
 
 interface FormData {
   email: string;
@@ -12,6 +13,7 @@ interface FormData {
 }
 
 const Login = () => {
+  const { resolvedTheme } = useTheme();
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -80,10 +82,20 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
+    <div
+      className={`min-h-screen flex transition-colors duration-200 ${
+        resolvedTheme === "dark" ? "bg-slate-900" : "bg-gray-100"
+      }`}
+    >
       <div className="flex w-full h-screen">
         {/* Left side - Platform Info */}
-        <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white flex-col p-8 relative overflow-hidden">
+        <div
+          className={`hidden md:flex md:w-1/2 text-white flex-col p-8 relative overflow-hidden transition-colors duration-200 ${
+            resolvedTheme === "dark"
+              ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700"
+              : "bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900"
+          }`}
+        >
           {/* Background image with overlay */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -93,12 +105,30 @@ const Login = () => {
               className="object-cover"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-blue-800/90 to-indigo-900/90"></div>
+            <div
+              className={`absolute inset-0 transition-colors duration-200 ${
+                resolvedTheme === "dark"
+                  ? "bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-700/95"
+                  : "bg-gradient-to-br from-blue-900/90 via-blue-800/90 to-indigo-900/90"
+              }`}
+            ></div>
           </div>
 
           {/* Glossy overlay effect */}
-          <div className="absolute inset-0 bg-white opacity-5 rounded-full blur-3xl transform -translate-x-1/4 -translate-y-1/4 w-3/4 h-3/4"></div>
-          <div className="absolute bottom-0 right-0 bg-blue-500 opacity-10 rounded-full blur-3xl w-96 h-96"></div>
+          <div
+            className={`absolute inset-0 rounded-full blur-3xl transform -translate-x-1/4 -translate-y-1/4 w-3/4 h-3/4 transition-colors duration-200 ${
+              resolvedTheme === "dark"
+                ? "bg-slate-300 opacity-5"
+                : "bg-white opacity-5"
+            }`}
+          ></div>
+          <div
+            className={`absolute bottom-0 right-0 rounded-full blur-3xl w-96 h-96 transition-colors duration-200 ${
+              resolvedTheme === "dark"
+                ? "bg-slate-400 opacity-10"
+                : "bg-blue-500 opacity-10"
+            }`}
+          ></div>
 
           <div className="relative z-10">
             <div className="flex items-center space-x-2">
@@ -117,17 +147,41 @@ const Login = () => {
 
             <div className="w-full h-full mt-6 flex items-center justify-center">
               <div className="max-w-lg">
-                <h2 className="text-6xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-white">
+                <h2
+                  className={`text-6xl font-extrabold mb-6 text-center bg-clip-text text-transparent transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "bg-gradient-to-r from-slate-300 to-slate-100"
+                      : "bg-gradient-to-r from-blue-300 to-white"
+                  }`}
+                >
                   Streamline Your Payments
                 </h2>
-                <p className="text-xl mb-8 text-center text-blue-100 leading-relaxed">
+                <p
+                  className={`text-xl mb-8 text-center leading-relaxed transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-200"
+                      : "text-blue-100"
+                  }`}
+                >
                   Join our platform to manage orders, process payments
                   efficiently, and track transactions in real-time with our
                   secure payment processing system.
                 </p>
 
-                <div className="backdrop-blur-sm bg-white/10 p-8 rounded-2xl shadow-xl border border-white/20">
-                  <h3 className="text-2xl font-semibold mb-6 text-center bg-gradient-to-r from-blue-200 to-indigo-100 bg-clip-text text-transparent">
+                <div
+                  className={`backdrop-blur-sm p-8 rounded-2xl shadow-xl border transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "bg-slate-800/20 border-slate-600/30"
+                      : "bg-white/10 border-white/20"
+                  }`}
+                >
+                  <h3
+                    className={`text-2xl font-semibold mb-6 text-center bg-clip-text text-transparent transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "bg-gradient-to-r from-slate-200 to-slate-100"
+                        : "bg-gradient-to-r from-blue-200 to-indigo-100"
+                    }`}
+                  >
                     Platform Features
                   </h3>
                   <ul className="space-y-4">
@@ -140,9 +194,19 @@ const Login = () => {
                       "Mobile-friendly dashboard",
                     ].map((item, index) => (
                       <li key={index} className="flex items-center space-x-3">
-                        <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-blue-500/30">
+                        <span
+                          className={`flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "bg-slate-600/50"
+                              : "bg-blue-500/30"
+                          }`}
+                        >
                           <svg
-                            className="w-4 h-4 text-blue-200"
+                            className={`w-4 h-4 transition-colors duration-200 ${
+                              resolvedTheme === "dark"
+                                ? "text-slate-300"
+                                : "text-blue-200"
+                            }`}
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
@@ -153,7 +217,15 @@ const Login = () => {
                             />
                           </svg>
                         </span>
-                        <span className="text-blue-50">{item}</span>
+                        <span
+                          className={`transition-colors duration-200 ${
+                            resolvedTheme === "dark"
+                              ? "text-slate-200"
+                              : "text-blue-50"
+                          }`}
+                        >
+                          {item}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -180,12 +252,22 @@ const Login = () => {
                 Boskify
               </h1>
             </div>
-            <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+            <h1
+              className={`text-3xl font-bold text-center mb-8 transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-100" : "text-gray-800"
+              }`}
+            >
               Login to Your Account
             </h1>
 
             {error && (
-              <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg border border-red-200">
+              <div
+                className={`mb-6 p-4 rounded-lg border transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "bg-red-900/50 text-red-300 border-red-700"
+                    : "bg-red-100 text-red-700 border-red-200"
+                }`}
+              >
                 {error}
               </div>
             )}
@@ -193,7 +275,11 @@ const Login = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label
-                  className="block text-gray-700 text-sm font-semibold mb-2"
+                  className={`block text-sm font-semibold mb-2 transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-300"
+                      : "text-gray-700"
+                  }`}
                   htmlFor="email"
                 >
                   Email
@@ -204,7 +290,11 @@ const Login = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "bg-slate-700 border-slate-600 text-slate-100 placeholder-slate-400"
+                      : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+                  }`}
                   placeholder="Your email"
                   required
                 />
@@ -213,7 +303,11 @@ const Login = () => {
               <div>
                 <div className="flex justify-between mb-2">
                   <label
-                    className="text-gray-700 text-sm font-semibold"
+                    className={`text-sm font-semibold transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-300"
+                        : "text-gray-700"
+                    }`}
                     htmlFor="password"
                   >
                     Password
@@ -226,14 +320,22 @@ const Login = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "bg-slate-700 border-slate-600 text-slate-100 placeholder-slate-400"
+                        : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
+                    }`}
                     placeholder="Your password"
                     required
                   />
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-500 hover:text-gray-700"
+                    className={`absolute inset-y-0 right-0 pr-3 flex items-center text-sm transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-400 hover:text-slate-300"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
                   >
                     {showPassword ? "Hide" : "Show"}
                   </button>
@@ -252,17 +354,29 @@ const Login = () => {
             <div className="mt-4 text-right">
               <Link
                 href="/forgotpassword"
-                className="text-blue-600 text-sm hover:text-blue-800"
+                className={`text-sm transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "text-blue-400 hover:text-blue-300"
+                    : "text-blue-600 hover:text-blue-800"
+                }`}
               >
                 Forgot Password?
               </Link>
             </div>
 
-            <p className="mt-8 text-center text-gray-600">
+            <p
+              className={`mt-8 text-center transition-colors duration-200 ${
+                resolvedTheme === "dark" ? "text-slate-400" : "text-gray-600"
+              }`}
+            >
               Don't have an account?{" "}
               <Link
                 href="/signup"
-                className="text-blue-600 font-medium hover:text-blue-800"
+                className={`font-medium transition-colors duration-200 ${
+                  resolvedTheme === "dark"
+                    ? "text-blue-400 hover:text-blue-300"
+                    : "text-blue-600 hover:text-blue-800"
+                }`}
               >
                 Sign up
               </Link>

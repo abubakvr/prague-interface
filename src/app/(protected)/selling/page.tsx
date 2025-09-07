@@ -95,7 +95,12 @@ export default function OrdersTable() {
 
   return (
     <div className="rounded-xl shadow-lg">
-      <Toaster />
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 7000,
+        }}
+      />
       {openModal && (
         <div
           className={`fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 backdrop-blur-sm`}

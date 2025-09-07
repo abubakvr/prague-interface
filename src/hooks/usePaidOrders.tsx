@@ -88,7 +88,7 @@ export function usePaidOrders() {
   };
 
   const handlePageChange = (newPage: number) => {
-    router.push(`/payment-status?page=${newPage}&limit=${limit}`);
+    router.push(`/status?page=${newPage}&limit=${limit}`);
   };
 
   useEffect(() => {

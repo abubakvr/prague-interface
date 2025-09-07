@@ -26,7 +26,7 @@ function TransactionHistoryContent() {
   });
 
   const handlePageChange = (newPage: number) => {
-    router.push(`/transaction-history?page=${newPage}&limit=${limit}`);
+    router.push(`/history?page=${newPage}&limit=${limit}`);
   };
 
   const formatDate = (dateString: string) => {

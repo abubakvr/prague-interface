@@ -37,16 +37,27 @@ export const handlePayAllOrders = async (
     if (response.success === true) {
       const paidOrders = response.data.transferCount;
       const unpaidOrders = exportableOrders.length - paidOrders;
-      toast.success(
-        `${paidOrders} order${paidOrders === 1 ? "" : "s"} paid successfully`
-      );
+      const successMessage = response.data?.message || response.message;
+
+      if (successMessage) {
+        toast.success(`${successMessage}`);
+      } else {
+        toast.success(
+          `${paidOrders} order${paidOrders === 1 ? "" : "s"} paid successfully`
+        );
+      }
       refetch();
     } else {
-      toast.error(`Payment failed for all orders`);
-      console.error(response.data.message);
+      // Show actual backend error message
+      const errorMessage =
+        response.data?.message ||
+        response.message ||
+        "Payment failed for all orders";
+      toast.error(`Bulk payment failed: ${errorMessage}`);
+      console.error(response.data?.message || response.message);
     }
   } catch (error: any) {
-    console.error("Error paying order:", error);
+    console.error("Error paying orders:", error);
     toast.error(`${error.message}`);
   } finally {
     setPayAllLoading(false);

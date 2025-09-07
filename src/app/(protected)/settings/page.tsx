@@ -28,6 +28,7 @@ interface UserSettings {
   excluded_banks?: string[];
   narration?: string;
   bybit_message?: string;
+  pay_thirdparty?: boolean;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -37,6 +38,7 @@ interface UserSettingsRequest {
   excluded_banks?: string[];
   narration?: string;
   bybit_message?: string;
+  pay_thirdparty?: boolean;
 }
 
 interface ApiResponse {
@@ -53,6 +55,7 @@ export default function SettingsPage() {
     excluded_banks: [],
     narration: "",
     bybit_message: "",
+    pay_thirdparty: true,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -121,6 +124,10 @@ export default function SettingsPage() {
             excluded_banks: result.data.excluded_banks || [],
             narration: result.data.narration || "",
             bybit_message: result.data.bybit_message || "",
+            pay_thirdparty:
+              result.data.pay_thirdparty !== undefined
+                ? result.data.pay_thirdparty
+                : true,
           });
 
           // Set selected banks for display
@@ -167,11 +174,15 @@ export default function SettingsPage() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]:
-        name === "max_payment_amount" ? Number(value) || undefined : value,
+        type === "checkbox"
+          ? (e.target as HTMLInputElement).checked
+          : name === "max_payment_amount"
+          ? Number(value) || undefined
+          : value,
     }));
   };
 
@@ -223,6 +234,9 @@ export default function SettingsPage() {
         setError("Authentication token not found. Please log in again.");
         return;
       }
+
+      // Debug: Log the form data being sent
+      console.log("Form data being sent:", formData);
 
       const method = existingSettings ? "PUT" : "POST";
       const url = `${BASE_URL}/api/settings`;
@@ -741,6 +755,56 @@ export default function SettingsPage() {
                   }`}
                 >
                   Default message that will be sent with Bybit orders
+                </p>
+              </div>
+
+              {/* Third Party Payments */}
+              <div>
+                <label
+                  htmlFor="pay_thirdparty"
+                  className={`block text-sm md:text-base font-medium mb-2 transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-200"
+                      : "text-gray-700"
+                  }`}
+                >
+                  Disable Third Party Payments
+                </label>
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="pay_thirdparty"
+                    name="pay_thirdparty"
+                    checked={!formData.pay_thirdparty}
+                    onChange={(e) => {
+                      const newValue = !e.target.checked;
+                      setFormData((prev) => ({
+                        ...prev,
+                        pay_thirdparty: newValue,
+                      }));
+                    }}
+                    className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-200"
+                  />
+                  <label
+                    htmlFor="pay_thirdparty"
+                    className={`text-sm md:text-base transition-colors duration-200 ${
+                      resolvedTheme === "dark"
+                        ? "text-slate-300"
+                        : "text-gray-600"
+                    }`}
+                  >
+                    Disable third-party payments
+                  </label>
+                </div>
+                <p
+                  className={`mt-2 text-xs md:text-sm transition-colors duration-200 ${
+                    resolvedTheme === "dark"
+                      ? "text-slate-400"
+                      : "text-gray-500"
+                  }`}
+                >
+                  When checked, users cannot transfer funds to accounts not
+                  registered in the system
                 </p>
               </div>
 
