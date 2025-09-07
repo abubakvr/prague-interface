@@ -8,16 +8,16 @@ import { useTheme } from "@/context/ThemeContext";
 
 const navigationLinks = [
   { href: "/dashboard", label: "Dashboard", routeKey: "/dashboard" },
-  { href: "/pay-orders", label: "Pay Orders", routeKey: "/pay-orders" },
+  { href: "/pay", label: "Pay Orders", routeKey: "/pay" },
   {
-    href: "/payment-status",
+    href: "/status",
     label: "Payment Status",
-    routeKey: "/payment-status",
+    routeKey: "/status",
   },
   {
-    href: "/transaction-history",
+    href: "/history",
     label: "Transaction History",
-    routeKey: "/transaction-history",
+    routeKey: "/history",
   },
   // { href: "/selling", label: "Release Coins", routeKey: "/selling" },
   // { href: "/ads", label: "My Ads", routeKey: "/ads" },

@@ -36,16 +36,16 @@ export const TopBar = () => {
   // Navigation links for mobile menu
   const navigationLinks = [
     { href: "/dashboard", label: "Dashboard", routeKey: "/dashboard" },
-    { href: "/pay-orders", label: "Pay Orders", routeKey: "/pay-orders" },
+    { href: "/pay", label: "Pay Orders", routeKey: "/pay" },
     {
-      href: "/payment-status",
+      href: "/status",
       label: "Payment Status",
-      routeKey: "/payment-status",
+      routeKey: "/status",
     },
     {
-      href: "/transaction-history",
+      href: "/history",
       label: "Transaction History",
-      routeKey: "/transaction-history",
+      routeKey: "/history",
     },
     { href: "/settings", label: "Settings", routeKey: "/settings" },
     // { href: "/selling", label: "Release Coins", routeKey: "/selling" },
